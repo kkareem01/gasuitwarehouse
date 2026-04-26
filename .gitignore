@@ -1,0 +1,26 @@
+.env
+.env.local
+.env.test
+
+data/bookings.json
+data/leads.json
+data/*.tmp
+
+tmp/
+*.log
+.DS_Store
+node_modules/
+
+# Local-only reference / inspiration material — not part of the site
+Reviews/
+*.pdf
+*inspo*.png
+Screenshot*.png
+Review Structure example.png
+Review structure example number two.png
+front end design on mobile for booking.png
+www.acquisition.com_o-vegas*.png
+bestofhall county logo.jpg
+CLAUDE copy.md
+favicon copy.ico
+favicon copy.png

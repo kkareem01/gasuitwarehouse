@@ -1,0 +1,23 @@
+{
+  "storeTimezone": "America/New_York",
+  "businessHours": {
+    "sun": { "open": "12:00", "close": "18:00" },
+    "mon": { "open": "10:00", "close": "19:00" },
+    "tue": { "open": "10:00", "close": "19:00" },
+    "wed": { "open": "10:00", "close": "19:00" },
+    "thu": { "open": "10:00", "close": "19:00" },
+    "fri": { "open": "10:00", "close": "19:00" },
+    "sat": { "open": "10:00", "close": "19:00" }
+  },
+  "blackoutDates": ["2026-12-25", "2026-12-26", "2027-01-01"],
+  "defaultSlotDurationMinutes": 20,
+  "fittingTypes": {
+    "weddings":      { "label": "Wedding fitting",      "slotDurationMinutes": 30, "buffer": 5 },
+    "prom":          { "label": "Prom fitting",         "slotDurationMinutes": 20, "buffer": 5 },
+    "professionals": { "label": "Professional fitting", "slotDurationMinutes": 30, "buffer": 5 },
+    "other":         { "label": "Styling session",      "slotDurationMinutes": 20, "buffer": 5 }
+  },
+  "urgencyTimerSeconds": 156,
+  "leadTimeMinutes": 120,
+  "maxAdvanceDays": 90
+}
