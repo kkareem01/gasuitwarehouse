@@ -4,8 +4,11 @@
  */
 
 import assert from 'node:assert/strict';
-import { rm, mkdir, writeFile, readFile } from 'node:fs/promises';
+import { rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+
+import { migrate } from '../lib/migrate.mjs';
+import { getDb } from '../lib/db.mjs';
 
 import {
   validatePhone,
@@ -300,17 +303,15 @@ test('newBookingId is unique across 1000 calls', () => {
 console.log('\nstore.mjs concurrent createBooking');
 // =========================================================================
 
-await testAsync('createBooking serializes 50 concurrent writes; conflicting slot lost only once', async () => {
-  // Use an isolated bookings file by changing cwd? Simpler: import dynamically with fresh path.
-  // Our store writes to ./data/bookings.json relative to CWD. Tests run from project root, so
-  // we wipe and restore the file.
-  const path = 'data/bookings.json';
-  const hadFile = existsSync(path);
-  const backup = hadFile ? await readFile(path, 'utf8') : null;
-  await mkdir('data', { recursive: true });
-  await writeFile(path, '[]', 'utf8');
+await testAsync('createBooking: 50 concurrent writes at same slot, exactly one wins', async () => {
+  // Uses TURSO_DATABASE_URL from .env.test (defaults to file:test.db).
+  // Wipe the test DB file before running so previous test rows don't pollute.
+  await rm('test.db', { force: true });
+  await rm('test.db-journal', { force: true });
+  await migrate();
 
-  const { createBooking } = await import('../lib/store.mjs?cb=' + Date.now());
+  const { createBooking } = await import('../lib/store.mjs');
+  const db = getDb();
 
   const make = (i) => ({
     audience: 'weddings',
@@ -320,7 +321,7 @@ await testAsync('createBooking serializes 50 concurrent writes; conflicting slot
     consent: true,
   });
 
-  // 50 concurrent attempts at same slot — exactly one should succeed
+  // 50 concurrent attempts at same slot — exactly one should succeed (UNIQUE constraint)
   const same = await Promise.all(
     Array.from({ length: 50 }, (_, i) => createBooking(make(i), newBookingId))
   );
@@ -329,7 +330,7 @@ await testAsync('createBooking serializes 50 concurrent writes; conflicting slot
   assert.equal(sameWins, 1, `expected 1 success, got ${sameWins}`);
   assert.equal(sameFails, 49, `expected 49 SLOT_TAKEN, got ${sameFails}`);
 
-  // 50 concurrent attempts at distinct slots — all should succeed and produce unique ids
+  // 50 concurrent attempts at distinct slots — all should succeed with unique ids
   const distinct = await Promise.all(
     Array.from({ length: 50 }, (_, i) =>
       createBooking(
@@ -342,16 +343,14 @@ await testAsync('createBooking serializes 50 concurrent writes; conflicting slot
     )
   );
   const okCount = distinct.filter((r) => r.ok).length;
-  assert.equal(okCount, 50);
+  assert.equal(okCount, 50, `expected 50 successful inserts, got ${okCount}`);
   const ids = new Set(distinct.filter((r) => r.ok).map((r) => r.booking.id));
   assert.equal(ids.size, 50, 'ids must be unique');
 
-  // Restore
-  if (backup !== null) {
-    await writeFile(path, backup, 'utf8');
-  } else {
-    await rm(path, { force: true });
-  }
+  // Cleanup test DB
+  await db.close?.();
+  await rm('test.db', { force: true });
+  await rm('test.db-journal', { force: true });
 });
 
 // =========================================================================

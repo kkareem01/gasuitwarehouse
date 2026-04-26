@@ -11,6 +11,15 @@ tmp/
 .DS_Store
 node_modules/
 
+# Local SQLite database (used by `file:` connection string in dev)
+local.db
+local.db-journal
+local.db-shm
+local.db-wal
+
+# Vercel
+.vercel/
+
 # Local-only reference / inspiration material — not part of the site
 Reviews/
 *.pdf
