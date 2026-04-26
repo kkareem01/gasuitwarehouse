@@ -187,8 +187,17 @@
     const step1Valid = BookingForm.validateStep1(customer).length === 0;
 
     if (state.step === 1 && step1Valid) {
+      // Expand to step 2 UI but keep focus where the user is typing —
+      // they may have satisfied validation mid-word (e.g. one-letter last name).
+      const focusId = target.id;
       handleContinue(formEl, root, state);
-      queueMicrotask(() => root.querySelector('#bk-email')?.focus());
+      queueMicrotask(() => {
+        const el = root.querySelector('#' + focusId);
+        if (!el) return;
+        el.focus();
+        const len = el.value.length;
+        try { el.setSelectionRange(len, len); } catch {}
+      });
     } else if (state.step === 2 && !step1Valid) {
       // Preserve in-progress text (incl. extended fields) before the re-render
       state.customer = { ...state.customer, ...customer };
