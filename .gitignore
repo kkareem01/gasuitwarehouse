@@ -20,8 +20,10 @@ local.db-wal
 # Vercel
 .vercel/
 
-# Local-only reference / inspiration material — not part of the site
-Reviews/
+# Local-only reference / inspiration material — not part of the site.
+# Leading slash = root-only match. Without it, "Reviews/" would also match
+# "assets/reviews/" on case-insensitive filesystems (macOS default).
+/Reviews/
 *.pdf
 *inspo*.png
 Screenshot*.png
@@ -33,3 +35,7 @@ bestofhall county logo.jpg
 CLAUDE copy.md
 favicon copy.ico
 favicon copy.png
+
+# High-res originals of review screenshots — only the optimized .png variants
+# are referenced by the site, the .original.png files would just bloat the repo.
+assets/reviews/*.original.png
