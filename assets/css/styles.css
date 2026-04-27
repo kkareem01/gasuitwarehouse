@@ -1071,9 +1071,9 @@ em, .italic { font-style: italic; }
   max-width: 1100px;
   margin: var(--s-5) auto 0;
 }
-.reviews-stack > .review-shot:nth-child(1) { margin-top: 40px; transform: rotate(-1.2deg); }
-.reviews-stack > .review-shot:nth-child(2) { margin-top: 0;    transform: rotate(0.6deg); }
-.reviews-stack > .review-shot:nth-child(3) { margin-top: 80px; transform: rotate(-0.4deg); }
+.reviews-stack > .review-shot:nth-child(3n+1) { margin-top: 40px; transform: rotate(-1.2deg); }
+.reviews-stack > .review-shot:nth-child(3n+2) { margin-top: 0;    transform: rotate(0.6deg); }
+.reviews-stack > .review-shot:nth-child(3n)   { margin-top: 80px; transform: rotate(-0.4deg); }
 
 .review-shot {
   display: block;

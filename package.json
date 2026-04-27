@@ -13,6 +13,7 @@
     "test": "node --env-file=.env.test tests/run.mjs"
   },
   "dependencies": {
-    "@libsql/client": "^0.15.0"
+    "@libsql/client": "^0.15.0",
+    "@vercel/analytics": "^2.0.1"
   }
 }
