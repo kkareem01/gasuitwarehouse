@@ -1,5 +1,17 @@
 /* GA Suit Warehouse — shared nav + footer injector, mobile menu, scroll reveals, FAQ accordion */
 
+const ANNOUNCE_BAR_HTML = `
+<a href="/#choose" class="announce-bar" aria-label="New 2026 Executive Styling Audit — find out if you are a fit">
+  <span class="announce-bar__inner">
+    <span class="announce-bar__text">
+      <strong>New 2026 Executive Styling Audit:</strong>
+      <span class="announce-bar__cta">Find out if you are a fit</span>
+    </span>
+    <span class="announce-bar__arrow" aria-hidden="true">&rarr;</span>
+  </span>
+</a>
+`;
+
 const NAV_HTML = `
 <nav class="site-nav" aria-label="Primary">
   <div class="nav-inner">
@@ -69,7 +81,11 @@ const FOOTER_HTML = `
 function injectComponents() {
   const navMount = document.getElementById('site-nav');
   const footerMount = document.getElementById('site-footer');
-  if (navMount) navMount.innerHTML = NAV_HTML;
+  if (navMount) {
+    const path = window.location.pathname;
+    const isHome = path === '/' || path === '' || path.endsWith('/index.html');
+    navMount.innerHTML = (isHome ? ANNOUNCE_BAR_HTML : '') + NAV_HTML;
+  }
   if (footerMount) footerMount.innerHTML = FOOTER_HTML;
 
   // mobile menu toggle + auto-close on link tap
