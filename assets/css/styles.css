@@ -466,7 +466,7 @@ em, .italic { font-style: italic; }
 .hero-centered .hero-inner { max-width: 880px; margin: 0 auto; position: relative; z-index: 2; }
 
 /* Hero side models (desktop) — flank the centered text */
-.hero-centered picture { display: contents; }
+picture { display: contents; }
 .hero-model {
   pointer-events: none;
   user-select: none;
