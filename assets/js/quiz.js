@@ -7,7 +7,7 @@
   const STEPS = [
     {
       id: 'occasion',
-      question: "What's the occasion?",
+      question: "What's your occasion?",
       options: [
         { value: 'wedding',      label: 'Wedding',          icon: 'rings' },
         { value: 'professional', label: 'Work',             icon: 'briefcase' },

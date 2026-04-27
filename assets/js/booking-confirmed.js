@@ -2,24 +2,6 @@
    Reads ?id= from URL, fetches booking from /api/bookings/:id, fills the page. */
 
 (function () {
-  const PREP_BY_AUDIENCE = {
-    weddings: [
-      'Wear or bring a fitted dress shirt so we can measure accurately.',
-      'Bring inspiration photos, the wedding palette, and any fabric swatches.',
-      'Bring shoes you plan to wear — heel height affects hem length.',
-      'Allow 45–60 minutes for the full session.',
-      'Out-of-town groomsmen? We have a remote-measurement guide ready.',
-      'Need to reschedule? Just call (470) 595-7775.',
-    ],
-    general: [
-      'Wear or bring a fitted dress shirt so we can measure accurately.',
-      'Bring shoes you plan to wear with the suit.',
-      'Bring photos of looks you like, if you have them.',
-      'Allow 45–60 minutes for the full session.',
-      'Need to reschedule? Just call (470) 595-7775.',
-    ],
-  };
-
   function $(sel) { return document.querySelector(sel); }
   function $all(sel) { return Array.from(document.querySelectorAll(sel)); }
 
@@ -135,19 +117,6 @@
     // ICS link
     const ics = document.querySelector('[data-region="ics-link"]');
     if (ics) ics.href = `/api/bookings/${encodeURIComponent(b.id)}/ics`;
-
-    // Per-audience prep checklist
-    const prep = document.querySelector('[data-region="prep"]');
-    const items = PREP_BY_AUDIENCE[b.audience] || PREP_BY_AUDIENCE.general;
-    if (prep) {
-      prep.innerHTML = items.map((line) => {
-        // Render anchor for the call line if it includes a phone number
-        if (/\(470\) 595-7775/.test(line)) {
-          return `<li>${line.replace('(470) 595-7775', '<a href="tel:+14705957775">(470) 595-7775</a>')}</li>`;
-        }
-        return `<li>${escapeHtml(line)}</li>`;
-      }).join('');
-    }
 
     // Page title
     document.title = `Confirmed · ${dateLong} at ${time12} · GA Suit Warehouse`;

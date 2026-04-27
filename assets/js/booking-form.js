@@ -15,8 +15,6 @@
       { name: 'occasion', label: "What's the suit for?", type: 'text', required: true,
         maxLength: 80, placeholder: 'New job, court, gala, daily wear…' },
       { name: 'eventDate', label: 'Date you need it by (optional)', type: 'date', required: false },
-      { name: 'serviceType', label: 'What do you need?', type: 'select', required: true,
-        options: ['Buy a new suit', 'Rent', 'Alterations only', 'Just exploring'] },
       { name: 'notes', label: 'Anything else?', type: 'textarea', required: false, maxLength: 500 },
     ],
   };

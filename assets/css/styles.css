@@ -50,7 +50,7 @@
    RESET / BASE
    ============================================================================= */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -862,6 +862,12 @@ em, .italic { font-style: italic; }
 }
 .section-header h2 { margin-bottom: var(--s-2); }
 .section-header .lead { margin: 0 auto; }
+
+/* Repeated mid-section CTA — used after content blocks across the homepage */
+.section-cta {
+  text-align: center;
+  margin-top: var(--s-5);
+}
 
 /* Fabric-swatch banner — landing-page "What you'll get" headers
    (weddings / suits). The image bleeds full viewport

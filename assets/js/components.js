@@ -8,9 +8,14 @@ const NAV_HTML = `
       <span class="wordmark"><span class="ga">GA</span> SuitWarehouse</span>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/shop.html" data-route="/shop.html">Our Shop</a></li>
+      <li><a href="/#about" data-section="about">About Us</a></li>
+      <li><a href="/#why-us" data-section="why-us">Why Us</a></li>
+      <li><a href="/#directions" data-section="directions">Directions</a></li>
+      <li><a href="/#hours" data-section="hours">Hours</a></li>
+      <li><a href="/#pricing" data-section="pricing">Pricing</a></li>
+      <li><a href="/#faqs" data-section="faqs">FAQ</a></li>
     </ul>
-    <a href="/#choose" class="nav-cta">Get Suited</a>
+    <a href="/#choose" class="nav-cta">Get Me Suited</a>
     <button class="nav-toggle" aria-label="Toggle menu" id="nav-toggle">
       <span></span>
     </button>
@@ -28,9 +33,10 @@ const FOOTER_HTML = `
     <div class="footer-col">
       <h5>Explore</h5>
       <ul>
-        <li><a href="/shop.html">Our Shop</a></li>
-        <li><a href="/suits.html">Our Suits</a></li>
-        <li><a href="/weddings.html">Weddings</a></li>
+        <li><a href="/#about">About Us</a></li>
+        <li><a href="/#why-us">Why Us</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="/#faqs">FAQ</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -66,20 +72,14 @@ function injectComponents() {
   if (navMount) navMount.innerHTML = NAV_HTML;
   if (footerMount) footerMount.innerHTML = FOOTER_HTML;
 
-  // active link
-  const path = window.location.pathname;
-  const normalizedPath = path === '/' || path === '/index.html' ? '/' : path;
-  document.querySelectorAll('.nav-links a[data-route]').forEach((a) => {
-    if (a.getAttribute('data-route') === normalizedPath) {
-      a.classList.add('active');
-    }
-  });
-
-  // mobile menu toggle
+  // mobile menu toggle + auto-close on link tap
   const toggle = document.getElementById('nav-toggle');
   const links = document.getElementById('nav-links');
   if (toggle && links) {
     toggle.addEventListener('click', () => links.classList.toggle('open'));
+    links.querySelectorAll('a').forEach((a) => {
+      a.addEventListener('click', () => links.classList.remove('open'));
+    });
   }
 }
 
