@@ -8,10 +8,7 @@ const NAV_HTML = `
       <span class="wordmark"><span class="ga">GA</span> SuitWarehouse</span>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/weddings.html" data-route="/weddings.html">Weddings</a></li>
-      <li><a href="/professionals.html" data-route="/professionals.html">Professionals</a></li>
-      <li><a href="/prom.html" data-route="/prom.html">Prom</a></li>
-      <li><a href="/other.html" data-route="/other.html">Other</a></li>
+      <li><a href="/shop.html" data-route="/shop.html">Our Shop</a></li>
     </ul>
     <a href="/#choose" class="nav-cta">Get Suited</a>
     <button class="nav-toggle" aria-label="Toggle menu" id="nav-toggle">
@@ -29,12 +26,11 @@ const FOOTER_HTML = `
       <p>Gainesville's tailored menswear destination. Master tailors on-site, 500+ suits in stock, by-appointment fittings seven days a week.</p>
     </div>
     <div class="footer-col">
-      <h5>Occasions</h5>
+      <h5>Explore</h5>
       <ul>
+        <li><a href="/shop.html">Our Shop</a></li>
+        <li><a href="/suits.html">Our Suits</a></li>
         <li><a href="/weddings.html">Weddings</a></li>
-        <li><a href="/professionals.html">Professionals</a></li>
-        <li><a href="/prom.html">Prom</a></li>
-        <li><a href="/other.html">Other Occasions</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -50,8 +46,8 @@ const FOOTER_HTML = `
       <h5>Hours</h5>
       <ul>
         <li>Mon&ndash;Fri · 10a&ndash;7p</li>
-        <li>Saturday · 10a&ndash;6p</li>
-        <li>Sunday · 12p&ndash;5p</li>
+        <li>Saturday · 10a&ndash;7p</li>
+        <li>Sunday · 12p&ndash;6p</li>
         <li><em style="color:#8590A4;">By appointment recommended</em></li>
       </ul>
     </div>

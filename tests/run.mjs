@@ -69,10 +69,8 @@ const baseConfig = {
   blackoutDates: ['2026-12-25'],
   defaultSlotDurationMinutes: 20,
   fittingTypes: {
-    weddings:      { label: 'Wedding fitting',      slotDurationMinutes: 30, buffer: 5 },
-    prom:          { label: 'Prom fitting',         slotDurationMinutes: 20, buffer: 5 },
-    professionals: { label: 'Professional fitting', slotDurationMinutes: 30, buffer: 5 },
-    other:         { label: 'Styling session',      slotDurationMinutes: 20, buffer: 5 },
+    weddings: { label: 'Wedding fitting', slotDurationMinutes: 30, buffer: 5 },
+    general:  { label: 'Styling session', slotDurationMinutes: 30, buffer: 5 },
   },
   urgencyTimerSeconds: 156,
   leadTimeMinutes: 0,
@@ -185,7 +183,7 @@ test('validateBookingPayload rejects unknown select option', () => {
 
 test('validateLeadPayload requires consent=true', () => {
   const r = validateLeadPayload({
-    audience: 'prom',
+    audience: 'general',
     firstName: 'A',
     lastName: 'B',
     phone: '4705957775',
@@ -357,8 +355,8 @@ await testAsync('createBooking: 50 concurrent writes at same slot, exactly one w
 console.log('\naudiences.mjs');
 // =========================================================================
 
-test('all four audiences expose at least 3 fields', () => {
-  for (const a of ['weddings', 'prom', 'professionals', 'other']) {
+test('all audiences expose at least 3 fields', () => {
+  for (const a of ['weddings', 'general']) {
     const names = fieldNames(a);
     assert.ok(names.length >= 3, `${a} has ${names.length}`);
   }

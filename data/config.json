@@ -12,10 +12,8 @@
   "blackoutDates": ["2026-12-25", "2026-12-26", "2027-01-01"],
   "defaultSlotDurationMinutes": 20,
   "fittingTypes": {
-    "weddings":      { "label": "Wedding fitting",      "slotDurationMinutes": 30, "buffer": 5 },
-    "prom":          { "label": "Prom fitting",         "slotDurationMinutes": 20, "buffer": 5 },
-    "professionals": { "label": "Professional fitting", "slotDurationMinutes": 30, "buffer": 5 },
-    "other":         { "label": "Styling session",      "slotDurationMinutes": 20, "buffer": 5 }
+    "weddings": { "label": "Wedding fitting",   "slotDurationMinutes": 30, "buffer": 5 },
+    "general":  { "label": "Styling session",   "slotDurationMinutes": 30, "buffer": 5 }
   },
   "urgencyTimerSeconds": 156,
   "leadTimeMinutes": 120,

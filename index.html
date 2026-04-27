@@ -74,71 +74,20 @@
     </div>
   </section>
 
-  <!-- ===================== AUDIENCE SELECTOR (4 tiles: Weddings, Professionals, Prom, Other) ===================== -->
+  <!-- ===================== QUIZ FUNNEL (occasion → timing → VSL redirect) ===================== -->
   <section class="section section-paper" id="choose">
     <div class="container">
       <div class="section-header reveal">
         <span class="eyebrow">Step 01</span>
         <h2>What's your occasion?</h2>
       </div>
-      <div class="audience-trio reveal">
-        <!-- WEDDINGS -->
-        <div class="audience-item">
-          <h3 class="audience-name">Weddings</h3>
-          <div class="audience-icon">
-            <!-- Replace with: <img src="/assets/img/icon-weddings.png" alt="" /> -->
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="24" cy="40" r="14" stroke="currentColor" stroke-width="2.5"/>
-              <circle cx="40" cy="40" r="14" stroke="currentColor" stroke-width="2.5"/>
-              <path d="M22 18 L24 10 L26 18 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="currentColor"/>
-              <path d="M38 18 L40 10 L42 18 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="currentColor"/>
-            </svg>
-          </div>
-          <a href="/weddings.html" class="btn btn-primary btn-mini">Check These Suits</a>
-        </div>
-
-        <!-- PROFESSIONALS -->
-        <div class="audience-item">
-          <h3 class="audience-name">Professionals</h3>
-          <div class="audience-icon">
-            <!-- Replace with: <img src="/assets/img/icon-professionals.png" alt="" /> -->
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="10" y="22" width="44" height="32" rx="2" stroke="currentColor" stroke-width="2.5"/>
-              <path d="M22 22 V16 a4 4 0 0 1 4-4 h12 a4 4 0 0 1 4 4 V22" stroke="currentColor" stroke-width="2.5"/>
-              <line x1="10" y1="36" x2="54" y2="36" stroke="currentColor" stroke-width="2.5"/>
-              <rect x="28" y="32" width="8" height="6" rx="1" fill="currentColor"/>
-            </svg>
-          </div>
-          <a href="/professionals.html" class="btn btn-primary btn-mini">Check These Suits</a>
-        </div>
-
-        <!-- PROM -->
-        <div class="audience-item">
-          <h3 class="audience-name">Prom</h3>
-          <div class="audience-icon">
-            <!-- Replace with: <img src="/assets/img/icon-prom.png" alt="" /> -->
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M14 28 L24 32 L20 42 L32 38 L44 42 L40 32 L50 28 L40 24 L44 14 L32 18 L20 14 L24 24 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="currentColor" fill-opacity="0.1"/>
-              <circle cx="32" cy="29" r="3" fill="currentColor"/>
-            </svg>
-          </div>
-          <a href="/prom.html" class="btn btn-primary btn-mini">Check These Suits</a>
-        </div>
-
-        <!-- OTHER -->
-        <div class="audience-item">
-          <h3 class="audience-name">Other</h3>
-          <div class="audience-icon">
-            <!-- Replace with: <img src="/assets/img/icon-other.png" alt="" /> -->
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M32 14 L32 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-              <circle cx="32" cy="22" r="4" stroke="currentColor" stroke-width="2.5"/>
-              <path d="M32 26 C 32 30, 14 36, 14 42 L 50 42 C 50 36, 32 30, 32 26 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
-              <path d="M10 42 L54 42 L52 50 L12 50 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <a href="/other.html" class="btn btn-primary btn-mini">Check These Suits</a>
-        </div>
+      <div class="quiz reveal" data-quiz-root>
+        <noscript>
+          <p style="text-align:center;font-family:var(--font-body);">
+            Choose your path: <a href="/weddings.html">I'm dressing for a wedding</a>
+            &nbsp;·&nbsp; <a href="/suits.html">I'm here for a suit (anything else)</a>
+          </p>
+        </noscript>
       </div>
     </div>
   </section>
@@ -191,37 +140,31 @@
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">What's your typical price range?</button>
           <div class="faq-answer"><div class="faq-answer-inner">
-            Most complete suits run $299–$899. Premium fabrics and full-canvas construction go higher. Tuxedos start at $399.
+            Suits start as low as $199 for the complete set — jacket and pants. Premium options with higher-end fabrics go up to $399.
           </div></div>
         </div>
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">How long do alterations take?</button>
           <div class="faq-answer"><div class="faq-answer-inner">
-            Standard alterations: 3–5 business days. Rush available for wedding parties booked ahead.
+            Standard alterations: 3–5 business days. Need it sooner? Same-day rush available.
           </div></div>
         </div>
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">Walk-ins or appointments?</button>
           <div class="faq-answer"><div class="faq-answer-inner">
-            Both. Walk-ins are welcome — but for groups, weddings, or tight timelines, book a private appointment for full tailor attention.
+            Both. Walk-ins are welcome — but for groups, weddings, or tight timelines, book a private appointment for full attention.
           </div></div>
         </div>
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">Can you handle wedding parties of 6+?</button>
           <div class="faq-answer"><div class="faq-answer-inner">
-            Yes — including out-of-state groomsmen. Book the groom first, we coordinate the rest.
+            Yes. Book the groom first, and we coordinate the rest.
           </div></div>
         </div>
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">Do you do rentals?</button>
           <div class="faq-answer"><div class="faq-answer-inner">
-            Both rentals and purchases available. For most occasions we recommend buying — a tailored suit pays back every time you wear it.
-          </div></div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">Where do I park?</button>
-          <div class="faq-answer"><div class="faq-answer-inner">
-            Free dedicated parking right at our entrance — 150 Pearl Nix Pkwy, Gainesville GA 30501.
+            No — we don't rent. Renting usually costs more in the long run, and for the same price you actually own the suit.
           </div></div>
         </div>
       </div>
@@ -230,6 +173,7 @@
 
   <div id="site-footer"></div>
 
+  <script src="/assets/js/quiz.js"></script>
   <script src="/assets/js/components.js"></script>
 </body>
 </html>

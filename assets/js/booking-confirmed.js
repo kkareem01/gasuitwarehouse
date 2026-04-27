@@ -11,25 +11,11 @@
       'Out-of-town groomsmen? We have a remote-measurement guide ready.',
       'Need to reschedule? Just call (470) 595-7775.',
     ],
-    prom: [
-      'Bring a photo of your date\'s dress so we can match the look.',
-      'Wear or bring a fitted dress shirt so we can measure accurately.',
-      'Allow 30–45 minutes for the full session.',
-      'Same-week alterations available — book yours at the appointment.',
-      'Need to reschedule? Just call (470) 595-7775.',
-    ],
-    professionals: [
-      'Wear or bring a fitted dress shirt so we can measure accurately.',
-      'Bring shoes you typically wear with a suit.',
-      'Tell us about your role and the settings the suit will live in.',
-      'Allow 45–60 minutes for the full session.',
-      'Need to reschedule? Just call (470) 595-7775.',
-    ],
-    other: [
+    general: [
       'Wear or bring a fitted dress shirt so we can measure accurately.',
       'Bring shoes you plan to wear with the suit.',
       'Bring photos of looks you like, if you have them.',
-      'Allow 45 minutes for the full session.',
+      'Allow 45–60 minutes for the full session.',
       'Need to reschedule? Just call (470) 595-7775.',
     ],
   };
@@ -152,7 +138,7 @@
 
     // Per-audience prep checklist
     const prep = document.querySelector('[data-region="prep"]');
-    const items = PREP_BY_AUDIENCE[b.audience] || PREP_BY_AUDIENCE.other;
+    const items = PREP_BY_AUDIENCE[b.audience] || PREP_BY_AUDIENCE.general;
     if (prep) {
       prep.innerHTML = items.map((line) => {
         // Render anchor for the call line if it includes a phone number

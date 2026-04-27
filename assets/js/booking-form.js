@@ -11,26 +11,10 @@
       { name: 'priorities', label: 'Anything we should know?', type: 'textarea', required: false,
         maxLength: 500, placeholder: 'Color palette, venue, deadlines…' },
     ],
-    prom: [
-      { name: 'promDate', label: 'Prom date', type: 'date', required: true },
-      { name: 'school', label: 'School', type: 'text', required: true, maxLength: 80 },
-      { name: 'lookGoal', label: 'What look are you going for?', type: 'select', required: true,
-        options: ['Classic black tux', 'Bold color', 'Velvet', 'Three-piece', 'Not sure yet'] },
-      { name: 'dateColor', label: "Your date's dress color (optional)", type: 'text',
-        required: false, maxLength: 60, placeholder: 'Helps us coordinate' },
-    ],
-    professionals: [
-      { name: 'occasion', label: "What's the suit for?", type: 'select', required: true,
-        options: ['New job or promotion', 'Court', 'Conference or speaking', 'Wardrobe refresh', 'Daily wear'] },
-      { name: 'numSuits', label: 'How many suits?', type: 'select', required: true,
-        options: ['1', '2-3', '4-6', '7+ (corporate)'] },
-      { name: 'timeline', label: 'When do you need it by?', type: 'select', required: true,
-        options: ['Within 2 weeks', '2-4 weeks', '1-2 months', 'No rush'] },
-    ],
-    other: [
-      { name: 'occasion', label: "What's the occasion?", type: 'text', required: true,
-        maxLength: 80, placeholder: 'Gala, court date, anniversary…' },
-      { name: 'eventDate', label: 'Date of event', type: 'date', required: true },
+    general: [
+      { name: 'occasion', label: "What's the suit for?", type: 'text', required: true,
+        maxLength: 80, placeholder: 'New job, court, gala, daily wear…' },
+      { name: 'eventDate', label: 'Date you need it by (optional)', type: 'date', required: false },
       { name: 'serviceType', label: 'What do you need?', type: 'select', required: true,
         options: ['Buy a new suit', 'Rent', 'Alterations only', 'Just exploring'] },
       { name: 'notes', label: 'Anything else?', type: 'textarea', required: false, maxLength: 500 },
@@ -72,16 +56,14 @@
 
   const TITLES = {
     weddings: { h2: 'Wedding Fitting Appointment', sub: 'Excited to dress you for your wedding day.', cta1: 'Continue', cta2: 'Continue' },
-    prom: { h2: 'Prom Fitting Appointment', sub: 'Excited to make your prom unforgettable.', cta1: 'Continue', cta2: 'Continue' },
-    professionals: { h2: 'Professional Fitting Appointment', sub: 'Excited to refine your professional wardrobe.', cta1: 'Continue', cta2: 'Continue' },
-    other: { h2: 'Custom Styling Appointment', sub: 'Excited to dress you for whatever the occasion calls for.', cta1: 'Continue', cta2: 'Continue' },
+    general:  { h2: 'Styling Session Appointment', sub: 'Excited to get the suit fitting you the way it should.', cta1: 'Continue', cta2: 'Continue' },
   };
 
   function renderForm(state, audience, errorMessage) {
     const customer = state.customer;
     const answers = state.answers;
     const schema = FIELD_SCHEMAS[audience] || [];
-    const titles = TITLES[audience] || TITLES.other;
+    const titles = TITLES[audience] || TITLES.general;
 
     const ext = schema.map((f) => fieldHtml(f, answers[f.name])).join('');
     const ctaLabel = state.step === 1 ? titles.cta1 : titles.cta2;
