@@ -13,6 +13,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="preconnect" href="https://stream.mux.com" />
+  <link rel="preconnect" href="https://image.mux.com" />
+  <script defer src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
 </head>
 <body>
   <div id="site-nav"></div>
@@ -24,13 +27,26 @@
 
   <!-- ===================== HERO + VSL + CTA ===================== -->
   <section class="hero-vsl">
-    <span class="eyebrow">Tailored Menswear</span>
     <h1>A suit that fits the way it's supposed to.</h1>
     <p class="lead">Watch how we get the shoulders, sleeves, and break right — so the photos look the way you want them to.</p>
 
-    <!-- VSL: replace this entire block with your video embed (Vidalytics, YouTube, Wistia, etc.) -->
-    <div class="vsl-placeholder" data-aspect="16:9" aria-label="Video sales letter placeholder">
-      <span>YOUR VSL EMBED GOES HERE</span>
+    <div class="vsl-embed">
+      <mux-player
+        id="vsl-player"
+        playback-id="FgnO01hRFlLuI3BSMDckSCT66KwgdazvgqKPL00SDJHm8"
+        metadata-video-title="GA Suit Warehouse — see how we fit you"
+        stream-type="on-demand"
+        autoplay="muted"
+        muted
+        playsinline
+      ></mux-player>
+      <button type="button" class="vsl-unmute" id="vsl-unmute" aria-label="Click for sound and restart from the beginning">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+          <path d="M22 9l-6 6M16 9l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <span>Click for sound</span>
+      </button>
     </div>
 
     <a href="#book" class="btn btn-primary hero-cta">Book My Fitting</a>
@@ -161,6 +177,23 @@
   <script defer src="/assets/js/booking-calendar.js"></script>
   <script defer src="/assets/js/booking.js"></script>
   <script defer src="/assets/js/components.js"></script>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('vsl-unmute');
+      var player = document.getElementById('vsl-player');
+      if (!btn || !player) return;
+      btn.addEventListener('click', function () {
+        try {
+          player.muted = false;
+          player.currentTime = 0;
+          var p = player.play();
+          if (p && typeof p.catch === 'function') p.catch(function () {});
+        } catch (e) {}
+        btn.classList.add('is-hidden');
+      });
+    })();
+  </script>
 
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };

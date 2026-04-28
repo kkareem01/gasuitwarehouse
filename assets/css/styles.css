@@ -604,17 +604,17 @@ picture { display: contents; }
    ============================================================================= */
 .hero-vsl {
   background: var(--paper);
-  padding: var(--s-7) var(--s-3);
+  padding: var(--s-4) var(--s-3) var(--s-5);
   text-align: center;
 }
 .hero-vsl .eyebrow { animation: fadeUp 600ms var(--easing) 0.05s both; }
 .hero-vsl h1 {
   max-width: 20ch;
-  margin: 0 auto var(--s-3);
+  margin: 0 auto var(--s-2);
   animation: fadeUp 600ms var(--easing) 0.15s both;
 }
 .hero-vsl .lead {
-  margin: 0 auto var(--s-5);
+  margin: 0 auto var(--s-3);
   animation: fadeUp 600ms var(--easing) 0.25s both;
 }
 .hero-vsl .hero-cta { animation: fadeUp 600ms var(--easing) 0.45s both; }
@@ -660,6 +660,68 @@ picture { display: contents; }
   position: absolute;
   bottom: var(--s-3);
   z-index: 2;
+}
+
+.vsl-embed {
+  position: relative;
+  max-width: 880px;
+  margin: 0 auto var(--s-5);
+  aspect-ratio: 16 / 9;
+  background: var(--navy-deep);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  animation: fadeUp 700ms var(--easing) 0.35s both;
+}
+.vsl-embed iframe,
+.vsl-embed mux-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  --controls-backdrop-color: rgba(0, 0, 0, 0.35);
+}
+
+.vsl-unmute {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  cursor: pointer;
+  background: rgba(11, 18, 33, 0.55);
+  color: var(--gold-bright);
+  border: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 14px;
+  transition: opacity 280ms ease, visibility 280ms ease, background 200ms ease;
+  animation: vslPulse 2.4s ease-in-out infinite;
+}
+.vsl-unmute svg {
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.4));
+}
+.vsl-unmute:hover { background: rgba(11, 18, 33, 0.7); }
+.vsl-unmute:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: -6px;
+}
+.vsl-unmute.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  animation: none;
+}
+@keyframes vslPulse {
+  0%, 100% { background: rgba(11, 18, 33, 0.50); }
+  50%      { background: rgba(11, 18, 33, 0.62); }
 }
 
 /* =============================================================================
@@ -1646,6 +1708,7 @@ picture { display: contents; }
   .container { padding: 0 var(--s-2); }
   .hero-vsl { padding: var(--s-5) var(--s-2); }
   .vsl-placeholder { margin-bottom: var(--s-4); }
+  .vsl-embed { margin-bottom: var(--s-4); }
   .cta-strip { padding: var(--s-5) var(--s-2); }
   .cta-strip h2 { font-size: 28px; }
   .section-header { margin-bottom: var(--s-3); }
