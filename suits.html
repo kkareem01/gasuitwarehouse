@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    // Strip inbound #hash so VSL pages always start at the top of the video,
+    // even when shared with #book or arrived from the quiz funnel.
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  </script>
   <title>Tailored Suits That Actually Fit · GA SuitWarehouse · Gainesville, GA</title>
   <meta name="description" content="A suit that fits the way it's supposed to. Master tailors on-site, premium fabrics, private fittings — book a free 45-minute styling session at GA SuitWarehouse in Gainesville, GA." />
   <meta property="og:title" content="Tailored Suits That Actually Fit · GA SuitWarehouse" />

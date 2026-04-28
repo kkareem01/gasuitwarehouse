@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    // Strip inbound #hash so VSL pages always start at the top of the video,
+    // even when shared with #book or arrived from the quiz funnel.
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  </script>
   <title>Wedding Suits &amp; Tuxedos · GA Suit Warehouse · Gainesville, GA</title>
   <meta name="description" content="Tailored wedding suits and tuxedos for grooms and groomsmen. Coordinated fittings, same-week alterations, and private appointments at GA Suit Warehouse in Gainesville, GA." />
   <meta property="og:title" content="Wedding Suits &amp; Tuxedos · GA Suit Warehouse" />
