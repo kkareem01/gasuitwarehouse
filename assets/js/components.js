@@ -1,10 +1,10 @@
 /* GA Suit Warehouse — shared nav + footer injector, mobile menu, scroll reveals, FAQ accordion */
 
 const ANNOUNCE_BAR_HTML = `
-<a href="/#choose" class="announce-bar" aria-label="New 2026 Executive Styling Audit — find out if you are a fit">
+<a href="/#choose" class="announce-bar" aria-label="New 2026 Executive Styling Session — find out if you are a fit">
   <span class="announce-bar__inner">
     <span class="announce-bar__text">
-      <strong>New 2026 Executive Styling Audit:</strong>
+      <strong>New 2026 Executive Styling Session:</strong>
       <span class="announce-bar__cta">Find out if you are a fit</span>
     </span>
     <span class="announce-bar__arrow" aria-hidden="true">&rarr;</span>
