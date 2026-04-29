@@ -1,0 +1,44 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /booking-confirmed
+Disallow: /thank-you
+
+# AI search crawlers — explicitly allow
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Block AI training crawlers (the site is still indexed for search,
+# but content is not used to train models). Remove these blocks if
+# you want maximum exposure in training data.
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+Sitemap: https://gasuitwarehouse.com/sitemap.xml

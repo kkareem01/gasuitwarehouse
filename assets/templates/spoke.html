@@ -1,0 +1,301 @@
+<!--
+  SPOKE PAGE TEMPLATE — copy this and replace every {{PLACEHOLDER}}.
+  Used for: /weddings/groom-suits, /suits/custom-bespoke, etc.
+
+  Required replacements:
+  {{HUB_SLUG}}            e.g. "weddings"
+  {{HUB_LABEL}}            e.g. "Weddings"
+  {{SPOKE_SLUG}}           e.g. "groom-suits"
+  {{SPOKE_LABEL}}          e.g. "Groom Suits & Tuxedos"
+  {{SPOKE_TITLE}}          full title — incl. occasion + Gainesville GA + brand
+  {{SPOKE_DESCRIPTION}}    150-160 chars; geo + benefit; unique per spoke
+  {{SPOKE_H1}}             h1 with occasion + Gainesville GA
+  {{SPOKE_LEAD}}            italic 1-2 sentence intro
+  {{SPOKE_OG_IMAGE}}       absolute https://gasuitwarehouse.com/assets/img/...
+  {{HERO_IMAGE_WEBP}}      /assets/img/...webp (optional — only if showing hero img)
+  {{HERO_IMAGE_JPG}}       /assets/img/...jpg
+  {{HERO_IMAGE_ALT}}       descriptive alt incl. occasion + Gainesville
+  {{SCENARIO_PARAGRAPHS}}  2-3 unique narrative paragraphs (~150-250 words total)
+  {{FEATURE_BLOCKS}}       3 feature cards (reuse .feature-block class)
+  {{PRICING_TABLE_ROWS}}   <tr> rows for the pricing/timeline mini-table
+  {{SPOKE_FAQ_LIST_HTML}}  accordion items (5+) — pulled from cluster JSON
+  {{SPOKE_FAQ_SCHEMA_JSON}} mainEntity array of Question objects matching visible FAQ
+  {{RELATED_SIBLINGS_HTML}} 3 .spoke-card blocks linking to sibling spokes
+  {{SERVICE_TYPE}}         e.g. "Wedding suits", "Tuxedo sales", "Suit alterations"
+  {{SCHEMA_OFFER_NAME}}    short offer name e.g. "Free 45-Minute Wedding Consultation"
+  {{SCHEMA_OFFER_PRICE}}   "0" if free, otherwise USD numeric e.g. "199"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{SPOKE_TITLE}}</title>
+  <meta name="description" content="{{SPOKE_DESCRIPTION}}" />
+  <link rel="canonical" href="https://gasuitwarehouse.com/{{HUB_SLUG}}/{{SPOKE_SLUG}}" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:title" content="{{SPOKE_TITLE}}" />
+  <meta property="og:description" content="{{SPOKE_DESCRIPTION}}" />
+  <meta property="og:image" content="{{SPOKE_OG_IMAGE}}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="900" />
+  <meta property="og:url" content="https://gasuitwarehouse.com/{{HUB_SLUG}}/{{SPOKE_SLUG}}" />
+  <meta property="og:site_name" content="GA SuitWarehouse" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{SPOKE_TITLE}}" />
+  <meta name="twitter:description" content="{{SPOKE_DESCRIPTION}}" />
+  <meta name="twitter:image" content="{{SPOKE_OG_IMAGE}}" />
+  <meta name="geo.region" content="US-GA" />
+  <meta name="geo.placename" content="Gainesville, Georgia" />
+  <meta name="geo.position" content="34.2960;-83.8420" />
+  <meta name="ICBM" content="34.2960, -83.8420" />
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+
+  <!-- ===================== STRUCTURED DATA ===================== -->
+  <!-- LocalBusiness reference (lighter than the full block on the home page) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MensClothingStore",
+    "@id": "https://gasuitwarehouse.com/#business",
+    "name": "GA Suit Warehouse",
+    "url": "https://gasuitwarehouse.com/",
+    "telephone": "+1-470-595-7775",
+    "image": "https://gasuitwarehouse.com/assets/img/Modelleft.jpg",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "150 Pearl Nix Pkwy",
+      "addressLocality": "Gainesville",
+      "addressRegion": "GA",
+      "postalCode": "30501",
+      "addressCountry": "US"
+    }
+  }
+  </script>
+
+  <!-- BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://gasuitwarehouse.com/" },
+      { "@type": "ListItem", "position": 2, "name": "{{HUB_LABEL}}", "item": "https://gasuitwarehouse.com/{{HUB_SLUG}}" },
+      { "@type": "ListItem", "position": 3, "name": "{{SPOKE_LABEL}}", "item": "https://gasuitwarehouse.com/{{HUB_SLUG}}/{{SPOKE_SLUG}}" }
+    ]
+  }
+  </script>
+
+  <!-- Service -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "{{SPOKE_LABEL}}",
+    "description": "{{SPOKE_DESCRIPTION}}",
+    "provider": { "@id": "https://gasuitwarehouse.com/#business" },
+    "areaServed": [
+      { "@type": "City", "name": "Gainesville, GA" },
+      { "@type": "AdministrativeArea", "name": "Hall County, GA" }
+    ],
+    "serviceType": "{{SERVICE_TYPE}}",
+    "offers": {
+      "@type": "Offer",
+      "name": "{{SCHEMA_OFFER_NAME}}",
+      "price": "{{SCHEMA_OFFER_PRICE}}",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+
+  <!-- FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": {{SPOKE_FAQ_SCHEMA_JSON}}
+  }
+  </script>
+</head>
+<body>
+  <!-- Hidden NAP block — ensures crawlers see name/address/phone before JS injects nav/footer -->
+  <address style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);font-style:normal;" aria-hidden="true">
+    GA Suit Warehouse,
+    150 Pearl Nix Pkwy, Gainesville, GA 30501.
+    Phone: <a href="tel:+14705957775">(470) 595-7775</a>.
+    Hours: Monday&ndash;Saturday 10:00 AM &ndash; 7:00 PM, Sunday 12:00 PM &ndash; 6:00 PM.
+  </address>
+
+  <div id="site-nav"></div>
+
+  <!-- ===================== BREADCRUMBS ===================== -->
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/{{HUB_SLUG}}">{{HUB_LABEL}}</a></li>
+      <li aria-current="page">{{SPOKE_LABEL}}</li>
+    </ol>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero-vsl">
+    <span class="eyebrow">{{HUB_LABEL}} &middot; Gainesville, GA</span>
+    <h1>{{SPOKE_H1}}</h1>
+    <p class="lead">{{SPOKE_LEAD}}</p>
+    <a href="#book" class="btn btn-primary hero-cta">Book My Fitting</a>
+  </section>
+
+  <!-- ===================== UNIQUE SCENARIO BLOCK (the differentiator) ===================== -->
+  <section class="section section-paper">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">What we do</span>
+        <h2>{{SPOKE_LABEL}} at GA Suit Warehouse.</h2>
+      </div>
+      <div class="scenario-block reveal">
+        {{SCENARIO_PARAGRAPHS}}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3 FEATURE BLOCKS ===================== -->
+  <section class="section section-cream">
+    <div class="container">
+      <div class="features-list reveal">
+        {{FEATURE_BLOCKS}}
+      </div>
+      <div class="features-cta">
+        <a href="#book" class="btn btn-primary">Book My Fitting</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRICING / TIMELINE TABLE ===================== -->
+  <section class="section section-paper">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">What it costs &middot; how long it takes</span>
+        <h2>{{SPOKE_LABEL}} pricing &amp; timeline.</h2>
+      </div>
+      <div class="spoke-table-wrap reveal">
+        <table class="spoke-table">
+          <caption>Starting prices and standard turn-around. Prices vary with fabric and construction; we always quote before you commit.</caption>
+          <thead>
+            <tr><th scope="col">Service</th><th scope="col">From</th><th scope="col">Timeline</th></tr>
+          </thead>
+          <tbody>
+            {{PRICING_TABLE_ROWS}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BOOKING ===================== -->
+  <section id="book" class="booking-section reveal" data-audience="{{HUB_SLUG}}">
+    <div class="container">
+      <div data-booking-root>
+        <input type="hidden" name="source_page" value="/{{HUB_SLUG}}/{{SPOKE_SLUG}}" />
+        <noscript>
+          <p style="text-align:center;font-family:var(--font-body);">Booking requires JavaScript. Call <a href="tel:+14705957775">(470) 595-7775</a> to book by phone.</p>
+        </noscript>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SPOKE FAQ ===================== -->
+  <section class="section section-paper">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2>Questions we hear about {{SPOKE_LABEL}}.</h2>
+      </div>
+      <div class="faq-list reveal">
+        {{SPOKE_FAQ_LIST_HTML}}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RELATED SERVICES (3 sibling spokes) ===================== -->
+  <section class="section section-cream">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Also fit at our shop</span>
+        <h2>Related {{HUB_LABEL}} services.</h2>
+      </div>
+      <div class="related-services reveal">
+        {{RELATED_SIBLINGS_HTML}}
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script defer src="/assets/js/booking-form.js"></script>
+  <script defer src="/assets/js/booking-calendar.js"></script>
+  <script defer src="/assets/js/booking.js"></script>
+  <script defer src="/assets/js/components.js"></script>
+
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
+
+<!--
+  =============================================================================
+  SNIPPETS for spoke
+  =============================================================================
+
+  <Feature Block> — repeat 3x in {{FEATURE_BLOCKS}}:
+  <div class="feature-block">
+    <h3>#1: {{FEATURE_HEADING}}</h3>
+    <div class="feature-img"><picture><source srcset="/assets/img/{{FEATURE_IMAGE}}.webp" type="image/webp" /><img src="/assets/img/{{FEATURE_IMAGE}}.jpg" width="1200" height="900" alt="{{FEATURE_ALT}}" loading="lazy" decoding="async" /></picture></div>
+    <p>{{FEATURE_COPY}}</p>
+  </div>
+
+  <Pricing Row> — repeat in {{PRICING_TABLE_ROWS}}:
+  <tr><td>{{ROW_NAME}}</td><td>${{FROM_PRICE}}</td><td>{{TIMELINE}}</td></tr>
+
+  <FAQ Item> — repeat in {{SPOKE_FAQ_LIST_HTML}} (visible accordion):
+  <div class="faq-item">
+    <button class="faq-question" type="button" aria-expanded="false">{{Q}}</button>
+    <div class="faq-answer"><div class="faq-answer-inner">{{A}}</div></div>
+  </div>
+
+  <FAQ Schema item> — array entry in {{SPOKE_FAQ_SCHEMA_JSON}}:
+  {
+    "@type": "Question",
+    "name": "{{Q}}",
+    "acceptedAnswer": { "@type": "Answer", "text": "{{A_PLAIN_TEXT}}" }
+  }
+
+  <Related Sibling Card> — repeat 3x in {{RELATED_SIBLINGS_HTML}}:
+  <a class="spoke-card" href="/{{HUB_SLUG}}/{{SIBLING_SLUG}}">
+    <div class="spoke-card__media">
+      <picture>
+        <source srcset="/assets/img/{{SIBLING_IMAGE}}.webp" type="image/webp" />
+        <img src="/assets/img/{{SIBLING_IMAGE}}.jpg" alt="{{SIBLING_ALT}}" loading="lazy" />
+      </picture>
+    </div>
+    <div class="spoke-card__body">
+      <span class="spoke-card__eyebrow">{{HUB_LABEL}}</span>
+      <h3 class="spoke-card__title">{{SIBLING_LABEL}}</h3>
+      <p class="spoke-card__copy">{{SIBLING_PREVIEW}}</p>
+      <span class="spoke-card__cta">Explore</span>
+    </div>
+  </a>
+
+  <Scenario Paragraphs> — paste in {{SCENARIO_PARAGRAPHS}}:
+  <p>First paragraph...</p>
+  <p>Second paragraph (use <strong>strong</strong> for emphasis).</p>
+  <p>Third paragraph closing on a Gainesville/Hall County localizer.</p>
+-->

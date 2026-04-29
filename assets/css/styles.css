@@ -2526,3 +2526,307 @@ picture { display: contents; }
   .shop-final-ctas .btn { width: 100%; }
 }
 
+/* =============================================================================
+   HUB-AND-SPOKE PATTERN
+   Breadcrumbs · Hub grid · Spoke cards · Scenario block ·
+   Spoke pricing table · Related services · Cross-hub block · Footer sitemap
+   ============================================================================= */
+
+/* --- Breadcrumbs (visible, server-rendered on every hub/spoke page) ---------- */
+.breadcrumbs {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--muted);
+  padding: var(--s-2) 0 0;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding-left: var(--s-3);
+  padding-right: var(--s-3);
+}
+.breadcrumbs ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.breadcrumbs li {
+  display: inline-flex;
+  align-items: center;
+}
+.breadcrumbs li + li::before {
+  content: '\\203A';
+  margin: 0 8px;
+  color: var(--muted-light);
+}
+.breadcrumbs a {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 180ms var(--easing), border-color 180ms var(--easing);
+}
+.breadcrumbs a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--gold);
+}
+.breadcrumbs li[aria-current='page'] {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* --- Hub grid (spoke card list on hub pages) -------------------------------- */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-4);
+  margin-top: var(--s-4);
+}
+.spoke-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 200ms var(--easing), box-shadow 200ms var(--easing);
+  text-decoration: none;
+  color: inherit;
+}
+.spoke-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px -14px rgba(20, 33, 61, 0.25);
+}
+.spoke-card__media {
+  aspect-ratio: 4 / 3;
+  background: var(--cream);
+  overflow: hidden;
+}
+.spoke-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 600ms var(--easing);
+}
+.spoke-card:hover .spoke-card__media img { transform: scale(1.04); }
+.spoke-card__body {
+  padding: var(--s-3);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.spoke-card__eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.spoke-card__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--navy);
+  margin: 0;
+}
+.spoke-card__copy {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+}
+.spoke-card__cta {
+  margin-top: auto;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  padding-top: var(--s-2);
+}
+.spoke-card__cta::after {
+  content: ' \\2192';
+  display: inline-block;
+  transition: transform 180ms var(--easing);
+}
+.spoke-card:hover .spoke-card__cta::after { transform: translateX(4px); }
+
+/* --- Hub-grid variant for HOMEPAGE (4 hub tiles, big and direct) ------------ */
+.hub-grid-home {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+.hub-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--s-4) var(--s-3);
+  background: var(--off-white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 200ms var(--easing), box-shadow 200ms var(--easing), background 200ms var(--easing);
+  min-height: 220px;
+  justify-content: center;
+}
+.hub-tile:hover {
+  transform: translateY(-3px);
+  background: var(--paper);
+  box-shadow: 0 12px 30px -16px rgba(20, 33, 61, 0.3);
+}
+.hub-tile__eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: var(--s-1);
+}
+.hub-tile__title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.2vw, 28px);
+  color: var(--navy);
+  margin: 0 0 var(--s-2);
+}
+.hub-tile__copy {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+}
+@media (max-width: 980px) {
+  .hub-grid-home { grid-template-columns: repeat(2, 1fr); gap: var(--s-2); }
+  .hub-tile { min-height: 180px; padding: var(--s-3) var(--s-2); }
+}
+@media (max-width: 540px) {
+  .hub-grid-home { grid-template-columns: 1fr; }
+}
+
+/* --- Scenario block (unique narrative section on each spoke page) ----------- */
+.scenario-block {
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+.scenario-block p { margin: 0 0 var(--s-3); }
+.scenario-block p:last-child { margin-bottom: 0; }
+.scenario-block strong { color: var(--navy); font-weight: 700; }
+
+/* --- Spoke table (pricing / timeline mini-table) ---------------------------- */
+.spoke-table-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+.spoke-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+.spoke-table caption {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--muted);
+  text-align: left;
+  padding: 0 0 var(--s-2);
+  font-style: italic;
+}
+.spoke-table th,
+.spoke-table td {
+  padding: 14px var(--s-2);
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+.spoke-table thead th {
+  background: var(--off-white);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.spoke-table tbody tr:last-child td { border-bottom: none; }
+.spoke-table tbody tr:hover { background: rgba(201, 169, 97, 0.04); }
+.spoke-table td:first-child { font-weight: 700; color: var(--navy); }
+
+/* --- Related services (3 sibling spokes at bottom of spoke pages) ----------- */
+.related-services {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+@media (max-width: 860px) {
+  .related-services { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+}
+
+/* --- Cross-hub block (links to other 3 hubs at bottom of hub pages) --------- */
+.cross-hub {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+}
+.cross-hub-link {
+  padding: var(--s-3);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  font-family: var(--font-body);
+  transition: background 200ms var(--easing), border-color 200ms var(--easing);
+}
+.cross-hub-link:hover {
+  background: rgba(201, 169, 97, 0.1);
+  border-color: var(--gold);
+}
+.cross-hub-link h4 {
+  color: #FFF;
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+.cross-hub-link p {
+  font-size: 14px;
+  color: #B8C0D0;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* --- Footer sitemap (top row of footer with 4 hub columns) ------------------ */
+.footer-sitemap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-4);
+  max-width: var(--max-w);
+  margin: 0 auto var(--s-5);
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid var(--rule-dark);
+}
+@media (max-width: 860px) {
+  .footer-sitemap { grid-template-columns: repeat(2, 1fr); gap: var(--s-3); }
+}
+@media (max-width: 540px) {
+  .footer-sitemap { grid-template-columns: 1fr; gap: var(--s-3); padding-bottom: var(--s-3); margin-bottom: var(--s-3); }
+}
+

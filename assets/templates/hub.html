@@ -1,0 +1,272 @@
+<!--
+  HUB PAGE TEMPLATE — copy this and replace every {{PLACEHOLDER}}.
+  Used for: /weddings, /suits, /tuxedos, /prom
+
+  Required replacements (find/replace in order):
+  {{HUB_SLUG}}            e.g. "weddings"
+  {{HUB_LABEL}}           e.g. "Weddings"
+  {{HUB_TITLE}}           e.g. "Wedding Suits & Tuxedos in Gainesville, GA · GA SuitWarehouse"
+  {{HUB_DESCRIPTION}}     150-160 chars, geo + benefit
+  {{HUB_H1}}              short, occasion + Gainesville GA
+  {{HUB_LEAD}}            italicized 1-2 sentence intro
+  {{HUB_OG_IMAGE}}        absolute https://gasuitwarehouse.com/assets/img/...
+  {{HUB_HERO_IMAGE_WEBP}} /assets/img/...webp
+  {{HUB_HERO_IMAGE_JPG}}  /assets/img/...jpg
+  {{HUB_HERO_ALT}}        descriptive alt text incl. occasion + Gainesville
+  {{HUB_INTRO_PARAGRAPH}} 100-130 word citable passage about this hub
+  {{SPOKE_CARDS}}         repeated <a class="spoke-card"> blocks (one per spoke)
+  {{HUB_FAQ_LIST_HTML}}   accordion items (6-8) — see <FAQ Item Snippet> below
+  {{HUB_FAQ_SCHEMA_JSON}} mainEntity array of Question objects matching the visible FAQ
+  {{CROSS_HUB_BLOCKS}}    3 cross-hub links to other hubs
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{HUB_TITLE}}</title>
+  <meta name="description" content="{{HUB_DESCRIPTION}}" />
+  <link rel="canonical" href="https://gasuitwarehouse.com/{{HUB_SLUG}}" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:title" content="{{HUB_TITLE}}" />
+  <meta property="og:description" content="{{HUB_DESCRIPTION}}" />
+  <meta property="og:image" content="{{HUB_OG_IMAGE}}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="900" />
+  <meta property="og:url" content="https://gasuitwarehouse.com/{{HUB_SLUG}}" />
+  <meta property="og:site_name" content="GA SuitWarehouse" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{HUB_TITLE}}" />
+  <meta name="twitter:description" content="{{HUB_DESCRIPTION}}" />
+  <meta name="twitter:image" content="{{HUB_OG_IMAGE}}" />
+  <meta name="geo.region" content="US-GA" />
+  <meta name="geo.placename" content="Gainesville, Georgia" />
+  <meta name="geo.position" content="34.2960;-83.8420" />
+  <meta name="ICBM" content="34.2960, -83.8420" />
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+
+  <!-- ===================== STRUCTURED DATA ===================== -->
+  <!-- LocalBusiness reference (lighter than the full block on the home page) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MensClothingStore",
+    "@id": "https://gasuitwarehouse.com/#business",
+    "name": "GA Suit Warehouse",
+    "url": "https://gasuitwarehouse.com/",
+    "telephone": "+1-470-595-7775",
+    "image": "https://gasuitwarehouse.com/assets/img/Modelleft.jpg",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "150 Pearl Nix Pkwy",
+      "addressLocality": "Gainesville",
+      "addressRegion": "GA",
+      "postalCode": "30501",
+      "addressCountry": "US"
+    }
+  }
+  </script>
+
+  <!-- BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://gasuitwarehouse.com/" },
+      { "@type": "ListItem", "position": 2, "name": "{{HUB_LABEL}}", "item": "https://gasuitwarehouse.com/{{HUB_SLUG}}" }
+    ]
+  }
+  </script>
+
+  <!-- CollectionPage referencing the spoke services -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "{{HUB_LABEL}} at GA Suit Warehouse",
+    "url": "https://gasuitwarehouse.com/{{HUB_SLUG}}",
+    "isPartOf": { "@id": "https://gasuitwarehouse.com/#business" },
+    "about": "{{HUB_LABEL}}"
+  }
+  </script>
+
+  <!-- FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": {{HUB_FAQ_SCHEMA_JSON}}
+  }
+  </script>
+</head>
+<body>
+  <!-- Hidden NAP block — ensures crawlers see name/address/phone before JS injects nav/footer -->
+  <address style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);font-style:normal;" aria-hidden="true">
+    GA Suit Warehouse,
+    150 Pearl Nix Pkwy, Gainesville, GA 30501.
+    Phone: <a href="tel:+14705957775">(470) 595-7775</a>.
+    Hours: Monday&ndash;Saturday 10:00 AM &ndash; 7:00 PM, Sunday 12:00 PM &ndash; 6:00 PM.
+  </address>
+
+  <div id="site-nav"></div>
+
+  <!-- ===================== BREADCRUMBS ===================== -->
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">{{HUB_LABEL}}</li>
+    </ol>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero-vsl">
+    <span class="eyebrow">{{HUB_LABEL}} &middot; Gainesville, GA</span>
+    <h1>{{HUB_H1}}</h1>
+    <p class="lead">{{HUB_LEAD}}</p>
+    <a href="#book" class="btn btn-primary hero-cta">Book My Fitting</a>
+  </section>
+
+  <!-- ===================== HUB INTRO (citable passage) ===================== -->
+  <section class="section section-paper">
+    <div class="container">
+      <div class="scenario-block reveal">
+        <p>{{HUB_INTRO_PARAGRAPH}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TRUST BLOCK (Google reviews) ===================== -->
+  <section class="section section-cream">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">What people say</span>
+        <h2>Real fittings, real reviews.</h2>
+      </div>
+      <div class="reviews-stack reveal">
+        <div class="review-shot" role="img" aria-label="5-star Google review from Dmitri Wendorf">
+          <img src="/assets/reviews/review-dmitri-wendorf.png" alt="5-star Google review screenshot from Dmitri Wendorf" loading="lazy" />
+        </div>
+        <div class="review-shot" role="img" aria-label="5-star Google review from Shane Martin">
+          <img src="/assets/reviews/review-shane-martin.png" alt="5-star Google review screenshot from Shane Martin" loading="lazy" />
+        </div>
+        <div class="review-shot" role="img" aria-label="5-star Google review from Jonathan Lovell">
+          <img src="/assets/reviews/review-jonathan-lovell.png" alt="5-star Google review screenshot from Jonathan Lovell" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HUB GRID (spoke cards) ===================== -->
+  <section class="section section-paper">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Explore</span>
+        <h2>{{HUB_LABEL}} services we offer.</h2>
+      </div>
+      <div class="hub-grid reveal">
+        {{SPOKE_CARDS}}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BOOKING ===================== -->
+  <section id="book" class="booking-section reveal" data-audience="{{HUB_SLUG}}">
+    <div class="container">
+      <div data-booking-root>
+        <input type="hidden" name="source_page" value="/{{HUB_SLUG}}" />
+        <noscript>
+          <p style="text-align:center;font-family:var(--font-body);">Booking requires JavaScript. Call <a href="tel:+14705957775">(470) 595-7775</a> to book by phone.</p>
+        </noscript>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HUB FAQ ===================== -->
+  <section class="section section-paper">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2>{{HUB_LABEL}} questions, answered.</h2>
+      </div>
+      <div class="faq-list reveal">
+        {{HUB_FAQ_LIST_HTML}}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CROSS-HUB BLOCK ===================== -->
+  <section class="section section-navy">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Also at GA Suit Warehouse</span>
+        <h2>Other occasions we fit for.</h2>
+      </div>
+      <div class="cross-hub reveal">
+        {{CROSS_HUB_BLOCKS}}
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script defer src="/assets/js/booking-form.js"></script>
+  <script defer src="/assets/js/booking-calendar.js"></script>
+  <script defer src="/assets/js/booking.js"></script>
+  <script defer src="/assets/js/components.js"></script>
+
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
+
+<!--
+  =============================================================================
+  SNIPPETS — paste into placeholders above
+  =============================================================================
+
+  <Spoke Card Snippet> — repeat in {{SPOKE_CARDS}} (one per spoke):
+  <a class="spoke-card" href="/{{HUB_SLUG}}/{{SPOKE_SLUG}}">
+    <div class="spoke-card__media">
+      <picture>
+        <source srcset="/assets/img/{{SPOKE_IMAGE}}.webp" type="image/webp" />
+        <img src="/assets/img/{{SPOKE_IMAGE}}.jpg" alt="{{SPOKE_ALT}}" loading="lazy" />
+      </picture>
+    </div>
+    <div class="spoke-card__body">
+      <span class="spoke-card__eyebrow">{{HUB_LABEL}}</span>
+      <h3 class="spoke-card__title">{{SPOKE_LABEL}}</h3>
+      <p class="spoke-card__copy">{{SPOKE_PREVIEW_COPY}}</p>
+      <span class="spoke-card__cta">Explore</span>
+    </div>
+  </a>
+
+  <FAQ Item Snippet> — repeat in {{HUB_FAQ_LIST_HTML}}:
+  <div class="faq-item">
+    <button class="faq-question" type="button" aria-expanded="false">{{Q}}</button>
+    <div class="faq-answer"><div class="faq-answer-inner">{{A}}</div></div>
+  </div>
+
+  <Cross-Hub Block Snippet> — repeat 3 times in {{CROSS_HUB_BLOCKS}}:
+  <a class="cross-hub-link" href="/{{OTHER_HUB_SLUG}}">
+    <h4>{{OTHER_HUB_LABEL}}</h4>
+    <p>{{OTHER_HUB_TEASER}}</p>
+  </a>
+
+  <FAQ Schema JSON Snippet> — paste into {{HUB_FAQ_SCHEMA_JSON}} as an array:
+  [
+    {
+      "@type": "Question",
+      "name": "{{Q}}",
+      "acceptedAnswer": { "@type": "Answer", "text": "{{A_PLAIN_TEXT}}" }
+    }
+  ]
+-->

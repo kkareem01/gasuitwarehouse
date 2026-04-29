@@ -1,0 +1,165 @@
+{
+  "cluster": "prom",
+  "spokes": {
+    "suits": {
+      "label": "Prom Suits",
+      "faqs": [
+        {
+          "q": "What prom suit colors are guys actually wearing in 2026?",
+          "a": "Jewel tones are the headline this season — burgundy, hunter green, sapphire, and deeper plums all read sharp on a dance floor and photograph beautifully under uplighting. If you want something safer that still looks intentional, charcoal and midnight navy carry the same modern energy without committing to a strong color. We're seeing Gainesville High and North Hall juniors lean burgundy and hunter green for spring 2026 prom, with charcoal staying the steady favorite for guys who want photos that age well.",
+          "source": "PAA"
+        },
+        {
+          "q": "Slim fit, classic, or relaxed — which cut works best for prom?",
+          "a": "The current sweet spot is what tailors call modern slim: tapered through the body and leg without going skinny or restrictive. You want the jacket to skim your chest, the shoulder seam to land exactly where your shoulder ends, and the trouser to break cleanly at the shoe. Skinny suits photographed well in 2018 but look dated now, and oversized cuts wash out a teen's frame. Most of the Hall County seniors we fit go modern slim with a half-inch of room through the waist so they can actually eat dinner before pictures.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Is a three-piece suit with a vest worth it for prom?",
+          "a": "A vest is one of the easiest upgrades a teen can make — it adds formality when the jacket is on and keeps the look polished after the jacket comes off later in the night. For prom specifically, vests photograph well because they break up the shirt and add visual depth in group shots. We usually recommend matching the vest to the suit fabric for a cleaner three-piece look rather than going contrast. Plenty of guys from Flowery Branch and West Hall pick up the vest as an add-on so they can ditch the jacket on the dance floor and still look dressed up.",
+          "source": "PAA"
+        },
+        {
+          "q": "How much should parents budget for a complete prom suit setup?",
+          "a": "A well-made suit typically lands between $199 and $400, and once you add a dress shirt, tie or bow tie, pocket square, belt, and shoes, the full setup usually runs $300 to $550 depending on what's already in the closet. Owning a tailored suit costs about the same as renting a tuxedo twice — and the suit then carries through college interviews, weddings, and every formal night that follows. Our prom packages at the Pearl Nix Pkwy store start at $199 for the suit, and parents from Cumming and Buford regularly tell us the cost-per-wear math made buying the obvious call.",
+          "source": "GBP"
+        },
+        {
+          "q": "When does a suit make more sense than a tuxedo for prom?",
+          "a": "If your school's prom is at a banquet hall, hotel ballroom, or country club without a strict black-tie dress code, a sharp suit reads correctly and gives you more flexibility for the after-party. Suits also pair with regular ties — which is what most teen photos look most natural in — and don't require the patent shoes and cummerbund that go with a true tux. For Gainesville High, North Hall, and Cherokee Bluff prom venues we know well, a suit covers the night without feeling either overdressed or underdressed.",
+          "source": "PAA"
+        },
+        {
+          "q": "Patterned jacket or solid suit — which is the safer call?",
+          "a": "Solids are more versatile and easier to coordinate with a date's dress, but a tasteful pattern — subtle plaid, light texture, or a velvet dinner jacket over black trousers — can make your look memorable in a sea of black suits. The rule we give teens: if the pattern is the statement, keep everything else (shirt, tie, shoes) quiet. Among Hall County seniors this spring, we're seeing a roughly 70/30 split toward solids, with patterned jackets popular for guys whose dates are wearing simpler, single-color dresses.",
+          "source": "Reddit"
+        },
+        {
+          "q": "How early should a prom suit be ordered and altered?",
+          "a": "Four to six weeks before prom is the sweet spot — that gives time for an initial fitting, alterations, and a follow-up fitting if anything needs a second pass. Standard alterations take 3 to 5 business days at our shop, and rush is available for an extra $10 if something comes up. Most Gainesville and Oakwood families we fit aim for late February or early March pickup so the suit is finalized two weeks before April prom and there's no rush-fee scramble.",
+          "source": "Transcript"
+        }
+      ]
+    },
+    "tuxedos": {
+      "label": "Prom Tuxedos",
+      "faqs": [
+        {
+          "q": "When is a tuxedo the right call for prom instead of a suit?",
+          "a": "Reach for a tuxedo when your school's prom is at a hotel ballroom, country club, or formal venue with a stated black-tie or formal dress code, or when you and your group genuinely want the dressed-up energy in photos. Tuxedos have the satin lapel, satin trouser stripe, and bow tie that signal evening formal in a way a suit can't replicate. For the bigger Hall County proms held off-campus at venues like the Atlanta Athletic Club or downtown hotels, we see plenty of senior guys go full tuxedo because the photos justify the formality.",
+          "source": "PAA"
+        },
+        {
+          "q": "Should a teen buy a tuxedo or rent one for prom?",
+          "a": "If you'll wear it more than twice in the next two years — senior prom, college formals, a cousin's black-tie wedding — buying pencils out cheaper than two rentals, and you walk away with something that actually fits. Rentals make sense for a one-and-done event or for a teen still in a growth spurt. Owning a tuxedo at our $199-and-up price point is competitive with a single high-end rental, which is why a lot of North Hall and Johnson HS families end up buying once they run the numbers.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Peak lapel or shawl lapel for a prom tuxedo?",
+          "a": "Both are correct for black-tie — peak lapels read sharper and more modern in photos, while shawl lapels give a softer, classic-Hollywood line. For a teen's first tuxedo, shawl lapel is the more forgiving choice and tends to photograph elegantly without looking aggressive. Peak lapel works best on guys with broader shoulders who want a stronger silhouette. We talk this through at the Pearl Nix Pkwy fitting room with every prom client so the lapel matches the photographer's lighting and the venue's vibe.",
+          "source": "PAA"
+        },
+        {
+          "q": "Bow tie or long tie with a tuxedo — what's the rule?",
+          "a": "A traditional tuxedo wears a black bow tie, ideally self-tie, in either silk or grosgrain — that's the formal-evening uniform and it's what photographs as a true tuxedo. A long tie technically works but downgrades the look toward suit territory and undermines the satin lapel. If your group is split, the bow tie is what reads correctly in posed prom photos. Most of our Cherokee Bluff and East Hall seniors going full tuxedo land on a black silk bow tie with a white pocket square — the safe, classic move.",
+          "source": "GBP"
+        },
+        {
+          "q": "What shoes go with a prom tuxedo?",
+          "a": "Patent leather black oxfords are the textbook answer — the shine matches the satin lapel and trouser stripe. Velvet loafers are an acceptable modern alternative if your tux is already on the trend-forward side, and a clean matte black oxford works in a pinch. What does not work: brown shoes, square-toe dress shoes, or any sneaker. Break new shoes in for two or three short wears around the house before prom — Buford and Flowery Branch parents thank us every year for this reminder.",
+          "source": "Transcript"
+        },
+        {
+          "q": "Is a colored tuxedo (burgundy, midnight blue, velvet) appropriate for prom?",
+          "a": "Yes, and prom is one of the few events where a non-black tuxedo actually belongs. Midnight blue is a black-tie classic and reads even sharper than black under camera flash. Burgundy or forest green velvet dinner jackets paired with black trousers are a strong 2026 move that still respects the formal-evening codes. We're seeing a notable jump in burgundy and midnight-blue tuxedo requests this prom season from the Gainesville and Dahlonega seniors who want their photos to stand out without going costume.",
+          "source": "PAA"
+        },
+        {
+          "q": "Can the same tuxedo work for prom and college formals later?",
+          "a": "Yes — a well-tailored classic-fit tuxedo in black or midnight blue with shawl or peak lapels is essentially a uniform you can rewear for the next decade with just shirt and accessory swaps. For a 17- or 18-year-old, this is where buying earns its keep: senior prom, two or three college fraternity or sorority formals, and the first wedding you're invited to. Plenty of North Hall and Gainesville HS grads come back to our shop a year later for shirt and bow tie refreshes, but the tuxedo itself is still doing its job.",
+          "source": "Reddit"
+        }
+      ]
+    },
+    "group-coordination": {
+      "label": "Group Prom Coordination",
+      "faqs": [
+        {
+          "q": "Should a prom group of guys all wear matching suits or just coordinate?",
+          "a": "Identical suits across a 5-to-8 person group rarely photograph as well as people expect — it tends to read more like a wedding party than a friend squad. The stronger move is a unified palette: everyone in the same color family (charcoal-to-midnight blue, or all earth tones) with matching ties or pocket squares pulling the group together. That way each guy keeps a little personal style while the wide-angle group photo still looks intentional. Groups from Flowery Branch and Cherokee Bluff who book together at our shop usually settle on one palette and one shared accent color across the whole crew.",
+          "source": "Reddit"
+        },
+        {
+          "q": "How early should a prom group book fittings together?",
+          "a": "Six weeks out is the realistic minimum for a group of four or more — that gives time for everyone to be measured, to align on colors, to alter every suit, and to handle the one or two follow-up fittings that always come up. Booking together also lets the store hold a coordinated palette so two guys don't end up in slightly different burgundies. We block off group appointment windows during the March prom-rush at our Pearl Nix Pkwy location so Hall County crews of 5 to 8 can come in at once and walk out aligned.",
+          "source": "GBP"
+        },
+        {
+          "q": "Does GA Suit Warehouse offer group discounts or coordination support?",
+          "a": "Yes — when a prom group books together we coordinate the palette, hold matching fabrics, line up fittings on the same day, and offer group pricing depending on size. Master tailors on-site means alterations stay consistent across every guy, so jackets and trousers actually look uniform in photos rather than slightly different lengths. Reach out at (470) 595-7775 or stop in at 150 Pearl Nix Pkwy and we'll set up a group consult — most Gainesville-area crews lock in their plan in a single 60-minute visit.",
+          "source": "GBP"
+        },
+        {
+          "q": "What's the best way to coordinate when each guy has a different date with a different dress color?",
+          "a": "Build the group around a neutral suit base — charcoal, navy, or black — and let each guy match his date through the tie and pocket square only. That way the suits unify the group photo and the accents tie each couple together for the couples photos. Trying to match every suit to every dress is how groups end up looking chaotic in the wide shots. We walk through this exact problem with every multi-couple group from Gainesville HS and Johnson HS that comes through the door.",
+          "source": "PAA"
+        },
+        {
+          "q": "Can groups go jacket-only or vest-only instead of full suits?",
+          "a": "Yes, and it's a smart option for a less-formal prom or for guys watching budget — match the trousers (black or charcoal) and have everyone bring their own white dress shirt, then unify the group with the same vest or the same dinner jacket color. The look reads coordinated in photos without requiring everyone to commit to a full three-piece. We've helped a few East Hall and West Hall groups land this hybrid setup when half the crew already owned a jacket and just needed the trousers and accessories aligned.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Who should be the visual centerpiece of group prom photos?",
+          "a": "Photographically, the centerpiece is usually whoever's standing front-and-center with the boldest accent color or the most contrast against the group palette. Most groups don't formally pick a centerpiece, but if one guy is wearing burgundy in a group of charcoal suits, he naturally becomes the visual anchor. To avoid accidental hierarchy, agree as a group: either everyone wears the same intensity of color or one person is the agreed standout. This is the kind of question we run through in fitting room consults with Hall County prom groups before they commit to a palette.",
+          "source": "Transcript"
+        },
+        {
+          "q": "What's the most common mistake prom groups make with coordination?",
+          "a": "Waiting too long to align — guys order suits on different timelines, in slightly different shades, and the group photo ends up with three nearly-but-not-quite-matching grays. The fix is locking the palette in one conversation, ideally in person, six or more weeks out. The second-most-common mistake is over-coordinating — identical suit, identical tie, identical shoes, identical pocket square — which reads as a uniform rather than a group of friends. Crews from Cherokee Bluff and Flowery Branch that come in together at our shop avoid both traps because we settle palette and accents in one sitting.",
+          "source": "Transcript"
+        }
+      ]
+    },
+    "color-coordination": {
+      "label": "Prom Color & Theme Match",
+      "faqs": [
+        {
+          "q": "How should a guy match his suit to his date's dress without looking matchy-matchy?",
+          "a": "Don't try to match the dress exactly — the eye reads two identical colors as a costume rather than a coordinated couple. Instead, choose a suit in a neutral or complementary tone (charcoal, navy, black) and let the tie or pocket square pick up the dress color. That way the dress stays the focal point and the couple still photographs as a unit. Every Gainesville-area teen we fit gets this conversation in the fitting room before the suit color is finalized, because it's the single biggest mistake we see on prom night.",
+          "source": "PAA"
+        },
+        {
+          "q": "What suit color works best with an emerald green dress?",
+          "a": "Charcoal or midnight navy with an emerald accent — pocket square, tie, or both — is the cleanest pairing and photographs beautifully. Black tuxedo with a deep green bow tie works for more formal venues. What to avoid: a green suit alongside a green dress, which fights for attention rather than complementing. We've coordinated this exact pairing for several Hall County couples this spring, and the charcoal-with-emerald-accent combo wins almost every time in the photos parents end up framing.",
+          "source": "GBP"
+        },
+        {
+          "q": "What if the date's dress is a bold print or has multiple colors?",
+          "a": "Step back and let the dress carry the visual load — go with a solid charcoal, navy, or black suit and pick one color from the print to echo in your tie or pocket square. Trying to match a multicolor print with anything other than a neutral suit creates clashing patterns in photos. The rule we give teens at our shop: if her dress is busy, your suit goes quiet. This advice has saved more than a few Cumming and Buford couples from regrettable photos.",
+          "source": "Reddit"
+        },
+        {
+          "q": "How do warm vs cool color tones change suit selection?",
+          "a": "Cool tones (blue, green, purple, teal, silver dresses) pair best with cool-tone suits like charcoal, navy, and slate. Warm tones (red, coral, peach, burgundy, gold dresses) pair best with warm-tone suits like brown, tan, burgundy, or earth-tone variations. Mixing temperatures (warm suit with cool dress) tends to look slightly off in photos even if no one can name why. We walk through temperature matching with every Gainesville and Oakwood couple that comes in trying to coordinate, because it's the easiest framework for getting it right the first time.",
+          "source": "Transcript"
+        },
+        {
+          "q": "What color combinations should be avoided for prom couples?",
+          "a": "Skip identical-shade matching (a green suit with the exact-same green dress reads costume), avoid white-on-white because it reads bridal not prom, and stay away from clashing temperatures like a burgundy suit with a teal dress. Bright neon ties with formal dresses also tend to date the photos quickly. Stick with the principle: one of you is the bold color, the other is the supporting neutral. We've quietly redirected plenty of Hall County couples away from the matchy-matchy white-on-white plan once they see the photos in our fitting room mirror.",
+          "source": "PAA"
+        },
+        {
+          "q": "How do you coordinate when the dress hasn't been chosen yet?",
+          "a": "If she's still shopping, hold off on locking your suit color — buy the dress first, then pick the suit and accessories around it. If she's chosen but you haven't seen it in person, get a clear photo in natural light (phone screens shift color significantly) before committing. A neutral charcoal or navy suit with a swappable tie and pocket square is the safest fallback if timing is tight and you have to order before her dress is final. Plenty of Flowery Branch and West Hall guys come in with their date's dress photo on their phone and we color-match accents on the spot.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Are metallic dresses (silver, gold, rose gold) hard to match for guys?",
+          "a": "Not at all — metallics actually behave like neutrals in photos because they reflect surrounding color. Silver and rose gold dresses pair beautifully with navy, charcoal, or black suits. Gold dresses lean toward warm-tone pairings: black, brown, or burgundy. The accent piece (tie, pocket square) can be the same metallic for a cohesive shimmer or a complementary jewel tone for contrast. Metallic dresses have been a strong trend at the bigger Hall County proms this season, and the navy-with-silver-accent combo is one of our most-requested coordinations at the shop.",
+          "source": "PAA"
+        }
+      ]
+    }
+  }
+}

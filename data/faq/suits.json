@@ -1,0 +1,210 @@
+{
+  "cluster": "suits",
+  "spokes": {
+    "custom-bespoke": {
+      "label": "Custom & Bespoke Suits",
+      "faqs": [
+        {
+          "q": "What's the actual difference between off-the-rack, made-to-measure, and bespoke?",
+          "a": "Off-the-rack means a finished suit pulled in your size and finished with alterations, usually $199-$799 and ready in days. Made-to-measure starts from a base pattern that's adjusted to your measurements, typically $900-$2,000 and 4-6 weeks. True bespoke is a one-of-one paper pattern drafted from scratch with multiple fittings, usually $2,500+ and 12-16 weeks. Most Hall County customers we see are best served by off-the-rack plus expert alterations from our in-house tailors, since 90% of fit gains come from a sharp tailor, not a higher price tag.",
+          "source": "PAA"
+        },
+        {
+          "q": "Is a custom suit actually worth it for someone who only wears suits a few times a year?",
+          "a": "Honestly, no. If you wear a suit 3-5 times a year for weddings, funerals, and the occasional interview, a quality off-the-rack suit dialed in by a real tailor will look 90% as good for a fraction of the price. Custom is worth it if you're hard to fit (very tall, very short, athletic build), wear suits weekly, or you want a specific fabric/lapel/lining nobody else has. We help Gainesville guys make this call honestly every week and we'll tell you when custom isn't the right move for your wallet.",
+          "source": "Reddit"
+        },
+        {
+          "q": "How many fittings does a custom suit actually require?",
+          "a": "Made-to-measure typically uses one measurement session and one final fitting with light tweaks. Full bespoke uses 3-5 fittings: a basted fitting where the suit is loosely sewn so we can refine balance and posture, a forward fitting once the structure is set, and a final fitting before delivery. Each fitting is roughly 30-45 minutes. We schedule all fitting sessions at our 150 Pearl Nix Pkwy showroom in Gainesville so you're not driving down to Atlanta two or three times for the same suit.",
+          "source": "PAA"
+        },
+        {
+          "q": "What fabric should I pick for a custom suit I'll wear year-round in Georgia?",
+          "a": "For Georgia's climate, a Super 110s or 120s wool in a 9-10 oz weight is the workhorse. It breathes in spring and fall, holds up in air-conditioned offices in summer, and layers well in winter. Avoid anything heavier than 12 oz unless it's a winter-only suit, and skip pure linen if you need wrinkle resistance for client meetings. We carry mid-weight Italian and English wools specifically chosen for Hall County's humidity, since lightweight European fabrics designed for Milan don't always survive a July afternoon in Gainesville.",
+          "source": "Transcript"
+        },
+        {
+          "q": "What does 'bespoke' actually mean and is the term being misused?",
+          "a": "Yes, the word gets abused constantly. True bespoke means a unique paper pattern is hand-drafted to your body, the suit is largely hand-stitched, and there are multiple in-progress fittings. Most online 'bespoke' services are actually made-to-measure, where a stock pattern gets digitally tweaked. Both produce a good suit, but the price and craft are very different. We tell every Gainesville customer the honest term for what they're buying so nobody pays bespoke prices for a made-to-measure product.",
+          "source": "Reddit"
+        },
+        {
+          "q": "How long does a custom suit take from first measurement to wearing it?",
+          "a": "Made-to-measure runs about 4-6 weeks in most cases, sometimes 3 weeks with an express fabric. Full bespoke is 12-16 weeks and can stretch to 5 months for hand-tailored construction. If you need something faster, a high-quality off-the-rack suit plus same-week alterations is the move. We've turned around full-look outfits in 4 business days for Hall County customers who walked in needing something for an Atlanta event the following weekend.",
+          "source": "PAA"
+        },
+        {
+          "q": "Is custom the smarter long-term play versus renting tuxedos for weddings?",
+          "a": "For most guys, yes. A $400-$700 owned suit pays for itself in 2-3 wearings versus $200-$300 rentals, and you actually own the garment. Rentals never fit perfectly, the fabric is usually beat up, and you're paying full price every event for life. We sell, we don't rent, because a properly fitted suit you own beats a rental nine times out of ten — and we hear that from Gainesville groomsmen who came in after one bad rental experience and never went back.",
+          "source": "Transcript"
+        }
+      ]
+    },
+    "business-interview": {
+      "label": "Business & Interview Suits",
+      "faqs": [
+        {
+          "q": "Navy or charcoal for an interview — which is the safer call?",
+          "a": "Navy is the more universally approachable choice and works for tech, sales, marketing, consulting, and most client-facing roles. Charcoal reads slightly more authoritative and is the better pick for finance, law, accounting, and senior executive interviews. If this is your first suit, buy navy. Your second suit should be charcoal. We stock both colors in every size from 36S to 60L at our Gainesville showroom so an interview candidate can walk in Saturday and walk out interview-ready Monday.",
+          "source": "PAA"
+        },
+        {
+          "q": "What suit color should I wear for a finance or law interview specifically?",
+          "a": "Charcoal grey is the traditional pick for finance, law, and consulting because it signals attention to detail and seriousness without looking flashy. Pair it with a crisp white shirt and a conservative navy or burgundy tie with a subtle pattern. Avoid black for daytime interviews — it reads more funeral than boardroom. We've outfitted dozens of Hall County candidates heading to Atlanta law firm and bank interviews and the charcoal-white-burgundy combination is the one that consistently lands callbacks.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Is a three-piece suit too much for a job interview?",
+          "a": "Generally yes — a three-piece reads bold and slightly theatrical for an interview, when the goal is to look competent and trustworthy, not memorable. Stick with a sharp two-piece in navy or charcoal. Save the vest for the wedding, the gala, or once you have the job. The Gainesville business community we serve runs corporate-conservative, so the two-piece play is what actually wins interviews around here.",
+          "source": "Reddit"
+        },
+        {
+          "q": "What shirt and tie should I pair with a navy interview suit?",
+          "a": "White or light blue dress shirt, period. For ties, go with a solid burgundy, a navy with small white dots, or a subtle striped tie in dark colors — nothing wider than 3 inches. Avoid black ties (too funeral), shiny silk (too prom), and anything novelty. Your shoes should be black or dark brown leather oxfords. We pull complete interview kits at the Gainesville store in under 20 minutes so candidates aren't guessing on shirt-tie-shoe coordination the night before.",
+          "source": "PAA"
+        },
+        {
+          "q": "What's the biggest mistake guys make on their first business suit?",
+          "a": "Buying too big. Most guys default to a size up because that's what they're used to with casual clothes, and the result is a sloppy shoulder line, a baggy chest, and pant breaks pooling on their shoes. The fix is buying for the shoulders first and tailoring everything else. A $250 suit that fits beats a $700 suit that doesn't. Our in-house tailors at Pearl Nix Pkwy do a proper fit consultation on every walk-in so first-time suit buyers don't make that mistake.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Should a senior executive dress differently than someone interviewing for their first job?",
+          "a": "Yes, but subtly. Entry-level should stick to basics: navy or charcoal, white shirt, conservative tie. Senior execs can introduce more texture and personality — a glen check pattern, a higher-end fabric like Super 130s, a pocket square, a subtler tie. The signal is quiet quality, not flash. We help Hall County executives heading into board meetings or M&A presentations build wardrobes that read as senior without screaming for attention.",
+          "source": "Transcript"
+        },
+        {
+          "q": "What accessories should I avoid for a business interview?",
+          "a": "Skip the flashy watch, the colored pocket square, the lapel pin, the tie bar with a logo, and any cologne strong enough to be noticed across the table. A simple metal watch, a polished belt that matches your shoes, and a folded white pocket square if you want one — that's the full kit. We coach Gainesville candidates on this every week because over-accessorizing is the fastest way to look like you're trying too hard.",
+          "source": "Transcript"
+        }
+      ]
+    },
+    "funeral": {
+      "label": "Funeral Suits (Same-Week Turnaround)",
+      "faqs": [
+        {
+          "q": "Can I wear a navy suit to a funeral or do I need black?",
+          "a": "Navy is fully acceptable as long as it's a deep, dark navy — not a bright royal or pastel blue. Black is the most traditional and the safest if you're attending a religious or formal service, but charcoal and dark navy are widely accepted and respectful. Pair either with a white shirt, a black or dark conservative tie, and black dress shoes. Most funerals in Gainesville and Hall County are scheduled within 5-7 days of passing, so we keep dark navy and charcoal in every size on the floor for same-week walk-ins.",
+          "source": "PAA"
+        },
+        {
+          "q": "I need a suit for a funeral in 3 days — is that even possible?",
+          "a": "Yes, regularly. If you walk in with at least 3 business days, our in-house tailors can hem pants, take in the waist, and shorten sleeves on an off-the-rack suit in time for the service. If you need it in under 24 hours, our $10 same-day rush option covers the basics. The longer you wait, the fewer alteration options remain — so the day you find out is the day to come in. We run a dedicated same-week funeral queue at Pearl Nix Pkwy specifically because Hall County families don't get 3-week notice on these.",
+          "source": "Transcript"
+        },
+        {
+          "q": "What tie color is appropriate for a funeral?",
+          "a": "A solid black tie is the most traditional and always correct. Dark navy, charcoal grey, and deep burgundy are also acceptable, especially with a navy or grey suit. Avoid bright colors, novelty patterns, and anything shiny or satin-finished. The goal is to be respectful and unmemorable. We stock plain dark ties in every weave at our Gainesville store specifically for the same-week funeral customer who didn't think they'd need one this week.",
+          "source": "PAA"
+        },
+        {
+          "q": "What should a kid wear to a funeral if they don't own a suit?",
+          "a": "Boys can wear dark dress pants (navy, charcoal, or black), a white or light blue button-down shirt, a dark tie or no tie, and dark dress shoes — a full suit isn't required. For older teens, a navy blazer with grey pants works perfectly. Nobody at the service expects a 10-year-old to be in full mourning attire. We carry boys' suits and separates from size 4 up through young adult sizing at the Gainesville store, and our tailors hem pants for kids on the same-week timeline as adults.",
+          "source": "Reddit"
+        },
+        {
+          "q": "What if I'm overweight or hard to fit and I need a funeral suit fast?",
+          "a": "We carry big-and-tall sizing on the floor up through 60L and full portly cuts, so most guys get fitted same-day instead of waiting on a special order. The priority alterations on a same-week funeral suit are pant hem, waist taper, and sleeve length — those are 3-5 day turnarounds, or 24 hours with rush. We've fitted Hall County men in unusual sizes the day before a service more times than we can count, so don't assume your size means you can't get a respectful look in time.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Can I just wear my regular work suit to a funeral?",
+          "a": "If it's a dark navy or charcoal two-piece in good condition, yes. A medium grey or any patterned suit (pinstripe, glen check, windowpane) is too business-casual for the setting. The other thing to check is fit — a baggy or wrinkled suit reads disrespectful even if the color is right. We'll do a free fit and freshness check at our Gainesville store and tell you honestly whether your existing suit will work or whether you need a quick refresh.",
+          "source": "Transcript"
+        },
+        {
+          "q": "What's the bare minimum a man can wear to a funeral if he truly can't get a full suit in time?",
+          "a": "Dark dress pants (navy, charcoal, or black), a white dress shirt, a black or dark tie, and dark leather shoes. A dark blazer or sport coat over the top elevates it instantly. Skip jeans, sneakers, and bright colors. If you're in Hall County and 24 hours from a service, we can put together this exact look from separates and have pants hemmed same-day with the rush option for under $250 out the door.",
+          "source": "Reddit"
+        }
+      ]
+    },
+    "alterations": {
+      "label": "Suit Alterations & Tailoring",
+      "faqs": [
+        {
+          "q": "How much does it cost to fully tailor a suit?",
+          "a": "A typical full-suit alteration runs $60-$135 — pants hem, waist taper, sleeve length, and jacket sides. Hems start at $18, waist work starts at $24, sleeves run $25-$45 with buttonholes, and jacket sides $40-$80. Shoulder work is $100-$200 and usually not worth doing. We charge transparent line-item pricing at our Pearl Nix Pkwy shop so you know what each adjustment costs before we touch the suit.",
+          "source": "PAA"
+        },
+        {
+          "q": "How long do suit alterations actually take?",
+          "a": "Standard turnaround is 3-5 business days for a typical hem-waist-sleeves combo. Simple single fixes like a hem alone can be 1-2 days. Full restructure jobs (sides, sleeves from the shoulder, lining work) run 5-7 business days. We offer a same-day rush at +$10 for basic alterations like pant hems and waist tapers if you walk in by mid-morning. That rush option covers the Gainesville customer who got 24 hours notice on a wedding or funeral.",
+          "source": "PAA"
+        },
+        {
+          "q": "How much can a suit be taken in or let out?",
+          "a": "Most suits have 1 to 1.5 inches of fabric in the side seams and waist, so a tailor can take in or let out roughly that much in either direction. Past that, the suit's balance starts to break down. Pants are slightly more forgiving on the waist (up to 2 inches in many cases) but rise and seat are much harder to change. Bring your suit into our Gainesville shop and we'll measure the existing seam allowance for free before quoting any work.",
+          "source": "PAA"
+        },
+        {
+          "q": "Can shoulders on a suit jacket be altered?",
+          "a": "Technically yes, practically no. Reworking shoulders means rebuilding the armhole and reshaping the canvas — it's a 4-6 hour job that can run $150-$300 and rarely produces a clean result. If the shoulders don't fit, the honest answer is to find a different jacket. We'll tell you straight at the Pearl Nix Pkwy fitting whether your current jacket is salvageable or whether you'd be better off in one of our floor-stock options that fits the shoulders correctly out of the gate.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Can you alter a suit I bought somewhere else?",
+          "a": "We do alter suits regardless of where you bought them — online, department store, another local shop, inherited from family. Standard pricing applies. We do ask for a quick walk-through fitting first so we can flag anything structural before you commit to the work. Hall County customers bring us suits from Suitsupply, Indochino, Men's Wearhouse, and old wedding attire all the time and we treat each one the same.",
+          "source": "Transcript"
+        },
+        {
+          "q": "When is it smarter to replace a suit instead of altering it?",
+          "a": "Replace if the shoulders don't fit, the jacket length is more than 1 inch off, the chest is two sizes too big, or the fabric is worn at the elbows or seat. Alter if it's a waist, hem, or sleeve issue, or a single inch on the sides. The honest math: alterations over $200 on a $300 suit usually mean you'd be better off in a new $399 suit from our floor that needs only basic tailoring. We'll lay out both numbers for you in the fitting room.",
+          "source": "Transcript"
+        },
+        {
+          "q": "What's a same-day rush alteration and what does it actually cover?",
+          "a": "Our +$10 rush option moves your alteration to the front of the queue and covers basic, low-risk work — pant hems, waist tapers, and sleeve length on certain constructions. It does not cover jacket sides, shoulder work, or lining repairs because those need cure time and pressing. Walk in before 11am and we can usually have rush work ready by close. We built this option specifically for Gainesville customers who get last-minute notice for weddings, interviews, and funerals.",
+          "source": "Transcript"
+        },
+        {
+          "q": "What are the fit checkpoints I should look for at my final fitting?",
+          "a": "Five things: jacket shoulders sit flat with no divot or overhang, the collar hugs the back of your shirt with no gap, the jacket buttons clean without pulling at the chest, sleeve length shows about a quarter inch of shirt cuff, and pants break once on the front of the shoe. If any of those are off, the suit isn't done. Our tailors at the Gainesville shop run this exact checklist on every final fitting before we hand the suit back.",
+          "source": "Transcript"
+        }
+      ]
+    },
+    "three-piece": {
+      "label": "Three-Piece Suits",
+      "faqs": [
+        {
+          "q": "When is a three-piece suit actually appropriate?",
+          "a": "Three-piece suits work for formal weddings, anniversary dinners, holiday galas, and certain traditional business contexts (law, banking, courtroom appearances). They're a touch much for daily office wear, casual weddings, and most job interviews. The vest signals occasion and intent, so use it when you want the outfit to do that. Around Hall County we see three-piece demand spike for fall and winter weddings and for father-of-the-bride looks at events in Gainesville and the North Georgia mountains.",
+          "source": "PAA"
+        },
+        {
+          "q": "Should the vest match the suit or be a contrasting color?",
+          "a": "Matching vest (same fabric as jacket and pants) is the formal, traditional move and reads as a true three-piece. A contrasting vest — tan vest with a navy suit, grey vest with a brown suit — is more relaxed and reads as country-style or rustic-formal. For weddings, match the vest unless the wedding party color scheme calls for a contrast. We carry both matching and odd vests at the Gainesville store and walk customers through the choice based on the actual event they're dressing for.",
+          "source": "Reddit"
+        },
+        {
+          "q": "How should the vest fit at the waistband?",
+          "a": "The bottom hem of the vest should completely cover your trouser waistband — no shirt or belt visible between vest and pants. The vest sits about 1-2 cm below the waistband, creating an unbroken vertical line from chest to legs. The sides should fall straight, not flare. Always leave the bottom button undone. Our tailors check this fit specifically on every three-piece sale at Pearl Nix Pkwy because a vest that exposes the waistband ruins the entire look.",
+          "source": "PAA"
+        },
+        {
+          "q": "Can you actually wear a three-piece in the Georgia summer heat?",
+          "a": "Yes, but pick your fabric. Lightweight wool (8-9 oz), tropical wool, or a wool-linen blend in 8-10 oz lets the vest breathe enough to survive an outdoor June wedding. Pure linen three-piece is great for daytime outdoor events but wrinkles fast. Avoid heavy worsted or flannel until October. Most Gainesville and Lake Lanier weddings in summer happen in air-conditioned venues anyway, so the vest-on-vest-off flexibility actually helps you stay comfortable across the ceremony, dinner, and dance floor.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Is it okay to take the jacket off and just wear the vest mid-event?",
+          "a": "Yes, that's one of the main practical reasons to wear a three-piece. After the ceremony, after dinner, on the dance floor — pulling the jacket and keeping the vest on still reads polished and intentional, where the same move with a two-piece looks like you're underdressed. Just keep the vest fully buttoned (except the bottom button) when the jacket is off. We coach Hall County grooms on this exact play because most weddings here have a long reception where the jacket starts to feel heavy by 9pm.",
+          "source": "Transcript"
+        },
+        {
+          "q": "How does a three-piece suit work for shorter or taller men?",
+          "a": "Shorter men actually benefit from a three-piece because the vest creates one continuous vertical line from collar to shoes, which lengthens the silhouette. The key is making sure the vest covers the waistband completely and the pants barely break on the shoe. Taller men have more leeway but should avoid an over-long vest that throws the proportions off. Our tailors size three-piece vests separately at the Gainesville fitting because off-the-rack vest length almost never matches off-the-rack jacket length on guys outside the 5'9\"-6'1\" range.",
+          "source": "Reddit"
+        },
+        {
+          "q": "Is a three-piece suit too formal for a regular wedding guest?",
+          "a": "If the dress code is black tie, wear a tuxedo, not a three-piece. If it's formal or cocktail, a three-piece is great and shows you took the event seriously. If it's casual or beach-style, a two-piece is the move — a vest will read as overdressed. When in doubt, check the invitation and ask the groom or his family. We see plenty of Gainesville wedding guests get this right by stopping in for a quick fit consultation a few weeks before the event so they're not guessing.",
+          "source": "Transcript"
+        }
+      ]
+    }
+  }
+}

@@ -37,6 +37,50 @@ const NAV_HTML = `
 
 const FOOTER_HTML = `
 <footer class="site-footer" id="visit">
+  <div class="footer-sitemap">
+    <div class="footer-col">
+      <h5>Weddings</h5>
+      <ul>
+        <li><a href="/weddings">All Wedding Suits</a></li>
+        <li><a href="/weddings/groom-suits">Groom Suits</a></li>
+        <li><a href="/weddings/groomsmen-suits">Groomsmen Suits</a></li>
+        <li><a href="/weddings/father-of-the-bride">Father of the Bride</a></li>
+        <li><a href="/weddings/destination-wedding">Destination Weddings</a></li>
+        <li><a href="/weddings/courthouse-elopement">Courthouse &amp; Elopement</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Suits</h5>
+      <ul>
+        <li><a href="/suits">All Men's Suits</a></li>
+        <li><a href="/suits/custom-bespoke">Custom &amp; Bespoke</a></li>
+        <li><a href="/suits/business-interview">Business &amp; Interview</a></li>
+        <li><a href="/suits/funeral">Funeral Suits</a></li>
+        <li><a href="/suits/alterations">Alterations</a></li>
+        <li><a href="/suits/three-piece">Three-Piece Suits</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Tuxedos</h5>
+      <ul>
+        <li><a href="/tuxedos">All Tuxedos</a></li>
+        <li><a href="/tuxedos/black-tie">Black-Tie Tuxedos</a></li>
+        <li><a href="/tuxedos/white-tie">White-Tie Formalwear</a></li>
+        <li><a href="/tuxedos/gala">Gala &amp; Charity Events</a></li>
+        <li><a href="/tuxedos/modern-vs-classic">Modern vs Classic</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Prom</h5>
+      <ul>
+        <li><a href="/prom">All Prom Attire</a></li>
+        <li><a href="/prom/suits">Prom Suits</a></li>
+        <li><a href="/prom/tuxedos">Prom Tuxedos</a></li>
+        <li><a href="/prom/group-coordination">Group Coordination</a></li>
+        <li><a href="/prom/color-coordination">Color &amp; Theme Match</a></li>
+      </ul>
+    </div>
+  </div>
   <div class="footer-grid">
     <div class="footer-brand">
       <h4><span class="ga">GA</span> SuitWarehouse</h4>
@@ -63,9 +107,9 @@ const FOOTER_HTML = `
     <div class="footer-col">
       <h5>Hours</h5>
       <ul>
-        <li>Mon&ndash;Fri · 10a&ndash;7p</li>
-        <li>Saturday · 10a&ndash;7p</li>
-        <li>Sunday · 12p&ndash;6p</li>
+        <li>Mon&ndash;Fri &middot; 10a&ndash;7p</li>
+        <li>Saturday &middot; 10a&ndash;7p</li>
+        <li>Sunday &middot; 12p&ndash;6p</li>
         <li><em style="color:#8590A4;">By appointment recommended</em></li>
       </ul>
     </div>
@@ -73,7 +117,7 @@ const FOOTER_HTML = `
   <div class="footer-watermark" aria-hidden="true">GA SuitWarehouse</div>
   <div class="footer-bottom">
     <span>&copy; ${new Date().getFullYear()} GA Suit Warehouse, LLC. All rights reserved.</span>
-    <span><a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a></span>
+    <span><a href="/privacy">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms">Terms</a></span>
   </div>
 </footer>
 `;

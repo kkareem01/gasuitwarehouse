@@ -10,11 +10,26 @@
       history.replaceState(null, '', window.location.pathname + window.location.search);
     }
   </script>
-  <title>Tailored Suits That Actually Fit · GA SuitWarehouse · Gainesville, GA</title>
-  <meta name="description" content="A suit that fits the way it's supposed to. Master tailors on-site, premium fabrics, private fittings — book a free 45-minute styling session at GA SuitWarehouse in Gainesville, GA." />
-  <meta property="og:title" content="Tailored Suits That Actually Fit · GA SuitWarehouse" />
-  <meta property="og:description" content="A suit that fits the way it's supposed to. Book your free fitting in 60 seconds." />
-  <meta property="og:image" content="/assets/img/favicon.png" />
+  <title>Tailored Men's Suits in Gainesville, GA · GA SuitWarehouse</title>
+  <meta name="description" content="Tailored men's suits in Gainesville, GA. Master tailors on-site, premium fabrics, private fittings. Book your free 45-minute styling session." />
+  <link rel="canonical" href="https://gasuitwarehouse.com/suits" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:title" content="Tailored Men's Suits in Gainesville, GA · GA SuitWarehouse" />
+  <meta property="og:description" content="Tailored men's suits in Gainesville, GA. Master tailors on-site, premium fabrics, private fittings. Book your free 45-minute styling session." />
+  <meta property="og:image" content="https://gasuitwarehouse.com/assets/img/personal-style-sessions.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="900" />
+  <meta property="og:url" content="https://gasuitwarehouse.com/suits" />
+  <meta property="og:site_name" content="GA SuitWarehouse" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tailored Men's Suits in Gainesville, GA · GA SuitWarehouse" />
+  <meta name="twitter:description" content="Tailored men's suits in Gainesville, GA. Free 45-minute styling session." />
+  <meta name="twitter:image" content="https://gasuitwarehouse.com/assets/img/personal-style-sessions.jpg" />
+  <meta name="geo.region" content="US-GA" />
+  <meta name="geo.placename" content="Gainesville, Georgia" />
+  <meta name="geo.position" content="34.2960;-83.8420" />
+  <meta name="ICBM" content="34.2960, -83.8420" />
   <link rel="icon" type="image/png" href="/assets/img/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,9 +38,141 @@
   <link rel="preconnect" href="https://stream.mux.com" />
   <link rel="preconnect" href="https://image.mux.com" />
   <script defer src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+
+  <!-- ===================== STRUCTURED DATA ===================== -->
+  <!-- LocalBusiness reference (lighter than the full block on the home page) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MensClothingStore",
+    "@id": "https://gasuitwarehouse.com/#business",
+    "name": "GA Suit Warehouse",
+    "url": "https://gasuitwarehouse.com/",
+    "telephone": "+1-470-595-7775",
+    "image": "https://gasuitwarehouse.com/assets/img/Modelleft.jpg",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "150 Pearl Nix Pkwy",
+      "addressLocality": "Gainesville",
+      "addressRegion": "GA",
+      "postalCode": "30501",
+      "addressCountry": "US"
+    }
+  }
+  </script>
+
+  <!-- Service: Tailored Suit Fitting -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Tailored Men's Suit Fitting",
+    "description": "Free 45-minute one-on-one styling session at GA Suit Warehouse in Gainesville, GA. Get measured by a master tailor, choose fabric, color, and cut, and walk out with a suit that actually fits.",
+    "provider": { "@id": "https://gasuitwarehouse.com/#business" },
+    "areaServed": [
+      { "@type": "City", "name": "Gainesville, GA" },
+      { "@type": "AdministrativeArea", "name": "Hall County, GA" }
+    ],
+    "serviceType": "Men's tailored suits",
+    "offers": {
+      "@type": "Offer",
+      "name": "Free 45-Minute Styling Session",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+
+  <!-- BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://gasuitwarehouse.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Suits", "item": "https://gasuitwarehouse.com/suits" }
+    ]
+  }
+  </script>
+
+  <!-- FAQPage — mirrors the FAQ section on this page -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long does a styling session take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Plan on 45–60 minutes. We talk through what you need, pull options live, take measurements, and lock in alterations all in a single appointment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "I've never bought a suit before. Is that okay?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most welcome. We walk you through what actually matters — fabric, cut, color, what to look for. No question is too basic."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you handle same-day or rush fittings?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For ready-to-wear suits with light alterations, yes. Custom orders need 3–4 weeks minimum. Call ahead and we'll be honest about what's possible."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you alter suits I didn't buy from you?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Our tailors only alter pieces purchased from us — that's how we can stand behind the fit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's the price range?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Off-the-rack tailored suits start around $200, with 5-piece sets under $600. Premium fabrics and full-canvas builds run higher. We quote everything before you commit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need an appointment?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Walk-ins welcome, but appointments get the master tailor's full attention and a private fitting room. Book one and you'll get a much better experience."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
+  <!-- Hidden NAP block — ensures crawlers (which don't run JavaScript) can see name/address/phone even before components.js injects the nav and footer -->
+  <address style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);font-style:normal;" aria-hidden="true">
+    GA Suit Warehouse,
+    150 Pearl Nix Pkwy, Gainesville, GA 30501.
+    Phone: <a href="tel:+14705957775">(470) 595-7775</a>.
+    Hours: Monday–Saturday 10:00 AM – 7:00 PM, Sunday 12:00 PM – 6:00 PM.
+  </address>
+
   <div id="site-nav"></div>
+
+  <!-- ===================== BREADCRUMBS ===================== -->
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">Suits</li>
+    </ol>
+  </nav>
 
   <!-- ===================== ANNOUNCEMENT BAR ===================== -->
   <div class="announce-bar">
@@ -69,12 +216,15 @@
       <div class="reviews-stack reveal">
         <div class="review-shot" role="img" aria-label="5-star Google review from Dmitri Wendorf">
           <img src="/assets/reviews/review-dmitri-wendorf.png" alt="5-star Google review screenshot from Dmitri Wendorf" loading="lazy" />
+          <blockquote class="review-text-sr" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);"><p>This place is amazing. I'm a big guy — well over 6' tall, with a heavy bone structure. Finding clothes that fit me has been a 20-year struggle. I walked into this gentleman's store and he had my size nailed just by looking at me. We tried two suit jackets — the first was just slightly tight at the shoulder, and before I could even start to say it was a bit snug, he already had the replacement size picked out. That alone would have me running to Google to drop a 5-star review. However, my budget was tight. He still treated me like a king. I got lucky and came in on a post-Christmas sale, and walked out with one heck of a suit at an amazing price. Anyone in the metro Atlanta area: if you're in the market for a suit, this is your GUY!</p><cite>— Dmitri Wendorf, 5-star Google review</cite></blockquote>
         </div>
         <div class="review-shot" role="img" aria-label="5-star Google review from Shane Martin">
           <img src="/assets/reviews/review-shane-martin.png" alt="5-star Google review screenshot from Shane Martin" loading="lazy" />
+          <blockquote class="review-text-sr" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);"><p>I visited all the normal places over a three-day period — not a soul offered to help me until I stopped at GA Suit Warehouse. Amazing service and quick turnaround. Don't bother with Men's Wearhouse, Jos. A. Bank, or the big box stores. Shop small and local.</p><cite>— Shane Martin, 5-star Google review</cite></blockquote>
         </div>
         <div class="review-shot" role="img" aria-label="5-star Google review from Jonathan Lovell">
           <img src="/assets/reviews/review-jonathan-lovell.png" alt="5-star Google review screenshot from Jonathan Lovell" loading="lazy" />
+          <blockquote class="review-text-sr" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);"><p>Absolutely amazing and wonderful staff. Very helpful and very knowledgeable in their trade. Recommend everyone should go here. Love the jacket — it looks amazing, especially with everything paired together.</p><cite>— Jonathan Lovell, 5-star Google review</cite></blockquote>
         </div>
       </div>
     </div>
@@ -120,13 +270,98 @@
       <div class="reviews-stack reveal">
         <div class="review-shot" role="img" aria-label="5-star Google review from Y. Blanche G.">
           <img src="/assets/reviews/review-y-blanche-g.png" alt="5-star Google review screenshot from Y. Blanche G." loading="lazy" />
+          <blockquote class="review-text-sr" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);"><p>Great personal service. The owner has many years of experience in fine men's wear, and helped my young son find just the right suit and accessory for a great price.</p><cite>— Y. Blanche G., 5-star Google review</cite></blockquote>
         </div>
         <div class="review-shot" role="img" aria-label="5-star Google review from Randy Wilson">
           <img src="/assets/reviews/review-randy-wilson.png" alt="5-star Google review screenshot from Randy Wilson" loading="lazy" />
+          <blockquote class="review-text-sr" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);"><p>We went to GA Suit Warehouse — they helped us out! Really good service. I would recommend going.</p><cite>— Randy Wilson, 5-star Google review</cite></blockquote>
         </div>
         <div class="review-shot" role="img" aria-label="5-star Google review from Makayla Giddens">
           <img src="/assets/reviews/review-makayla-giddens.png" alt="5-star Google review screenshot from Makayla Giddens" loading="lazy" />
+          <blockquote class="review-text-sr" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);"><p>Went shopping just to get an idea of what we'd like, and ended up getting a whole suit plus some accessories. Atlas was a huge help and made the experience especially special. Anyone who needs a suit and assistance — go here.</p><cite>— Makayla Giddens, 5-star Google review</cite></blockquote>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HUB GRID (spoke cards) ===================== -->
+  <section class="section section-paper">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Explore</span>
+        <h2>Suit services we offer.</h2>
+      </div>
+      <div class="hub-grid reveal">
+        <a class="spoke-card" href="/suits/custom-bespoke">
+          <div class="spoke-card__media">
+            <picture>
+              <source srcset="/assets/img/personal-style-sessions.webp" type="image/webp" />
+              <img src="/assets/img/personal-style-sessions.jpg" alt="Custom bespoke suit fitting in Gainesville, GA" loading="lazy" />
+            </picture>
+          </div>
+          <div class="spoke-card__body">
+            <span class="spoke-card__eyebrow">Suits</span>
+            <h3 class="spoke-card__title">Custom &amp; Bespoke</h3>
+            <p class="spoke-card__copy">Drafted to your body, your fabric, and your event — the suit you stop comparing other suits to.</p>
+            <span class="spoke-card__cta">Explore</span>
+          </div>
+        </a>
+        <a class="spoke-card" href="/suits/business-interview">
+          <div class="spoke-card__media">
+            <picture>
+              <source srcset="/assets/img/right-fit.webp" type="image/webp" />
+              <img src="/assets/img/right-fit.jpg" alt="Business and interview suit at GA Suit Warehouse" loading="lazy" />
+            </picture>
+          </div>
+          <div class="spoke-card__body">
+            <span class="spoke-card__eyebrow">Suits</span>
+            <h3 class="spoke-card__title">Business &amp; Interview</h3>
+            <p class="spoke-card__copy">Quietly correct suits for first impressions — built to be the part of you nobody questions.</p>
+            <span class="spoke-card__cta">Explore</span>
+          </div>
+        </a>
+        <a class="spoke-card" href="/suits/funeral">
+          <div class="spoke-card__media">
+            <picture>
+              <source srcset="/assets/img/Modelleft.webp" type="image/webp" />
+              <img src="/assets/img/Modelleft.jpg" alt="Funeral suit fitting at GA Suit Warehouse" loading="lazy" />
+            </picture>
+          </div>
+          <div class="spoke-card__body">
+            <span class="spoke-card__eyebrow">Suits</span>
+            <h3 class="spoke-card__title">Funeral Suits</h3>
+            <p class="spoke-card__copy">Same-day or next-day fittings when you need to show up for family without thinking about a suit.</p>
+            <span class="spoke-card__cta">Explore</span>
+          </div>
+        </a>
+        <a class="spoke-card" href="/suits/alterations">
+          <div class="spoke-card__media">
+            <picture>
+              <source srcset="/assets/img/walk-out-ready.webp" type="image/webp" />
+              <img src="/assets/img/walk-out-ready.jpg" alt="On-site tailoring and alterations" loading="lazy" />
+            </picture>
+          </div>
+          <div class="spoke-card__body">
+            <span class="spoke-card__eyebrow">Suits</span>
+            <h3 class="spoke-card__title">Alterations</h3>
+            <p class="spoke-card__copy">Master tailors on-site, fixing the shoulders, sleeves, and seat that make a suit look bought-not-borrowed.</p>
+            <span class="spoke-card__cta">Explore</span>
+          </div>
+        </a>
+        <a class="spoke-card" href="/suits/three-piece">
+          <div class="spoke-card__media">
+            <picture>
+              <source srcset="/assets/img/fabric-swatches-banner.webp" type="image/webp" />
+              <img src="/assets/img/fabric-swatches-banner.jpg" alt="Three-piece suit fabric options" loading="lazy" />
+            </picture>
+          </div>
+          <div class="spoke-card__body">
+            <span class="spoke-card__eyebrow">Suits</span>
+            <h3 class="spoke-card__title">Three-Piece Suits</h3>
+            <p class="spoke-card__copy">Vest, jacket, and trouser cut from one bolt — the upgrade that reads sharper after the jacket comes off.</p>
+            <span class="spoke-card__cta">Explore</span>
+          </div>
+        </a>
       </div>
     </div>
   </section>
@@ -135,6 +370,7 @@
   <section id="book" class="booking-section reveal" data-audience="general">
     <div class="container">
       <div data-booking-root>
+        <input type="hidden" name="source_page" value="/suits" />
         <noscript>
           <p style="text-align:center;font-family:var(--font-body);">Booking requires JavaScript. Call <a href="tel:+14705957775">(470) 595-7775</a> to book by phone.</p>
         </noscript>
@@ -174,6 +410,30 @@
           <button class="faq-question" type="button" aria-expanded="false">Do I need an appointment?</button>
           <div class="faq-answer"><div class="faq-answer-inner">Walk-ins welcome, but appointments get the master tailor's full attention and a private fitting room. Book one and you'll get a much better experience.</div></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CROSS-HUB BLOCK ===================== -->
+  <section class="section section-navy">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Also at GA Suit Warehouse</span>
+        <h2>Other occasions we fit for.</h2>
+      </div>
+      <div class="cross-hub reveal">
+        <a class="cross-hub-link" href="/weddings">
+          <h4>Wedding Suits</h4>
+          <p>Coordinated grooms, groomsmen, and dads — fittings on the same day, palette locked in one visit.</p>
+        </a>
+        <a class="cross-hub-link" href="/tuxedos">
+          <h4>Tuxedos &amp; Black-Tie</h4>
+          <p>Real black-tie tuxedos for galas, formal weddings, and Atlanta benefit nights.</p>
+        </a>
+        <a class="cross-hub-link" href="/prom">
+          <h4>Prom Suits &amp; Tuxedos</h4>
+          <p>Prom-night fits the photos hold up to — group coordination and on-site alterations.</p>
+        </a>
       </div>
     </div>
   </section>
