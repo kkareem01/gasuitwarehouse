@@ -2801,7 +2801,7 @@ picture { display: contents; }
   background: rgba(201, 169, 97, 0.1);
   border-color: var(--gold);
 }
-.cross-hub-link h4 {
+.cross-hub-link h3 {
   color: #FFF;
   font-size: 18px;
   margin: 0 0 6px;

@@ -41,4 +41,4 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
-Sitemap: https://gasuitwarehouse.com/sitemap.xml
+Sitemap: https://www.gasuitwarehouse.com/sitemap.xml

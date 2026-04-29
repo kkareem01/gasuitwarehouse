@@ -1,5 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "gasuitwarehouse.com" }],
+      "destination": "https://www.gasuitwarehouse.com/$1",
+      "permanent": true
+    }
+  ]
 }
