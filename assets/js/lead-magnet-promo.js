@@ -1,15 +1,11 @@
-/* GA Suit Warehouse — homepage bottom-of-page free-gift promo section.
-   Hydrates the `data-lm-promo` section with this week's active offer name +
-   remaining count + countdown. Falls back gracefully (section stays visible
-   with generic copy) if the API fails. Hides the section entirely if no
-   offer is active. */
+/* GA Suit Warehouse — homepage bottom-of-page free-gift offer card.
+   Hydrates the [data-lm-promo] offer card with this week's active offer
+   name, remaining count, countdown, and a dynamic "Get My Free [item]" CTA.
+   Falls back to static copy if the API errs; hides the section if no
+   offer is active (404). */
 
 (function () {
   function $r(name) { return document.querySelector(`[data-region="${name}"]`); }
-
-  function escape(s) {
-    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  }
 
   function endOfDayMs(weekEnd) {
     const [y, m, d] = weekEnd.split('-').map(Number);
@@ -28,20 +24,22 @@
   }
 
   function hydrate(offer) {
-    const itemName = offer.name.replace(/^Free\s+/i, '');
     const headline = $r('lm-final-headline');
-    if (headline) headline.textContent = `Claim a free ${itemName} this week.`;
+    if (headline) headline.textContent = offer.name;
 
     const lead = $r('lm-final-lead');
-    if (lead) lead.textContent = `${offer.itemDescription || `Yours to keep, just for stopping by.`} First 50 customers, no purchase necessary.`;
+    if (lead) {
+      lead.textContent = offer.itemDescription
+        ? offer.itemDescription
+        : 'Yours to keep, just for stopping by.';
+    }
 
     const stats = $r('lm-final-stats');
     if (stats) stats.hidden = false;
 
     const remaining = $r('lm-final-remaining');
-    if (remaining) {
-      const r = offer.remaining;
-      remaining.textContent = typeof r === 'number' ? `${r} spots left` : `${r} spots left`;
+    if (remaining && typeof offer.remaining === 'number') {
+      remaining.textContent = `${offer.remaining} spots left`;
     }
 
     const countdown = $r('lm-final-countdown');
@@ -51,6 +49,17 @@
       tick();
       setInterval(tick, 60000);
     }
+
+    const cta = $r('lm-final-cta');
+    if (cta) cta.textContent = `Get My ${shortenOfferName(offer.name)}`;
+  }
+
+  // Trim long offer names down to a CTA-friendly length by stopping at the
+  // first conjunction or delimiter. "Free Silk Tie + Pocket Square Set" →
+  // "Free Silk Tie". "Free Premium Tie" → "Free Premium Tie".
+  function shortenOfferName(name) {
+    if (!name) return 'Free Gift';
+    return String(name).split(/\s+[+·&]\s+/)[0].trim();
   }
 
   function hideSection() {

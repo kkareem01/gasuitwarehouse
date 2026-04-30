@@ -1,37 +1,22 @@
 /* GA Suit Warehouse — first-visit lead magnet popup.
-   Surfaces the rotating free-gift offer to visitors who haven't engaged with
-   the lead-magnet funnel yet. Auto-injected by components.js on pages where
-   the styling session is the primary CTA (homepage + verticals).
+   Surfaces the rotating free-gift offer to visitors who haven't opted in yet.
+   Auto-injected by components.js on pages where the styling session is the
+   primary CTA (homepage + verticals).
 
-   Dismissal model:
-   - localStorage 'gasw-lm-popup-dismissed-at' suppresses re-show for 48 hours
-   - sessionStorage 'gasw-lm-popup-session-shown' prevents re-show within the
-     same browser tab session (so it doesn't pop on every navigation) */
+   Suppression model: a single localStorage flag — `gasw-lm-opted-in` — set
+   when the visitor successfully submits the lead-magnet form. Until that
+   flag is set, the popup shows on every page load (after a short delay)
+   unless the active-offer endpoint reports nothing live. */
 
 (function () {
-  const LS_DISMISS_KEY  = 'gasw-lm-popup-dismissed-at';
-  const SS_SHOWN_KEY    = 'gasw-lm-popup-session-shown';
-  const DISMISS_WINDOW_MS = 48 * 60 * 60 * 1000;
-  const SHOW_DELAY_MS = 5000;
+  const OPTED_IN_KEY = 'gasw-lm-opted-in';
+  const SHOW_DELAY_MS = 2500;
 
   function shouldSuppress() {
     try {
-      if (sessionStorage.getItem(SS_SHOWN_KEY)) return true;
-      const dismissed = parseInt(localStorage.getItem(LS_DISMISS_KEY) || '0', 10);
-      if (dismissed && Date.now() - dismissed < DISMISS_WINDOW_MS) return true;
+      if (localStorage.getItem(OPTED_IN_KEY)) return true;
     } catch (_) { /* storage blocked — show anyway */ }
     return false;
-  }
-
-  function markDismissed() {
-    try {
-      localStorage.setItem(LS_DISMISS_KEY, String(Date.now()));
-      sessionStorage.setItem(SS_SHOWN_KEY, '1');
-    } catch (_) {}
-  }
-
-  function markShown() {
-    try { sessionStorage.setItem(SS_SHOWN_KEY, '1'); } catch (_) {}
   }
 
   function escapeHtml(s) {
@@ -48,11 +33,11 @@
       <div class="lm-popup__card" role="dialog" aria-modal="true" aria-labelledby="lm-popup-title">
         <button class="lm-popup__close" type="button" aria-label="Close" data-lm-popup-close>&times;</button>
         <div class="lm-popup__eyebrow">This week only · first 50 customers</div>
-        <h2 class="lm-popup__title" id="lm-popup-title">Not ready to book a styling session yet?</h2>
+        <h2 class="lm-popup__title" id="lm-popup-title">A free gift, on the house.</h2>
         <p class="lm-popup__sub">Claim a free <strong>${escapeHtml(itemName)}</strong> this week. No purchase necessary.</p>
         <div class="lm-popup__chip">${escapeHtml(remainText)}</div>
         <div class="lm-popup__actions">
-          <a href="/lead-magnet/" class="btn btn-primary lm-popup__cta">See If I Qualify</a>
+          <a href="/lead-magnet/" class="btn btn-primary lm-popup__cta">Get My Free Gift</a>
           <button type="button" class="lm-popup__dismiss" data-lm-popup-close>No thanks, I'll just browse</button>
         </div>
       </div>
@@ -67,12 +52,10 @@
     root.innerHTML = buildPopupHtml(offer);
     document.body.appendChild(root);
 
-    // Slide-up + fade-in on next paint so the transition runs
     requestAnimationFrame(() => root.classList.add('is-open'));
 
     function close() {
       root.classList.remove('is-open');
-      markDismissed();
       setTimeout(() => root.remove(), 240);
       document.removeEventListener('keydown', onKey);
     }
@@ -84,8 +67,6 @@
       if (e.target.closest('[data-lm-popup-close]')) close();
     });
     document.addEventListener('keydown', onKey);
-
-    markShown();
   }
 
   async function init() {

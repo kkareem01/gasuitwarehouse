@@ -1,9 +1,13 @@
 /* GA Suit Warehouse — lead magnet landing page.
    Fetches the active offer, hydrates hero copy + scarcity + countdown, and
-   wires the qualifier form to /api/lead-magnet/opt-in. */
+   wires the opt-in form to /api/lead-magnet/opt-in. On a successful submit
+   the form is replaced by an inline success card (the code goes out by email
+   in the same request). Sets `gasw-lm-opted-in=1` in localStorage so the
+   homepage popup stops appearing for this visitor. */
 
 (function () {
   const STARTED_AT = Date.now();
+  const OPTED_IN_KEY = 'gasw-lm-opted-in';
   let countdownTimer = null;
 
   function $(sel) { return document.querySelector(sel); }
@@ -49,7 +53,7 @@
   function renderOffer(offer) {
     const itemName = offer.name.replace(/^Free\s+/i, '');
     const head = $region('lm-headline');
-    if (head) head.textContent = `See if you qualify for a free ${itemName} this week`;
+    if (head) head.textContent = `Claim a free ${itemName} this week`;
 
     const sub = $region('lm-sub');
     if (sub) sub.textContent = `${offer.itemDescription}`;
@@ -59,15 +63,6 @@
 
     const value = $region('lm-value');
     if (value) value.textContent = `Retail value ${formatDollars(offer.retailValueCents)} · yours free`;
-
-    const giftName = $region('lm-gift-name');
-    if (giftName) giftName.textContent = offer.name;
-
-    const strike = $region('lm-strike');
-    if (strike) strike.textContent = formatDollars(offer.retailValueCents);
-
-    const radioNo = $region('lm-radio-no');
-    if (radioNo) radioNo.textContent = `No — I just want the free ${itemName.toLowerCase()}`;
 
     startCountdown(offer.weekEnd);
 
@@ -89,15 +84,15 @@
 
   function renderNoOffer() {
     const head = $region('lm-headline');
-    if (head) head.textContent = 'Next free gift drops Monday';
+    if (head) head.textContent = 'This week\'s gift is fully claimed';
     const sub = $region('lm-sub');
-    if (sub) sub.textContent = 'In the meantime, book a free styling session — no purchase, no pressure.';
+    if (sub) sub.textContent = 'A new free gift drops every Monday. Check back soon.';
     const stats = document.querySelector('.lm-stats');
     if (stats) stats.style.display = 'none';
     const cta = document.querySelector('[data-action="lm-reveal"]');
     if (cta) {
-      cta.textContent = 'Book a styling session';
-      cta.addEventListener('click', () => { window.location.href = '/styling-session/'; });
+      cta.textContent = 'Check Back Monday';
+      cta.disabled = true;
     }
     const formSection = $region('lm-form-section');
     if (formSection) formSection.hidden = true;
@@ -151,7 +146,7 @@
       const item = payload?.itemName ? ` "${payload.itemName}"` : ' this item';
       return `You've already claimed${item}. Stay tuned — we rotate to a new gift each week.`;
     }
-    if (code === 'DUPLICATE_RECENT') return 'You already claimed this week. Check your email for the redemption code.';
+    if (code === 'DUPLICATE_RECENT') return 'You already claimed this week. Check your email for your code.';
     if (code === 'HONEYPOT' || code === 'TOO_FAST') return 'Submission rejected. Please try again.';
     return 'Something went wrong. Please try again.';
   }
@@ -175,6 +170,19 @@
     });
   }
 
+  function showSuccessState(offerName) {
+    try { localStorage.setItem(OPTED_IN_KEY, '1'); } catch (_) {}
+    const formSection = $region('lm-form-section');
+    if (formSection) formSection.hidden = true;
+    const itemSlot = $region('lm-success-item');
+    if (itemSlot && offerName) itemSlot.textContent = offerName;
+    const success = $region('lm-success-section');
+    if (success) {
+      success.hidden = false;
+      success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   function setupForm() {
     const form = $region('lm-form');
     if (!form) return;
@@ -182,29 +190,27 @@
       e.preventDefault();
       clearError();
       const submit = $region('lm-submit');
-      if (submit) { submit.disabled = true; submit.textContent = 'Checking…'; }
+      if (submit) { submit.disabled = true; submit.textContent = 'Sending…'; }
 
       const data = new FormData(form);
       const payload = {
         firstName: String(data.get('firstName') || '').trim(),
         email: String(data.get('email') || '').trim(),
         phone: String(data.get('phone') || '').trim(),
-        qualifierAnswer: String(data.get('qualifierAnswer') || ''),
         consent: data.get('consent') === 'on',
         hp: String(data.get('hp') || ''),
         startedAt: STARTED_AT,
       };
 
+      function finish(msg) {
+        showError(msg);
+        if (submit) { submit.disabled = false; submit.textContent = 'Get My Free Gift ›'; }
+      }
+
       if (!payload.firstName) return finish('Please enter your first name.');
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) return finish('Please enter a valid email.');
       if (payload.phone.replace(/\D/g, '').length < 10) return finish('Please enter a valid phone.');
-      if (!payload.qualifierAnswer) return finish('Please pick one option.');
       if (!payload.consent) return finish('Please check the consent box.');
-
-      function finish(msg) {
-        showError(msg);
-        if (submit) { submit.disabled = false; submit.textContent = 'See If I Qualify ›'; }
-      }
 
       try {
         const res = await fetch('/api/lead-magnet/opt-in', {
@@ -216,11 +222,10 @@
         if (!res.ok || !j.ok) {
           return finish(errorMessage(j.error, j));
         }
-        if (j.redirect) {
-          window.location.href = j.redirect;
-          return;
+        if (j.exhausted) {
+          return finish('This week\'s gift just sold out. Check back Monday for the next one.');
         }
-        finish('Unexpected response. Please call (470) 595-7775.');
+        showSuccessState(j.offer?.name);
       } catch (_) {
         finish('Network error. Please try again.');
       }

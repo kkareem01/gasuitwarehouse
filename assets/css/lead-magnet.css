@@ -20,6 +20,28 @@
   .lm-hero__inner { grid-template-columns: 1fr; gap: var(--s-4); }
 }
 
+.lm-hero--centered {
+  padding: var(--s-7) var(--s-3) var(--s-6);
+}
+.lm-hero--centered .lm-hero__inner {
+  grid-template-columns: 1fr;
+  max-width: 760px;
+  text-align: center;
+  gap: var(--s-3);
+  justify-items: center;
+}
+.lm-hero--centered .lm-hero__sub {
+  max-width: 56ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lm-hero--centered .lm-stats {
+  justify-content: center;
+}
+.lm-hero--centered .lm-cta-row {
+  justify-content: center;
+}
+
 .lm-hero__copy h1 {
   font-family: var(--font-display);
   font-size: clamp(32px, 5vw, 56px);
@@ -426,24 +448,285 @@
 .lm-popup__dismiss:hover { color: var(--ink-soft); }
 
 /* ========================================================================== */
-/* Bottom-of-homepage gift promo (final CTA replacement)                       */
+/* Bottom-of-homepage offer card (final CTA replacement)                       */
 /* ========================================================================== */
 
-[data-lm-promo] .lm-final-stats {
+.lm-offer-card {
+  position: relative;
+  background: var(--paper);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(20, 33, 61, 0.12), 0 4px 12px rgba(20, 33, 61, 0.06);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-5);
+  padding: var(--s-5) var(--s-6);
+  align-items: center;
+  max-width: 1080px;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.lm-offer-card__badge {
+  position: absolute;
+  top: -16px;
+  right: 32px;
+  background: #E94B3C;
+  color: #FFFFFF;
+  padding: 9px 20px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-style: italic;
+  transform: rotate(8deg);
+  box-shadow: 0 6px 16px rgba(233, 75, 60, 0.35);
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.lm-offer-card__images {
+  position: relative;
+  min-height: 280px;
+}
+
+/* TODO: Swap the inline tie SVGs in index.html for real product photography
+   when available (suggested paths: assets/img/products/tie-1.jpg, etc.). */
+.lm-offer-card__img {
+  position: absolute;
+  width: 56%;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(20, 33, 61, 0.22), 0 3px 8px rgba(20, 33, 61, 0.10);
+  background:
+    radial-gradient(ellipse at 30% 20%, #FBF7EF 0%, #F4EFE6 60%, #E8E1D2 100%);
+  overflow: hidden;
+}
+.lm-offer-card__img > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.lm-offer-card__img--back  { left: 4%;  top: 6%;  transform: rotate(-10deg); z-index: 1; }
+.lm-offer-card__img--mid   { left: 22%; top: 0;   transform: rotate(-2deg);  z-index: 2; }
+.lm-offer-card__img--front { left: 38%; top: 8%;  transform: rotate(7deg);   z-index: 3; }
+
+.lm-offer-card__content {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--s-2);
-  justify-content: center;
-  margin-top: var(--s-2);
+}
+
+.lm-offer-card__eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+
+.lm-offer-card__headline {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.lm-offer-card__lead {
+  font-family: var(--font-body);
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.lm-offer-card__stats {
+  display: flex;
+  gap: var(--s-1);
   flex-wrap: wrap;
 }
+
+.lm-offer-card__cta {
+  margin-top: var(--s-1);
+  align-self: stretch;
+  text-align: center;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.lm-offer-card__fineprint {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--muted-light);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
 [data-lm-promo] .lm-final-chip {
   display: inline-block;
   padding: 6px 14px;
-  background: rgba(201, 169, 97, 0.12);
+  background: rgba(201, 169, 97, 0.14);
   border: 1px solid var(--gold);
   border-radius: 999px;
-  font-size: 13px;
+  font-family: var(--font-body);
+  font-size: 12px;
   font-weight: 700;
-  color: var(--gold-bright);
-  letter-spacing: 0.04em;
+  color: var(--gold-deep);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+  .lm-offer-card {
+    grid-template-columns: 1fr;
+    padding: var(--s-4) var(--s-3);
+    gap: var(--s-3);
+  }
+  .lm-offer-card__badge {
+    right: 16px;
+    top: -14px;
+    font-size: 12px;
+    padding: 7px 16px;
+  }
+  .lm-offer-card__images {
+    min-height: 220px;
+  }
+  .lm-offer-card__img {
+    width: 55%;
+  }
+  .lm-offer-card__content {
+    align-items: center;
+    text-align: center;
+  }
+  .lm-offer-card__cta {
+    width: 100%;
+  }
+}
+
+/* ========================================================================== */
+/* "Why we're giving these away" section                                       */
+/* ========================================================================== */
+
+.lm-why {
+  padding: var(--s-6) var(--s-3);
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.lm-why__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
+}
+.lm-why__title {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 34px);
+  color: var(--ink);
+  margin: 0 0 var(--s-2);
+}
+.lm-why__lead {
+  max-width: 64ch;
+  margin: 0 auto var(--s-5);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.lm-why__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-4);
+  text-align: left;
+}
+.lm-why__cell {
+  padding: var(--s-3);
+  border-left: 3px solid var(--gold);
+  background: var(--off-white);
+  border-radius: 2px;
+}
+.lm-why__cell-h {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: var(--s-1);
+}
+.lm-why__cell-p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+@media (max-width: 720px) {
+  .lm-why__grid { grid-template-columns: 1fr; gap: var(--s-3); }
+}
+
+/* ========================================================================== */
+/* Success state — shown after a successful opt-in                             */
+/* ========================================================================== */
+
+.lm-success {
+  padding: var(--s-7) var(--s-3) var(--s-6);
+  background: var(--off-white);
+}
+.lm-success__inner {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--paper);
+  border-radius: 12px;
+  padding: var(--s-5) var(--s-4);
+  box-shadow: 0 12px 36px rgba(20, 33, 61, 0.08);
+}
+.lm-success__icon {
+  color: var(--gold-deep);
+  margin-bottom: var(--s-3);
+}
+.lm-success__title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.4vw, 36px);
+  color: var(--ink);
+  margin: 0 0 var(--s-2);
+  line-height: 1.15;
+}
+.lm-success__lead {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0 0 var(--s-4);
+}
+.lm-success__card {
+  text-align: left;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: var(--s-3);
+  margin-bottom: var(--s-3);
+}
+.lm-success__row {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.lm-success__row + .lm-success__row {
+  border-top: 1px solid var(--rule-light);
+  padding-top: 6px;
+  margin-top: 6px;
+}
+.lm-success__row a {
+  color: var(--gold-deep);
+  font-weight: 700;
+}
+.lm-success__hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
 }
