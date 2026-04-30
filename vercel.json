@@ -9,5 +9,12 @@
       "destination": "https://www.gasuitwarehouse.com/$1",
       "permanent": true
     }
+  ],
+  "crons": [
+    { "path": "/api/cron/expire-codes",  "schedule": "0 7 * * *" },
+    { "path": "/api/cron/rotate-offer",  "schedule": "0 9 * * 1" },
+    { "path": "/api/cron/nurture-t3",    "schedule": "0 18 * * *" },
+    { "path": "/api/cron/nurture-t1",    "schedule": "0 18 * * *" },
+    { "path": "/api/cron/nurture-dayof", "schedule": "0 16 * * *" }
   ]
 }

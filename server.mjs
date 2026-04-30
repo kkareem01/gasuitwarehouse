@@ -28,6 +28,11 @@ import {
   handleLeadMagnetOptIn,
   handleGetActiveOffer,
   handleLeadLookup,
+  handleCronNurtureT3,
+  handleCronNurtureT1,
+  handleCronNurtureDayOf,
+  handleCronExpireCodes,
+  handleCronRotateOffer,
 } from './lib/handlers.mjs';
 import * as log from './lib/log.mjs';
 
@@ -134,6 +139,14 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'GET' && path === '/api/leads/lookup') return handleLeadLookup(req, res);
       if (req.method === 'POST' && path === '/api/lead-magnet/opt-in') return handleLeadMagnetOptIn(req, res);
       if (req.method === 'GET' && path === '/api/lead-magnet/active-offer') return handleGetActiveOffer(req, res);
+
+      // Crons accept GET (Vercel default) AND POST (manual local trigger).
+      const cronMethods = req.method === 'GET' || req.method === 'POST';
+      if (cronMethods && path === '/api/cron/nurture-t3')    return handleCronNurtureT3(req, res);
+      if (cronMethods && path === '/api/cron/nurture-t1')    return handleCronNurtureT1(req, res);
+      if (cronMethods && path === '/api/cron/nurture-dayof') return handleCronNurtureDayOf(req, res);
+      if (cronMethods && path === '/api/cron/expire-codes')  return handleCronExpireCodes(req, res);
+      if (cronMethods && path === '/api/cron/rotate-offer')  return handleCronRotateOffer(req, res);
 
       const icsMatch = path.match(/^\/api\/bookings\/([A-Za-z0-9-]+)\/ics$/);
       if (req.method === 'GET' && icsMatch) return handleGetBookingIcs(req, res, icsMatch[1]);
