@@ -55,17 +55,32 @@ const FOOTER_HTML = `
         <li><a href="/suits">All Men's Suits</a></li>
         <li><a href="/suits/custom-bespoke">Custom &amp; Bespoke</a></li>
         <li><a href="/suits/business-interview">Business &amp; Interview</a></li>
-        <li><a href="/suits/funeral">Funeral Suits</a></li>
-        <li><a href="/suits/alterations">Alterations</a></li>
         <li><a href="/suits/three-piece">Three-Piece Suits</a></li>
+        <li><a href="/suits/slim-fit">Slim Fit</a></li>
+        <li><a href="/suits/modern-fit">Modern Fit</a></li>
+        <li><a href="/suits/classic-fit">Classic Fit</a></li>
+        <li><a href="/suits/big-and-tall">Big &amp; Tall</a></li>
+        <li><a href="/suits/funeral">Funeral Suits</a></li>
+        <li><a href="/suits/church">Church Suits</a></li>
+        <li><a href="/suits/homecoming">Homecoming</a></li>
+        <li><a href="/suits/quinceanera">Quincea&ntilde;era</a></li>
+        <li><a href="/suits/graduation">Graduation</a></li>
+        <li><a href="/suits/boys-and-kids">Boys &amp; Kids</a></li>
+        <li><a href="/suits/sport-coats-and-blazers">Sport Coats &amp; Blazers</a></li>
+        <li><a href="/suits/dress-pants">Dress Pants</a></li>
+        <li><a href="/suits/outerwear">Outerwear</a></li>
+        <li><a href="/suits/casual-wear">Casual Wear</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h5>Tuxedos</h5>
       <ul>
         <li><a href="/tuxedos">All Tuxedos</a></li>
+        <li><a href="/tuxedos/wedding">Wedding Tuxedos</a></li>
         <li><a href="/tuxedos/black-tie">Black-Tie Tuxedos</a></li>
         <li><a href="/tuxedos/white-tie">White-Tie Formalwear</a></li>
+        <li><a href="/tuxedos/white">White Tuxedos</a></li>
+        <li><a href="/tuxedos/slim-fit">Slim Fit Tuxedos</a></li>
         <li><a href="/tuxedos/gala">Gala &amp; Charity Events</a></li>
         <li><a href="/tuxedos/modern-vs-classic">Modern vs Classic</a></li>
       </ul>
@@ -78,6 +93,41 @@ const FOOTER_HTML = `
         <li><a href="/prom/tuxedos">Prom Tuxedos</a></li>
         <li><a href="/prom/group-coordination">Group Coordination</a></li>
         <li><a href="/prom/color-coordination">Color &amp; Theme Match</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Alterations</h5>
+      <ul>
+        <li><a href="/alterations">All Alterations</a></li>
+        <li><a href="/suits/alterations">Suit Alterations</a></li>
+        <li><a href="/alterations/shirts">Shirt Tailoring</a></li>
+        <li><a href="/alterations/formal-wear">Formal Wear Tailoring</a></li>
+        <li><a href="/alterations/mens-clothing">Men's Clothing</a></li>
+        <li><a href="/alterations/kids-clothing">Kids' Clothing</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Shoes</h5>
+      <ul>
+        <li><a href="/shoes">All Men's Shoes</a></li>
+        <li><a href="/shoes/mens-dress">Dress Shoes</a></li>
+        <li><a href="/shoes/loafers">Loafers</a></li>
+        <li><a href="/shoes/wedding">Wedding Shoes</a></li>
+        <li><a href="/shoes/prom">Prom Shoes</a></li>
+        <li><a href="/shoes/formal">Formal Shoes</a></li>
+        <li><a href="/shoes/kids">Kids Shoes</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Accessories</h5>
+      <ul>
+        <li><a href="/accessories">All Accessories</a></li>
+        <li><a href="/accessories/dress-shirts">Dress Shirts</a></li>
+        <li><a href="/accessories/neckties">Neckties</a></li>
+        <li><a href="/accessories/bowties">Bowties</a></li>
+        <li><a href="/accessories/belts">Belts</a></li>
+        <li><a href="/accessories/suspenders">Suspenders</a></li>
+        <li><a href="/accessories/cufflinks">Cufflinks</a></li>
       </ul>
     </div>
   </div>
