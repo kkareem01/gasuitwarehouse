@@ -33,6 +33,9 @@ import {
   handleCronNurtureDayOf,
   handleCronExpireCodes,
   handleCronRotateOffer,
+  handleAdminLookupCode,
+  handleAdminRedeem,
+  handleAdminFunnelStats,
 } from './lib/handlers.mjs';
 import * as log from './lib/log.mjs';
 
@@ -147,6 +150,10 @@ const server = http.createServer(async (req, res) => {
       if (cronMethods && path === '/api/cron/nurture-dayof') return handleCronNurtureDayOf(req, res);
       if (cronMethods && path === '/api/cron/expire-codes')  return handleCronExpireCodes(req, res);
       if (cronMethods && path === '/api/cron/rotate-offer')  return handleCronRotateOffer(req, res);
+
+      if (req.method === 'GET'  && path === '/api/admin/lookup-code')  return handleAdminLookupCode(req, res);
+      if (req.method === 'POST' && path === '/api/admin/redeem')       return handleAdminRedeem(req, res);
+      if (req.method === 'GET'  && path === '/api/admin/funnel-stats') return handleAdminFunnelStats(req, res);
 
       const icsMatch = path.match(/^\/api\/bookings\/([A-Za-z0-9-]+)\/ics$/);
       if (req.method === 'GET' && icsMatch) return handleGetBookingIcs(req, res, icsMatch[1]);
