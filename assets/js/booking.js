@@ -17,6 +17,8 @@
       monthCache: {},
       daySlotsCache: {},
       leadId: null,
+      leadToken: null,
+      prefill: null,
       formStartedAt: Date.now(),
       submitting: false,
       error: null,
@@ -24,6 +26,25 @@
       monthDataLoading: false,
       slotsLoading: false,
     };
+  }
+
+  function readPrefillParams() {
+    const params = new URLSearchParams(window.location.search);
+    const lead = params.get('lead');
+    const t = params.get('t');
+    if (!lead || !t) return null;
+    return { lead, t };
+  }
+
+  async function fetchLeadPrefill(lead, t) {
+    try {
+      const res = await fetch(`/api/leads/lookup?lead=${encodeURIComponent(lead)}&t=${encodeURIComponent(t)}`);
+      if (!res.ok) return null;
+      const j = await res.json();
+      return j.ok ? j : null;
+    } catch (_) {
+      return null;
+    }
   }
 
   function monthCursorFromToday() {
@@ -44,8 +65,32 @@
       state.config = cfg;
       renderAll(root, state);
     });
-    // Pre-load this month so the locked calendar already shows highlighted open dates
-    loadMonthData(root, state);
+
+    // If we arrived from a lead-magnet opt-in (?lead=&t=), prefill the form,
+    // jump straight to step 3 (calendar), and bind the lead to the booking POST.
+    const prefillParams = readPrefillParams();
+    if (prefillParams) {
+      fetchLeadPrefill(prefillParams.lead, prefillParams.t).then((j) => {
+        if (!j || !j.lead) return;
+        state.audience = j.lead.audience || audience;
+        state.customer = {
+          firstName: j.lead.firstName || '',
+          lastName: '',
+          phone: j.lead.phone || '',
+          email: j.lead.email || '',
+          consent: true,
+        };
+        state.leadId = prefillParams.lead;
+        state.leadToken = prefillParams.t;
+        state.prefill = { offerName: j.offer?.name || 'gift' };
+        state.step = 3;
+        renderAll(root, state);
+        loadMonthData(root, state);
+      });
+    } else {
+      // Pre-load this month so the locked calendar already shows highlighted open dates
+      loadMonthData(root, state);
+    }
 
     // Event delegation
     root.addEventListener('click', (e) => onClick(e, root, state));
@@ -255,6 +300,7 @@
     const body = {
       audience: state.audience,
       leadId: state.leadId,
+      t: state.leadToken,
       customer: state.customer,
       answers: state.answers,
       slot: { date: state.selectedDate, time: state.selectedTime },
@@ -287,6 +333,11 @@
           submitting: false,
           error: json.error || 'Could not confirm. Please try again.',
         });
+      }
+      if (json.data?.redemption) {
+        try {
+          sessionStorage.setItem('lastRedemption', JSON.stringify(json.data.redemption));
+        } catch (_) {}
       }
       window.location.href = `/booking-confirmed.html?id=${encodeURIComponent(json.data.id)}`;
     } catch (err) {

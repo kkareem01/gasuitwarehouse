@@ -25,6 +25,9 @@ import {
   handleCreateBooking,
   handleGetBooking,
   handleGetBookingIcs,
+  handleLeadMagnetOptIn,
+  handleGetActiveOffer,
+  handleLeadLookup,
 } from './lib/handlers.mjs';
 import * as log from './lib/log.mjs';
 
@@ -81,13 +84,19 @@ async function serveStatic(req, res, urlPath) {
   let relPath = normalize(urlPath).replace(/^[/\\]+/, '');
   if (relPath === '' || relPath.endsWith('/')) relPath = join(relPath, 'index.html');
 
-  const filePath = join(ROOT, relPath);
+  let filePath = join(ROOT, relPath);
   if (!filePath.startsWith(ROOT)) {
     res.writeHead(403);
     return res.end('Forbidden');
   }
 
-  const s = await stat(filePath).catch(() => null);
+  let s = await stat(filePath).catch(() => null);
+  // Mirror vercel.json `cleanUrls: true` locally: if /foo doesn't resolve, try /foo.html
+  if ((!s || !s.isFile()) && !extname(filePath)) {
+    const htmlPath = filePath + '.html';
+    const s2 = await stat(htmlPath).catch(() => null);
+    if (s2 && s2.isFile()) { filePath = htmlPath; s = s2; }
+  }
   if (!s || !s.isFile()) {
     res.writeHead(404, { 'content-type': 'text/html; charset=utf-8' });
     return res.end(`<h1>404</h1><p>${relPath}</p>`);
@@ -122,6 +131,9 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'GET' && path === '/api/availability/month') return handleAvailabilityMonth(req, res);
       if (req.method === 'POST' && path === '/api/leads') return handleCreateLead(req, res);
       if (req.method === 'POST' && path === '/api/bookings') return handleCreateBooking(req, res);
+      if (req.method === 'GET' && path === '/api/leads/lookup') return handleLeadLookup(req, res);
+      if (req.method === 'POST' && path === '/api/lead-magnet/opt-in') return handleLeadMagnetOptIn(req, res);
+      if (req.method === 'GET' && path === '/api/lead-magnet/active-offer') return handleGetActiveOffer(req, res);
 
       const icsMatch = path.match(/^\/api\/bookings\/([A-Za-z0-9-]+)\/ics$/);
       if (req.method === 'GET' && icsMatch) return handleGetBookingIcs(req, res, icsMatch[1]);

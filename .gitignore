@@ -17,6 +17,10 @@ local.db
 local.db-journal
 local.db-shm
 local.db-wal
+test.db
+test.db-journal
+test.db-shm
+test.db-wal
 
 # Vercel
 .vercel/

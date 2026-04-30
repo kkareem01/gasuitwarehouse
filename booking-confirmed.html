@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/lead-magnet.css" />
 </head>
 <body>
   <div id="site-nav"></div>
@@ -23,9 +24,19 @@
   <!-- ===================== HERO ===================== -->
   <section class="confirm-hero">
     <div class="confirm-hero__check" aria-hidden="true">✓</div>
-    <span class="eyebrow">Your Session is Confirmed</span>
+    <span class="eyebrow" data-region="hero-eyebrow">Your Session is Confirmed</span>
     <h1 data-region="hero-headline">See you soon.</h1>
     <div class="confirm-hero__ref" data-region="reference">Reference: —</div>
+  </section>
+
+  <!-- ===================== REDEMPTION CODE (only when arrived from lead-magnet) ===================== -->
+  <section class="confirm-code-wrap" data-region="redemption-section" hidden style="padding:0 16px;">
+    <div class="confirm-code">
+      <div class="confirm-code__label">Your redemption code</div>
+      <div class="confirm-code__value" data-region="redemption-code">—</div>
+      <div class="confirm-code__gift" data-region="redemption-gift">—</div>
+      <div class="confirm-code__note">Bring this code with you. One per customer. We've also sent it to your email.</div>
+    </div>
   </section>
 
   <!-- ===================== SUMMARY ===================== -->

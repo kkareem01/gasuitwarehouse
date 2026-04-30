@@ -1,0 +1,312 @@
+/* Lead magnet landing page — extends styles.css */
+
+.lm-page {
+  background: var(--off-white);
+  padding-top: 80px;
+}
+
+.lm-hero {
+  padding: var(--s-6) var(--s-3);
+}
+.lm-hero__inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--s-6);
+  align-items: center;
+}
+@media (max-width: 800px) {
+  .lm-hero__inner { grid-template-columns: 1fr; gap: var(--s-4); }
+}
+
+.lm-hero__copy h1 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.1;
+  margin: var(--s-2) 0 var(--s-3);
+  color: var(--ink);
+}
+.lm-hero__sub {
+  font-size: 18px;
+  color: var(--ink-soft);
+  margin: 0 0 var(--s-3);
+  max-width: 56ch;
+}
+
+.lm-stats {
+  display: flex;
+  gap: var(--s-3);
+  margin: var(--s-3) 0;
+}
+.lm-stat {
+  border-left: 3px solid var(--gold);
+  padding: 4px var(--s-2);
+}
+.lm-stat__value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.lm-stat__label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.lm-cta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  margin-top: var(--s-3);
+}
+.lm-cta-meta { font-size: 14px; color: var(--muted); }
+
+.lm-hero__visual { display: flex; justify-content: center; }
+.lm-gift-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: var(--s-4);
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(20, 33, 61, 0.06);
+}
+.lm-gift-card__placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 180px;
+  background: var(--cream);
+  color: var(--gold-deep);
+  margin-bottom: var(--s-3);
+}
+.lm-gift-card__name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: var(--s-1);
+}
+.lm-gift-card__price {
+  color: var(--muted);
+  font-size: 16px;
+}
+.lm-gift-card__price [data-region="lm-strike"] {
+  text-decoration: line-through;
+  margin-right: var(--s-1);
+}
+.lm-gift-card__price strong {
+  color: var(--gold-deep);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.lm-form-section {
+  background: var(--paper);
+  padding: var(--s-6) var(--s-3);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.lm-form-section__inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+.lm-form-section h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  margin: 0 0 var(--s-1);
+}
+.lm-form-section__sub {
+  color: var(--muted);
+  margin: 0 0 var(--s-4);
+}
+
+.lm-form .field { margin-bottom: var(--s-3); }
+.lm-form .field label,
+.lm-form .field legend {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.lm-form input[type="text"],
+.lm-form input[type="email"],
+.lm-form input[type="tel"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.lm-form input:focus-visible {
+  border-color: var(--gold);
+  outline: 2px solid var(--gold);
+  outline-offset: -1px;
+}
+
+.lm-qualifier {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: var(--s-3);
+  background: var(--off-white);
+}
+.lm-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  padding: var(--s-2) 0;
+  border-bottom: 1px dashed var(--rule-light);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.lm-radio:last-child { border-bottom: none; }
+.lm-radio input { margin-top: 4px; flex-shrink: 0; }
+
+.lm-hp {
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  height: 1px;
+  width: 1px;
+  opacity: 0;
+}
+
+.lm-error {
+  background: #FBE9E7;
+  border-left: 3px solid #C8302E;
+  color: #6E0E0C;
+  padding: var(--s-2) var(--s-3);
+  margin-bottom: var(--s-3);
+  font-size: 14px;
+  border-radius: 2px;
+}
+
+.lm-how, .lm-faq { padding: var(--s-6) var(--s-3); }
+.lm-how__inner, .lm-faq__inner {
+  max-width: 720px; margin: 0 auto;
+}
+.lm-how h2, .lm-faq h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  margin: 0 0 var(--s-3);
+}
+.lm-how__steps {
+  list-style: none;
+  counter-reset: step;
+  padding: 0;
+  margin: 0;
+}
+.lm-how__steps li {
+  counter-increment: step;
+  position: relative;
+  padding: var(--s-3) 0 var(--s-3) 64px;
+  border-bottom: 1px solid var(--rule-light);
+  font-size: 17px;
+}
+.lm-how__steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: var(--navy);
+  color: var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+}
+.lm-how__steps li:last-child { border-bottom: none; }
+
+/* Booking page prefill banner — used by booking-form.js when state.prefill set */
+.booking-prefill-card {
+  background: linear-gradient(135deg, var(--cream) 0%, var(--paper) 100%);
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  padding: var(--s-3);
+  margin-top: var(--s-2);
+}
+.booking-prefill-card__hi {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.booking-prefill-card__gift {
+  font-size: 15px;
+  color: var(--gold-deep);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+.booking-prefill-card__hint {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Redemption code block on confirmation page */
+.confirm-code {
+  background: var(--paper);
+  border: 2px solid var(--gold);
+  border-radius: 2px;
+  padding: var(--s-4);
+  text-align: center;
+  margin: 0 auto var(--s-4);
+  max-width: 520px;
+}
+.confirm-code__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: var(--s-2);
+}
+.confirm-code__value {
+  font-family: 'Courier New', monospace;
+  font-size: 30px;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  color: var(--ink);
+  margin: var(--s-1) 0;
+}
+.confirm-code__gift {
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin-top: var(--s-2);
+}
+.confirm-code__note {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: var(--s-2);
+}
+
+/* Styling-session fallback banner */
+.fallback-banner {
+  background: var(--cream);
+  border-left: 3px solid var(--gold);
+  padding: var(--s-2) var(--s-3);
+  margin: 0 auto var(--s-3);
+  max-width: var(--max-w);
+  font-size: 14px;
+  color: var(--ink-soft);
+}

@@ -17,6 +17,18 @@
       { name: 'eventDate', label: 'Date you need it by (optional)', type: 'date', required: false },
       { name: 'notes', label: 'Anything else?', type: 'textarea', required: false, maxLength: 500 },
     ],
+    prom: [
+      { name: 'eventDate', label: 'Prom date', type: 'date', required: true },
+      { name: 'partySize', label: 'Group size', type: 'select', required: false,
+        options: ['Just me', '2-4', '5-7', '8-10', '11+'] },
+      { name: 'notes', label: 'Anything we should know?', type: 'textarea', required: false, maxLength: 500 },
+    ],
+    tuxedos: [
+      { name: 'occasion', label: 'Occasion', type: 'select', required: true,
+        options: ['Wedding', 'Black Tie Event', 'Gala', 'Prom', 'Other'] },
+      { name: 'eventDate', label: 'Event date', type: 'date', required: true },
+      { name: 'notes', label: 'Anything we should know?', type: 'textarea', required: false, maxLength: 500 },
+    ],
   };
 
   function escapeAttr(s) {
@@ -55,9 +67,19 @@
   const TITLES = {
     weddings: { h2: 'Wedding Fitting Appointment', sub: 'Excited to dress you for your wedding day.', cta1: 'Continue', cta2: 'Continue' },
     general:  { h2: 'Styling Session Appointment', sub: 'Excited to get the suit fitting you the way it should.', cta1: 'Continue', cta2: 'Continue' },
+    prom:     { h2: 'Prom Appointment', sub: 'Let\'s pick the look for your night.', cta1: 'Continue', cta2: 'Continue' },
+    tuxedos:  { h2: 'Tuxedo Appointment', sub: 'Black-tie ready, tailored to you.', cta1: 'Continue', cta2: 'Continue' },
+  };
+
+  const PREFILL_TITLES = {
+    h2: 'Pick a time to come in',
+    sub: 'Your free gift is reserved. Choose any open time below to come pick it up.',
   };
 
   function renderForm(state, audience, errorMessage) {
+    if (state.prefill && state.step === 3) {
+      return renderPrefillBanner(state);
+    }
     const customer = state.customer;
     const answers = state.answers;
     const schema = FIELD_SCHEMAS[audience] || [];
@@ -123,6 +145,20 @@
 
         <button type="submit" class="btn btn-primary">${ctaLabel} ›</button>
       </form>
+    `;
+  }
+
+  function renderPrefillBanner(state) {
+    const first = state.customer.firstName || 'there';
+    const giftName = state.prefill?.offerName || 'free gift';
+    return `
+      <h2>${escapeHtml(PREFILL_TITLES.h2)}</h2>
+      <p class="booking-pane__sub">${escapeHtml(PREFILL_TITLES.sub)}</p>
+      <div class="booking-prefill-card" role="status">
+        <div class="booking-prefill-card__hi">Welcome back, ${escapeHtml(first)}.</div>
+        <div class="booking-prefill-card__gift">Your ${escapeHtml(giftName)} is reserved.</div>
+        <div class="booking-prefill-card__hint">Pick any open time on the calendar to come in.</div>
+      </div>
     `;
   }
 

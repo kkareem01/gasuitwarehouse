@@ -13,7 +13,9 @@
   "defaultSlotDurationMinutes": 20,
   "fittingTypes": {
     "weddings": { "label": "Wedding fitting",   "slotDurationMinutes": 30, "buffer": 5 },
-    "general":  { "label": "Styling session",   "slotDurationMinutes": 30, "buffer": 5 }
+    "general":  { "label": "Styling session",   "slotDurationMinutes": 30, "buffer": 5 },
+    "prom":     { "label": "Prom appointment",  "slotDurationMinutes": 30, "buffer": 5 },
+    "tuxedos":  { "label": "Tuxedo appointment","slotDurationMinutes": 30, "buffer": 5 }
   },
   "urgencyTimerSeconds": 156,
   "leadTimeMinutes": 120,

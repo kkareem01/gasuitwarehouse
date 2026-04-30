@@ -66,6 +66,7 @@
   }
 
   async function init() {
+    showRedemption();
     const id = new URLSearchParams(location.search).get('id');
     if (!id) return showError("We couldn't find that booking.");
 
@@ -81,6 +82,27 @@
 
     const b = json.data;
     hydrate(b);
+  }
+
+  function showRedemption() {
+    let payload = null;
+    try {
+      const raw = sessionStorage.getItem('lastRedemption');
+      if (raw) payload = JSON.parse(raw);
+      sessionStorage.removeItem('lastRedemption');
+    } catch (_) { /* ignore */ }
+    if (!payload || !payload.code) return false;
+
+    const section = document.querySelector('[data-region="redemption-section"]');
+    const codeEl = document.querySelector('[data-region="redemption-code"]');
+    const giftEl = document.querySelector('[data-region="redemption-gift"]');
+    if (section) section.hidden = false;
+    if (codeEl) codeEl.textContent = payload.code;
+    if (giftEl && payload.offer?.name) giftEl.textContent = `Pick up: ${payload.offer.name}`;
+
+    const eyebrow = document.querySelector('[data-region="hero-eyebrow"]');
+    if (eyebrow) eyebrow.textContent = 'Your Free Gift Is Reserved';
+    return true;
   }
 
   function hydrate(b) {
