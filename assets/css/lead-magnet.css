@@ -137,17 +137,25 @@
   border-bottom: 1px solid var(--rule);
 }
 .lm-form-section__inner {
-  max-width: 640px;
+  max-width: 520px;
   margin: 0 auto;
+  text-align: center;
 }
 .lm-form-section h2 {
   font-family: var(--font-display);
   font-size: 32px;
   margin: 0 0 var(--s-1);
+  text-align: center;
 }
 .lm-form-section__sub {
   color: var(--muted);
   margin: 0 0 var(--s-4);
+  text-align: center;
+}
+.lm-form { text-align: left; }
+.lm-form button[type="submit"] {
+  display: block;
+  margin: var(--s-3) auto 0;
 }
 
 .lm-form .field { margin-bottom: var(--s-3); }
@@ -219,12 +227,16 @@
 .lm-how, .lm-faq { padding: var(--s-6) var(--s-3); }
 .lm-how__inner, .lm-faq__inner {
   max-width: 720px; margin: 0 auto;
+  text-align: center;
 }
 .lm-how h2, .lm-faq h2 {
   font-family: var(--font-display);
   font-size: 28px;
-  margin: 0 0 var(--s-3);
+  margin: 0 0 var(--s-4);
+  text-align: center;
 }
+.lm-how__steps,
+.lm-faq__inner .faq-item { text-align: left; }
 .lm-how__steps {
   list-style: none;
   counter-reset: step;
@@ -644,13 +656,13 @@
 .lm-why__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--s-4);
-  text-align: left;
+  gap: var(--s-3);
+  text-align: center;
 }
 .lm-why__cell {
-  padding: var(--s-3);
-  border-left: 3px solid var(--gold);
+  padding: var(--s-4) var(--s-3);
   background: var(--off-white);
+  border-top: 3px solid var(--gold);
   border-radius: 2px;
 }
 .lm-why__cell-h {

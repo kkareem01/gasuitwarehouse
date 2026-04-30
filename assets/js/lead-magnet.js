@@ -53,7 +53,7 @@
   function renderOffer(offer) {
     const itemName = offer.name.replace(/^Free\s+/i, '');
     const head = $region('lm-headline');
-    if (head) head.textContent = `Claim a free ${itemName} this week`;
+    if (head) head.textContent = `Get a free ${itemName}, on the house`;
 
     const sub = $region('lm-sub');
     if (sub) sub.textContent = `${offer.itemDescription}`;
@@ -64,8 +64,6 @@
     const value = $region('lm-value');
     if (value) value.textContent = `Retail value ${formatDollars(offer.retailValueCents)} · yours free`;
 
-    startCountdown(offer.weekEnd);
-
     const ld = document.getElementById('lm-jsonld');
     if (ld) {
       ld.textContent = JSON.stringify({
@@ -73,40 +71,31 @@
         '@type': 'Offer',
         name: offer.name,
         description: offer.itemDescription,
-        validThrough: offer.weekEnd,
         priceCurrency: 'USD',
         price: '0',
-        availability: 'https://schema.org/LimitedAvailability',
+        availability: 'https://schema.org/InStock',
         itemOffered: { '@type': 'Product', name: offer.name },
       });
     }
   }
 
+  // If the API fails, keep the static HTML copy (which already promotes a free
+  // tie) and just hide the live counters. The CTA still works — submitting the
+  // form lets the server bootstrap the default offer on the back-end.
   function renderNoOffer() {
-    const head = $region('lm-headline');
-    if (head) head.textContent = 'This week\'s gift is fully claimed';
-    const sub = $region('lm-sub');
-    if (sub) sub.textContent = 'A new free gift drops every Monday. Check back soon.';
     const stats = document.querySelector('.lm-stats');
     if (stats) stats.style.display = 'none';
-    const cta = document.querySelector('[data-action="lm-reveal"]');
-    if (cta) {
-      cta.textContent = 'Check Back Monday';
-      cta.disabled = true;
-    }
-    const formSection = $region('lm-form-section');
-    if (formSection) formSection.hidden = true;
   }
 
   async function loadOffer() {
     try {
       const res = await fetch('/api/lead-magnet/active-offer');
-      if (res.status === 404) {
+      if (!res.ok) {
         renderNoOffer();
         return null;
       }
       const j = await res.json();
-      if (!j.ok) {
+      if (!j.ok || !j.offer) {
         renderNoOffer();
         return null;
       }
@@ -204,7 +193,7 @@
 
       function finish(msg) {
         showError(msg);
-        if (submit) { submit.disabled = false; submit.textContent = 'Get My Free Gift ›'; }
+        if (submit) { submit.disabled = false; submit.textContent = 'Get My Free Tie ›'; }
       }
 
       if (!payload.firstName) return finish('Please enter your first name.');
@@ -223,7 +212,7 @@
           return finish(errorMessage(j.error, j));
         }
         if (j.exhausted) {
-          return finish('This week\'s gift just sold out. Check back Monday for the next one.');
+          return finish('Sorry, the offer is unavailable right now. Please call (470) 595-7775.');
         }
         showSuccessState(j.offer?.name);
       } catch (_) {

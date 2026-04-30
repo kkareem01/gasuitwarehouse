@@ -27,17 +27,17 @@
   function buildPopupHtml(offer) {
     const itemName = offer.name.replace(/^Free\s+/i, '');
     const remaining = offer.remaining;
-    const remainText = typeof remaining === 'number' ? `${remaining} spots left` : `${remaining} spots left`;
+    const showChip = typeof remaining === 'number' && remaining < 50;
     return `
       <div class="lm-popup__overlay" data-lm-popup-close></div>
       <div class="lm-popup__card" role="dialog" aria-modal="true" aria-labelledby="lm-popup-title">
         <button class="lm-popup__close" type="button" aria-label="Close" data-lm-popup-close>&times;</button>
-        <div class="lm-popup__eyebrow">This week only · first 50 customers</div>
-        <h2 class="lm-popup__title" id="lm-popup-title">A free gift, on the house.</h2>
-        <p class="lm-popup__sub">Claim a free <strong>${escapeHtml(itemName)}</strong> this week. No purchase necessary.</p>
-        <div class="lm-popup__chip">${escapeHtml(remainText)}</div>
+        <div class="lm-popup__eyebrow">Limited Time · First 50 Customers</div>
+        <h2 class="lm-popup__title" id="lm-popup-title">Get a free silk tie, on the house.</h2>
+        <p class="lm-popup__sub">A hand-finished <strong>${escapeHtml(itemName)}</strong> from our shop. No purchase necessary.</p>
+        ${showChip ? `<div class="lm-popup__chip">${remaining} spots left</div>` : ''}
         <div class="lm-popup__actions">
-          <a href="/lead-magnet/" class="btn btn-primary lm-popup__cta">Get My Free Gift</a>
+          <a href="/lead-magnet/" class="btn btn-primary lm-popup__cta">Get My Free Tie</a>
           <button type="button" class="lm-popup__dismiss" data-lm-popup-close>No thanks, I'll just browse</button>
         </div>
       </div>

@@ -1,27 +1,11 @@
-/* GA Suit Warehouse — homepage bottom-of-page free-gift offer card.
-   Hydrates the [data-lm-promo] offer card with this week's active offer
-   name, remaining count, countdown, and a dynamic "Get My Free [item]" CTA.
-   Falls back to static copy if the API errs; hides the section if no
-   offer is active (404). */
+/* GA Suit Warehouse — homepage bottom-of-page free-tie offer card.
+   Hydrates the [data-lm-promo] offer card with the active offer name +
+   remaining count and a dynamic "Get My Free [item]" CTA. Leaves the
+   static fallback copy in place if the API errs — the page never tells
+   visitors the offer is unavailable. */
 
 (function () {
   function $r(name) { return document.querySelector(`[data-region="${name}"]`); }
-
-  function endOfDayMs(weekEnd) {
-    const [y, m, d] = weekEnd.split('-').map(Number);
-    return Date.UTC(y, m - 1, d, 23, 59, 59);
-  }
-
-  function fmtCountdown(ms) {
-    if (ms <= 0) return 'ending soon';
-    const totalMin = Math.floor(ms / 60000);
-    const days = Math.floor(totalMin / 1440);
-    const hours = Math.floor((totalMin % 1440) / 60);
-    const minutes = totalMin % 60;
-    if (days > 0) return `${days}d ${hours}h left`;
-    if (hours > 0) return `${hours}h ${minutes}m left`;
-    return `${minutes}m left`;
-  }
 
   function hydrate(offer) {
     const headline = $r('lm-final-headline');
@@ -34,20 +18,11 @@
         : 'Yours to keep, just for stopping by.';
     }
 
-    const stats = $r('lm-final-stats');
-    if (stats) stats.hidden = false;
-
     const remaining = $r('lm-final-remaining');
-    if (remaining && typeof offer.remaining === 'number') {
-      remaining.textContent = `${offer.remaining} spots left`;
-    }
-
-    const countdown = $r('lm-final-countdown');
-    if (countdown) {
-      const target = endOfDayMs(offer.weekEnd);
-      const tick = () => { countdown.textContent = fmtCountdown(target - Date.now()); };
-      tick();
-      setInterval(tick, 60000);
+    if (remaining && typeof offer.remaining === 'number' && offer.remaining < 50) {
+      const stats = $r('lm-final-stats');
+      if (stats) stats.hidden = false;
+      remaining.textContent = `Only ${offer.remaining} spots left`;
     }
 
     const cta = $r('lm-final-cta');
@@ -56,15 +31,10 @@
 
   // Trim long offer names down to a CTA-friendly length by stopping at the
   // first conjunction or delimiter. "Free Silk Tie + Pocket Square Set" →
-  // "Free Silk Tie". "Free Premium Tie" → "Free Premium Tie".
+  // "Free Silk Tie". "Free Silk Tie" → "Free Silk Tie".
   function shortenOfferName(name) {
-    if (!name) return 'Free Gift';
+    if (!name) return 'Free Tie';
     return String(name).split(/\s+[+·&]\s+/)[0].trim();
-  }
-
-  function hideSection() {
-    const section = $r('lm-final-section');
-    if (section) section.style.display = 'none';
   }
 
   async function init() {
@@ -72,10 +42,9 @@
     if (!section) return;
     try {
       const res = await fetch('/api/lead-magnet/active-offer');
-      if (res.status === 404) return hideSection();
-      if (!res.ok) return; // keep static fallback copy
+      if (!res.ok) return; // keep static fallback copy — never hide the section
       const j = await res.json();
-      if (!j.ok || !j.offer) return hideSection();
+      if (!j.ok || !j.offer) return;
       hydrate(j.offer);
     } catch (_) { /* keep static fallback */ }
   }
