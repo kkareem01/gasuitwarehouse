@@ -145,8 +145,12 @@
     el.textContent = '';
   }
 
-  function errorMessage(code) {
+  function errorMessage(code, payload) {
     if (code === 'RATE_LIMIT') return 'Too many submissions. Try again in a few minutes.';
+    if (code === 'ALREADY_CLAIMED_ITEM') {
+      const item = payload?.itemName ? ` "${payload.itemName}"` : ' this item';
+      return `You've already claimed${item}. Stay tuned — we rotate to a new gift each week.`;
+    }
     if (code === 'DUPLICATE_RECENT') return 'You already claimed this week. Check your email for the redemption code.';
     if (code === 'HONEYPOT' || code === 'TOO_FAST') return 'Submission rejected. Please try again.';
     return 'Something went wrong. Please try again.';
@@ -210,7 +214,7 @@
         });
         const j = await res.json().catch(() => ({}));
         if (!res.ok || !j.ok) {
-          return finish(errorMessage(j.error));
+          return finish(errorMessage(j.error, j));
         }
         if (j.redirect) {
           window.location.href = j.redirect;

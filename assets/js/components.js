@@ -1,31 +1,16 @@
 /* GA Suit Warehouse — shared nav + footer injector, mobile menu, scroll reveals, FAQ accordion */
 
 const ANNOUNCE_BAR_HTML = `
-<a href="/lead-magnet/" class="announce-bar" data-announce-bar aria-label="See if you qualify for this week's free gift">
+<a href="/#choose" class="announce-bar" aria-label="New 2026 Executive Styling Session — find out if you are a fit">
   <span class="announce-bar__inner">
-    <span class="announce-bar__text" data-announce-text>
-      <strong>This week:</strong>
-      <span class="announce-bar__cta">See if you qualify for a free gift</span>
+    <span class="announce-bar__text">
+      <strong>New 2026 Executive Styling Session:</strong>
+      <span class="announce-bar__cta">Find out if you are a fit</span>
     </span>
     <span class="announce-bar__arrow" aria-hidden="true">&rarr;</span>
   </span>
 </a>
 `;
-
-async function hydrateAnnounceBar() {
-  const el = document.querySelector('[data-announce-text]');
-  if (!el) return;
-  try {
-    const res = await fetch('/api/lead-magnet/active-offer');
-    if (!res.ok) return;
-    const j = await res.json();
-    if (!j.ok || !j.offer) return;
-    const itemName = j.offer.name.replace(/^Free\s+/i, '');
-    const remaining = j.offer.remaining;
-    const remainText = typeof remaining === 'number' ? `${remaining} left` : `${remaining} left`;
-    el.innerHTML = `<strong>This week:</strong> Free ${itemName} <span class="announce-bar__cta">· ${remainText} · See if you qualify</span>`;
-  } catch (_) { /* keep static fallback */ }
-}
 
 const NAV_HTML = `
 <nav class="site-nav" aria-label="Primary">
@@ -42,7 +27,7 @@ const NAV_HTML = `
       <li><a href="/#pricing" data-section="pricing">Pricing</a></li>
       <li><a href="/#faqs" data-section="faqs">FAQ</a></li>
     </ul>
-    <a href="/lead-magnet/" class="nav-cta">Claim Free Gift</a>
+    <a href="/#choose" class="nav-cta">Get Me Suited</a>
     <button class="nav-toggle" aria-label="Toggle menu" id="nav-toggle">
       <span></span>
     </button>
@@ -192,9 +177,8 @@ function injectComponents() {
   const footerMount = document.getElementById('site-footer');
   if (navMount) {
     const path = window.location.pathname;
-    const showAnnounce = !path.startsWith('/lead-magnet') && !path.startsWith('/booking-confirmed') && !path.startsWith('/booking/');
-    navMount.innerHTML = (showAnnounce ? ANNOUNCE_BAR_HTML : '') + NAV_HTML;
-    if (showAnnounce) hydrateAnnounceBar();
+    const isHome = path === '/' || path === '' || path.endsWith('/index.html');
+    navMount.innerHTML = (isHome ? ANNOUNCE_BAR_HTML : '') + NAV_HTML;
   }
   if (footerMount) footerMount.innerHTML = FOOTER_HTML;
 
@@ -236,8 +220,27 @@ function setupFaq() {
   });
 }
 
+function injectLeadMagnetPopup() {
+  const path = window.location.pathname;
+  const skip = (
+    path.startsWith('/lead-magnet') ||
+    path.startsWith('/styling-session') ||
+    path.startsWith('/booking') ||
+    path.startsWith('/staff') ||
+    path === '/booking-confirmed.html'
+  );
+  if (skip) return;
+  if (document.querySelector('script[data-lm-popup]')) return;
+  const s = document.createElement('script');
+  s.src = '/assets/js/lead-magnet-popup.js';
+  s.defer = true;
+  s.dataset.lmPopup = 'true';
+  document.head.appendChild(s);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   injectComponents();
   setupScrollReveal();
   setupFaq();
+  injectLeadMagnetPopup();
 });

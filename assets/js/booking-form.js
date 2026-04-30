@@ -72,8 +72,8 @@
   };
 
   const PREFILL_TITLES = {
-    h2: 'Pick a time to come in',
-    sub: 'Your free gift is reserved. Choose any open time below to come pick it up.',
+    h2: 'Pick a time to come pick up your free gift',
+    sub: 'Your reservation expires 7 days from today. Pick any open time below.',
   };
 
   function renderForm(state, audience, errorMessage) {
@@ -151,13 +151,14 @@
   function renderPrefillBanner(state) {
     const first = state.customer.firstName || 'there';
     const giftName = state.prefill?.offerName || 'free gift';
+    const itemName = giftName.replace(/^Free\s+/i, '');
     return `
-      <h2>${escapeHtml(PREFILL_TITLES.h2)}</h2>
+      <h2>Pick a time to come pick up your free ${escapeHtml(itemName)}</h2>
       <p class="booking-pane__sub">${escapeHtml(PREFILL_TITLES.sub)}</p>
       <div class="booking-prefill-card" role="status">
         <div class="booking-prefill-card__hi">Welcome back, ${escapeHtml(first)}.</div>
         <div class="booking-prefill-card__gift">Your ${escapeHtml(giftName)} is reserved.</div>
-        <div class="booking-prefill-card__hint">Pick any open time on the calendar to come in.</div>
+        <div class="booking-prefill-card__hint">Bring your code with you — it'll be in your inbox after you book.</div>
       </div>
     `;
   }
