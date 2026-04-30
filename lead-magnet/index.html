@@ -73,9 +73,15 @@
         <form class="lm-form" data-region="lm-form" novalidate>
           <div class="lm-error" role="alert" data-region="lm-error" hidden></div>
 
-          <div class="field">
-            <label for="lm-first">First name *</label>
-            <input id="lm-first" type="text" name="firstName" autocomplete="given-name" required maxlength="60" />
+          <div class="lm-form__row">
+            <div class="field">
+              <label for="lm-first">First name *</label>
+              <input id="lm-first" type="text" name="firstName" autocomplete="given-name" required maxlength="60" />
+            </div>
+            <div class="field">
+              <label for="lm-last">Last name *</label>
+              <input id="lm-last" type="text" name="lastName" autocomplete="family-name" required maxlength="60" />
+            </div>
           </div>
 
           <div class="field">
@@ -104,22 +110,35 @@
       </div>
     </section>
 
+    <section class="lm-pickup" data-region="lm-pickup-section" data-audience="general" hidden>
+      <div class="lm-pickup__inner">
+        <span class="eyebrow">Wait — one more step</span>
+        <h2 class="lm-pickup__title">Pick a time to pick up your free tie</h2>
+        <p class="lm-pickup__sub">Choose any open time in the next 7 days. We'll set the tie aside and have it ready when you walk in.</p>
+        <div data-booking-root>
+          <noscript>
+            <p style="text-align:center;font-family:var(--font-body);">JavaScript is required. Call <a href="tel:+14705957775">(470) 595-7775</a> to book by phone.</p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
     <section class="lm-success" data-region="lm-success-section" hidden>
       <div class="lm-success__inner">
         <div class="lm-success__icon" aria-hidden="true">
-          <svg viewBox="0 0 64 64" width="48" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 64 64" width="56" height="56" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="3"/>
             <path d="M20 33l9 9 16-19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <h2 class="lm-success__title">Your code is on its way.</h2>
-        <p class="lm-success__lead">Check your inbox — we just emailed your <strong data-region="lm-success-item">Free Silk Tie</strong> code. Show it at the front desk any time in the next 7 days. No purchase necessary.</p>
+        <h2 class="lm-success__title">All done — your free tie is confirmed!</h2>
+        <p class="lm-success__lead">Congrats. We'll see you at the store soon.</p>
         <div class="lm-success__card">
+          <div class="lm-success__row"><strong>Pickup:</strong> <span data-region="lm-success-when">—</span></div>
           <div class="lm-success__row"><strong>Where:</strong> 150 Pearl Nix Pkwy, Gainesville GA 30501</div>
-          <div class="lm-success__row"><strong>Hours:</strong> Mon–Sat 10am–7pm · Sun 12pm–5pm</div>
           <div class="lm-success__row"><strong>Phone:</strong> <a href="tel:+14705957775">(470) 595-7775</a></div>
         </div>
-        <p class="lm-success__hint">Didn't get the email? Check spam, or call us at (470) 595-7775.</p>
+        <p class="lm-success__hint"><strong>Important:</strong> if you don't come in within 7 days your reservation expires. We've also sent a confirmation email with your code.</p>
       </div>
     </section>
 
@@ -159,6 +178,9 @@
 
   <div id="site-footer"></div>
 
+  <script defer src="/assets/js/booking-form.js"></script>
+  <script defer src="/assets/js/booking-calendar.js"></script>
+  <script defer src="/assets/js/booking.js"></script>
   <script defer src="/assets/js/lead-magnet.js"></script>
   <script defer src="/assets/js/components.js"></script>
   <script>

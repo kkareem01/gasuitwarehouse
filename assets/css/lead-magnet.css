@@ -742,3 +742,47 @@
   color: var(--muted);
   margin: 0;
 }
+
+/* ========================================================================== */
+/* Pickup-time picker section (rendered after a successful opt-in)             */
+/* ========================================================================== */
+
+.lm-pickup {
+  padding: var(--s-6) var(--s-3);
+  background: var(--off-white);
+  text-align: center;
+}
+.lm-pickup__inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.lm-pickup .eyebrow {
+  display: inline-block;
+  margin-bottom: var(--s-2);
+}
+.lm-pickup__title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.4vw, 36px);
+  color: var(--ink);
+  margin: 0 0 var(--s-2);
+}
+.lm-pickup__sub {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0 auto var(--s-4);
+  max-width: 56ch;
+}
+.lm-pickup [data-booking-root] {
+  text-align: left;
+}
+
+/* First-name + last-name on one row when there's space */
+.lm-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+}
+@media (max-width: 540px) {
+  .lm-form__row { grid-template-columns: 1fr; gap: 0; }
+}

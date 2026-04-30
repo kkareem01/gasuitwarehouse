@@ -159,16 +159,68 @@
     });
   }
 
-  function showSuccessState(offerName) {
+  function hideSection(sel) {
+    const el = typeof sel === 'string' ? document.querySelector(sel) : sel;
+    if (el) el.hidden = true;
+  }
+
+  // Stage 2: form has been submitted, the gift slot is reserved. Hide the
+  // form + supporting marketing sections, reveal the pickup-time picker,
+  // and let the booking widget rehydrate from the URL params.
+  function showPickupSection() {
+    for (const sel of ['.lm-hero', '.lm-form-section', '.lm-why', '.lm-how', '.lm-faq']) {
+      hideSection(sel);
+    }
+    const pickup = $region('lm-pickup-section');
+    if (pickup) {
+      pickup.hidden = false;
+      pickup.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    const root = document.querySelector('[data-booking-root]');
+    if (root && typeof root.__refreshFromUrl === 'function') {
+      root.__refreshFromUrl();
+    }
+  }
+
+  function formatPickupSlot(slot) {
+    if (!slot) return '';
+    try {
+      const [y, m, d] = String(slot.date).split('-').map(Number);
+      const date = new Date(y, m - 1, d);
+      const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+      const [h, mm] = String(slot.time).split(':').map(Number);
+      const period = h >= 12 ? 'PM' : 'AM';
+      const h12 = ((h + 11) % 12) + 1;
+      const timeStr = `${h12}:${String(mm).padStart(2, '0')} ${period}`;
+      return `${dateStr} at ${timeStr}`;
+    } catch (_) { return ''; }
+  }
+
+  // Stage 3: booking confirmed → flip to the "all done" success card. Sets
+  // the opted-in flag so the homepage popup stops nagging this visitor.
+  function showAllDoneState(booking) {
     try { localStorage.setItem(OPTED_IN_KEY, '1'); } catch (_) {}
-    const formSection = $region('lm-form-section');
-    if (formSection) formSection.hidden = true;
-    const itemSlot = $region('lm-success-item');
-    if (itemSlot && offerName) itemSlot.textContent = offerName;
+    hideSection($region('lm-pickup-section'));
+    const when = $region('lm-success-when');
+    if (when) when.textContent = formatPickupSlot(booking?.slot) || 'Within the next 7 days';
     const success = $region('lm-success-section');
     if (success) {
       success.hidden = false;
       success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function setupBookingConfirmedListener() {
+    window.addEventListener('booking:confirmed', (e) => {
+      e.preventDefault();
+      showAllDoneState(e.detail?.booking);
+    });
+  }
+
+  function checkPrefillOnLoad() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('lead') && params.get('t')) {
+      showPickupSection();
     }
   }
 
@@ -179,15 +231,16 @@
       e.preventDefault();
       clearError();
       const submit = $region('lm-submit');
-      if (submit) { submit.disabled = true; submit.textContent = 'Sending…'; }
+      if (submit) { submit.disabled = true; submit.textContent = 'Reserving…'; }
 
       const data = new FormData(form);
       const payload = {
         firstName: String(data.get('firstName') || '').trim(),
-        email: String(data.get('email') || '').trim(),
-        phone: String(data.get('phone') || '').trim(),
-        consent: data.get('consent') === 'on',
-        hp: String(data.get('hp') || ''),
+        lastName:  String(data.get('lastName')  || '').trim(),
+        email:     String(data.get('email')     || '').trim(),
+        phone:     String(data.get('phone')     || '').trim(),
+        consent:   data.get('consent') === 'on',
+        hp:        String(data.get('hp') || ''),
         startedAt: STARTED_AT,
       };
 
@@ -197,6 +250,7 @@
       }
 
       if (!payload.firstName) return finish('Please enter your first name.');
+      if (!payload.lastName)  return finish('Please enter your last name.');
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) return finish('Please enter a valid email.');
       if (payload.phone.replace(/\D/g, '').length < 10) return finish('Please enter a valid phone.');
       if (!payload.consent) return finish('Please check the consent box.');
@@ -214,7 +268,23 @@
         if (j.exhausted) {
           return finish('Sorry, the offer is unavailable right now. Please call (470) 595-7775.');
         }
-        showSuccessState(j.offer?.name);
+        if (j.redirect && j.redirect.startsWith('/booking/')) {
+          try {
+            const dest = new URL(j.redirect, window.location.origin);
+            const lead = dest.searchParams.get('lead');
+            const t = dest.searchParams.get('t');
+            if (lead && t) {
+              history.replaceState(
+                null,
+                '',
+                `/lead-magnet/?lead=${encodeURIComponent(lead)}&t=${encodeURIComponent(t)}`,
+              );
+              showPickupSection();
+              return;
+            }
+          } catch (_) { /* fall through */ }
+        }
+        finish('Unexpected response. Please call (470) 595-7775.');
       } catch (_) {
         finish('Network error. Please try again.');
       }
@@ -226,5 +296,7 @@
     setupRevealCta();
     setupPhoneMask();
     setupForm();
+    setupBookingConfirmedListener();
+    checkPrefillOnLoad();
   });
 })();

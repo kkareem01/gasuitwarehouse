@@ -66,16 +66,15 @@
       renderAll(root, state);
     });
 
-    // If we arrived from a lead-magnet opt-in (?lead=&t=), prefill the form,
-    // jump straight to step 3 (calendar), and bind the lead to the booking POST.
-    const prefillParams = readPrefillParams();
-    if (prefillParams) {
+    function applyPrefillFromUrl() {
+      const prefillParams = readPrefillParams();
+      if (!prefillParams) return;
       fetchLeadPrefill(prefillParams.lead, prefillParams.t).then((j) => {
         if (!j || !j.lead) return;
         state.audience = j.lead.audience || audience;
         state.customer = {
           firstName: j.lead.firstName || '',
-          lastName: '',
+          lastName: j.lead.lastName || '',
           phone: j.lead.phone || '',
           email: j.lead.email || '',
           consent: true,
@@ -87,6 +86,15 @@
         renderAll(root, state);
         loadMonthData(root, state);
       });
+    }
+
+    // Expose the prefill hook so /lead-magnet/ can re-trigger it after it
+    // updates the URL via history.replaceState (the calendar morphs in place
+    // instead of forcing a navigation).
+    root.__refreshFromUrl = applyPrefillFromUrl;
+
+    if (readPrefillParams()) {
+      applyPrefillFromUrl();
     } else {
       // Pre-load this month so the locked calendar already shows highlighted open dates
       loadMonthData(root, state);
@@ -339,7 +347,19 @@
           sessionStorage.setItem('lastRedemption', JSON.stringify(json.data.redemption));
         } catch (_) {}
       }
-      window.location.href = `/booking-confirmed.html?id=${encodeURIComponent(json.data.id)}`;
+      // Dispatch a cancelable event so a host page (e.g. /lead-magnet/) can
+      // intercept and render an inline success state instead of navigating
+      // to /booking-confirmed.html. If nobody calls preventDefault, fall
+      // through to the standard redirect (the /booking/ page behaves as
+      // before).
+      const evt = new CustomEvent('booking:confirmed', {
+        detail: { booking: json.data },
+        cancelable: true,
+      });
+      const allowDefault = window.dispatchEvent(evt);
+      if (allowDefault) {
+        window.location.href = `/booking-confirmed.html?id=${encodeURIComponent(json.data.id)}`;
+      }
     } catch (err) {
       setState(root, state, { submitting: false, error: 'Network error. Please try again.' });
     }
