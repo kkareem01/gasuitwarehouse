@@ -25,6 +25,14 @@ test.db-wal
 # Vercel
 .vercel/
 
+# Claude Code local config
+.claude/
+
+# VSL drafts and source assets — local working files, not part of the site
+/VSL Scripts.md
+/VSL template.txt
+/VSL Video With Hyperframes Editor/
+
 # Local-only reference / inspiration material — not part of the site.
 # Leading slash = root-only match. Without it, "Reviews/" would also match
 # "assets/reviews/" on case-insensitive filesystems (macOS default).
