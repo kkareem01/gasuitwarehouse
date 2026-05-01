@@ -500,29 +500,33 @@
 
 .lm-offer-card__images {
   position: relative;
-  min-height: 280px;
+  min-height: 320px;
+  padding: 0 4%;
 }
 
 /* TODO: Swap the inline tie SVGs in index.html for real product photography
    when available (suggested paths: assets/img/products/tie-1.jpg, etc.). */
 .lm-offer-card__img {
   position: absolute;
-  width: 56%;
+  width: 40%;
   aspect-ratio: 3 / 4;
-  border-radius: 10px;
-  box-shadow: 0 14px 28px rgba(20, 33, 61, 0.22), 0 3px 8px rgba(20, 33, 61, 0.10);
-  background:
-    radial-gradient(ellipse at 30% 20%, #FBF7EF 0%, #F4EFE6 60%, #E8E1D2 100%);
+  border-radius: 6px;
+  box-shadow:
+    0 18px 36px rgba(20, 33, 61, 0.22),
+    0 4px 10px rgba(20, 33, 61, 0.10),
+    inset 0 0 0 1px rgba(20, 33, 61, 0.06);
   overflow: hidden;
+  background: #FBF7EF;
 }
 .lm-offer-card__img > svg {
   width: 100%;
   height: 100%;
   display: block;
 }
-.lm-offer-card__img--back  { left: 4%;  top: 6%;  transform: rotate(-10deg); z-index: 1; }
-.lm-offer-card__img--mid   { left: 22%; top: 0;   transform: rotate(-2deg);  z-index: 2; }
-.lm-offer-card__img--front { left: 38%; top: 8%;  transform: rotate(7deg);   z-index: 3; }
+/* Fanned layout: all three ties clearly visible (left tilt / center upright / right tilt). */
+.lm-offer-card__img--back  { left: 0%;   top: 10%; transform: rotate(-14deg); z-index: 1; }
+.lm-offer-card__img--mid   { left: 30%;  top: 0;   transform: rotate(0deg);   z-index: 3; }
+.lm-offer-card__img--front { left: 60%;  top: 10%; transform: rotate(14deg);  z-index: 2; }
 
 .lm-offer-card__content {
   display: flex;
@@ -611,11 +615,15 @@
     padding: 7px 16px;
   }
   .lm-offer-card__images {
-    min-height: 220px;
+    min-height: 260px;
+    padding: 0 2%;
   }
   .lm-offer-card__img {
-    width: 55%;
+    width: 42%;
   }
+  .lm-offer-card__img--back  { left: 0%;  top: 8%;  transform: rotate(-12deg); }
+  .lm-offer-card__img--mid   { left: 29%; top: 0;   transform: rotate(0deg);   }
+  .lm-offer-card__img--front { left: 58%; top: 8%;  transform: rotate(12deg);  }
   .lm-offer-card__content {
     align-items: center;
     text-align: center;

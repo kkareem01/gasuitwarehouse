@@ -30,7 +30,7 @@ function addDays(d, n) {
 }
 
 const ITEMS = [
-  { id: 'tie-pocket-square',   name: 'Free Silk Tie + Pocket Square Set',  desc: 'Hand-finished silk tie paired with a matching pocket square. Yours to keep — no purchase necessary.', retailValueCents: 4500, cap: 50 },
+  { id: 'tie-pocket-square',   name: 'Free Silk Tie + Pocket Square Set',  desc: 'Silk tie paired with a matching pocket square. Yours to keep — no purchase necessary.', retailValueCents: 4500, cap: 50 },
   { id: 'leather-belt',        name: 'Free Italian Leather Belt',          desc: 'Full-grain Italian leather belt, brass buckle. Yours to keep — no purchase necessary.',          retailValueCents: 6500, cap: 50 },
   { id: 'penny-loafers',       name: 'Free Suede Penny Loafers',           desc: 'Hand-stitched suede penny loafers. Yours to keep — no purchase necessary.',                    retailValueCents: 12000, cap: 30 },
   { id: 'pocket-square-trio',  name: 'Free Pure Silk Pocket Square Trio',  desc: 'Three pure silk pocket squares in seasonal colors. Yours to keep — no purchase necessary.',    retailValueCents: 5500, cap: 50 },

@@ -137,7 +137,7 @@
       {
         "@type": "Offer",
         "name": "Kids' 5-Piece Suit Set",
-        "description": "Full 5-piece suit set sized for ring bearers, junior groomsmen, and family portraits.",
+        "description": "Jacket, pants, shirt, vest, and tie — full 5-piece suit set sized for ring bearers, junior groomsmen, and family portraits.",
         "priceSpecification": {
           "@type": "PriceSpecification",
           "price": "129.99",
@@ -209,7 +209,7 @@
         "name": "Do you do suit or tuxedo rentals?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No — we do not rent. Renting usually costs more in the long run, and for the same price you actually own a tailored suit."
+          "text": "No, we don't rent — because our prices are cheaper (if not the same), and you actually get to own the suit. Other places charge upwards of $250 to rent a full suit. At GA Suit Warehouse you can get a complete suit for around the same price and walk out owning it."
         }
       }
     ]
@@ -455,39 +455,6 @@
     </div>
   </section>
 
-  <!-- ===================== HUB GRID (4 categories) ===================== -->
-  <section class="section section-cream" id="explore">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="eyebrow">What we fit for</span>
-        <h2>Explore by occasion.</h2>
-        <p class="lead">Every occasion has its own rules — fabric weight, formality, timeline, who pays, what photographs well. Pick the path that matches your event and we'll take it from there.</p>
-      </div>
-      <div class="hub-grid-home reveal">
-        <a class="hub-tile" href="/weddings">
-          <span class="hub-tile__eyebrow">Hall County weddings</span>
-          <h3 class="hub-tile__title">Weddings</h3>
-          <p class="hub-tile__copy">Grooms, groomsmen, fathers, ring bearers — coordinated fittings with same-week alterations.</p>
-        </a>
-        <a class="hub-tile" href="/suits">
-          <span class="hub-tile__eyebrow">Work &middot; interview &middot; everyday</span>
-          <h3 class="hub-tile__title">Men's Suits</h3>
-          <p class="hub-tile__copy">Tailored fits for business, interviews, funerals, and every formal day in between.</p>
-        </a>
-        <a class="hub-tile" href="/tuxedos">
-          <span class="hub-tile__eyebrow">Black-tie &middot; gala &middot; formal</span>
-          <h3 class="hub-tile__title">Tuxedos</h3>
-          <p class="hub-tile__copy">Own the tuxedo &mdash; we don't rent. From $199, tailored on-site, lasts a decade.</p>
-        </a>
-        <a class="hub-tile" href="/prom">
-          <span class="hub-tile__eyebrow">Spring 2026 &middot; group fittings</span>
-          <h3 class="hub-tile__title">Prom</h3>
-          <p class="hub-tile__copy">Suits and tuxedos for Hall County prom. Group coordination, color matching, photo-ready fits.</p>
-        </a>
-      </div>
-    </div>
-  </section>
-
   <!-- ===================== QUIZ FUNNEL (occasion → timing → VSL redirect) ===================== -->
   <section class="section section-paper" id="choose">
     <div class="container">
@@ -518,46 +485,6 @@
       </div>
       <div class="section-cta reveal">
         <a href="#choose" class="btn btn-primary">Get Me Suited</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== COMPARISON: Others vs GA SuitWarehouse ===================== -->
-  <section class="section section-paper" id="why-us">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="eyebrow">Why Us</span>
-        <h2>The difference, side by side.</h2>
-        <p class="lead">Most suit shops are built around moving inventory. We're built around making you look the part.</p>
-      </div>
-      <div class="compare-grid reveal">
-        <!-- OTHERS -->
-        <div class="compare-card compare-others">
-          <h3>Other Suit Shops</h3>
-          <ul>
-            <li>Same suit as everyone else</li>
-            <li>Pushy salespeople</li>
-            <li>Wait weeks for fixes</li>
-            <li>Rushed visits</li>
-            <li>Hidden fees</li>
-            <li>Doesn't fit right</li>
-          </ul>
-        </div>
-        <!-- GA SUITWAREHOUSE -->
-        <div class="compare-card compare-ours">
-          <h3>GA SuitWarehouse</h3>
-          <ul>
-            <li>A suit that's only yours</li>
-            <li>No pressure. Honest help</li>
-            <li>Fixes done in 5 days</li>
-            <li>Take your time</li>
-            <li>One clear price</li>
-            <li>Made to fit you</li>
-          </ul>
-        </div>
-      </div>
-      <div class="section-cta reveal">
-        <a href="#choose" class="btn btn-gold">Get Me Suited</a>
       </div>
     </div>
   </section>
@@ -631,51 +558,50 @@
     </div>
   </section>
 
-  <!-- ===================== PRICING ===================== -->
-  <section class="section section-cream" id="pricing">
+  <!-- ===================== PRICING (compact price-bar) ===================== -->
+  <section class="section section--dense section-cream" id="pricing">
     <div class="container">
-      <div class="section-header reveal">
+      <div class="section-header section-header--tight reveal">
         <span class="eyebrow">Pricing</span>
         <h2>What things cost.</h2>
         <p class="lead">One clear price. No hidden fees, no rushed pressure to upgrade.</p>
       </div>
 
-      <div class="shop-pricing reveal">
-        <div class="shop-pricing-card">
-          <span class="eyebrow">Suits</span>
-          <h3>From $199</h3>
-          <p>Most complete suits. Premium fabrics and full-canvas construction available above this range.</p>
+      <div class="price-bar reveal" role="list">
+        <div class="price-bar__item" role="listitem">
+          <span class="price-bar__label">Suits</span>
+          <span class="price-bar__price">From $199</span>
+          <span class="price-bar__note">Premium fabrics &amp; full-canvas above this range.</span>
         </div>
-        <div class="shop-pricing-card">
-          <span class="eyebrow">Tuxedos</span>
-          <h3>From $199</h3>
-          <p>Black-tie ready. We'll walk you through fabric, fit, and finish at your fitting.</p>
+        <div class="price-bar__item" role="listitem">
+          <span class="price-bar__label">Tuxedos</span>
+          <span class="price-bar__price">From $199</span>
+          <span class="price-bar__note">Black-tie ready. Fabric, fit, and finish at your fitting.</span>
         </div>
-        <div class="shop-pricing-card">
-          <span class="eyebrow">Kids' 5-Piece Sets</span>
-          <h3>$129.99</h3>
-          <p>Ring bearers, junior groomsmen, family portraits — full 5-piece set sized for kids.</p>
+        <div class="price-bar__item" role="listitem">
+          <span class="price-bar__label">Kids' 5-Piece Sets</span>
+          <span class="price-bar__price">$129.99</span>
+          <span class="price-bar__note">Jacket, pants, shirt, vest, and tie — sized for kids.</span>
         </div>
-        <div class="shop-pricing-card">
-          <span class="eyebrow">Alterations</span>
-          <h3>From $18</h3>
-          <p>Hem $18. Waist $24. Add $10 for same-day rush.</p>
+        <div class="price-bar__item" role="listitem">
+          <span class="price-bar__label">Alterations</span>
+          <span class="price-bar__price">From $18</span>
+          <span class="price-bar__note">Hem $18. Waist $24. Same-day rush +$10.</span>
         </div>
       </div>
-      <div class="section-cta reveal">
+      <div class="section-cta section-cta--tight reveal">
         <a href="#choose" class="btn btn-primary">Get Me Suited</a>
       </div>
     </div>
   </section>
 
-  <!-- ===================== FAQs ===================== -->
-  <section class="section section-paper" id="faqs">
+  <!-- ===================== FAQs (tightened) ===================== -->
+  <section class="section section--dense section-paper" id="faqs">
     <div class="container">
-      <div class="section-header reveal">
-        <span class="eyebrow">Common Questions</span>
+      <div class="section-header section-header--tight reveal">
         <h2>FAQs</h2>
       </div>
-      <div class="faq-list reveal">
+      <div class="faq-list faq-list--compact reveal">
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">What's your typical price range?</button>
           <div class="faq-answer"><div class="faq-answer-inner">
@@ -703,7 +629,7 @@
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">Do you do rentals?</button>
           <div class="faq-answer"><div class="faq-answer-inner">
-            No — we don't rent. Renting usually costs more in the long run, and for the same price you actually own the suit.
+            No, we don't rent — because our prices are cheaper (if not the same), and you actually get to own the suit. Other places charge upwards of $250 to <em>rent</em> a full suit. At GA Suit Warehouse you can get a complete suit for around the same price and walk out owning it.
           </div></div>
         </div>
       </div>
@@ -717,44 +643,114 @@
         <span class="lm-offer-card__badge">Brand New</span>
         <div class="lm-offer-card__images" aria-hidden="true">
           <div class="lm-offer-card__img lm-offer-card__img--back">
-            <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-              <path d="M38 6 L62 6 L66 26 L34 26 Z" fill="#3A2A2A"/>
-              <path d="M34 26 L66 26 L72 145 L50 178 L28 145 Z" fill="#7C1F2A"/>
-              <g fill="#F4EFE6" opacity="0.55">
-                <circle cx="42" cy="40" r="2"/><circle cx="58" cy="48" r="2"/>
-                <circle cx="40" cy="60" r="2"/><circle cx="56" cy="68" r="2"/>
-                <circle cx="44" cy="80" r="2"/><circle cx="60" cy="88" r="2"/>
-                <circle cx="42" cy="100" r="2"/><circle cx="58" cy="108" r="2"/>
-                <circle cx="46" cy="120" r="2"/><circle cx="56" cy="130" r="2"/>
-                <circle cx="50" cy="150" r="2"/>
+            <svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <radialGradient id="tie-bg-burgundy" cx="50%" cy="40%" r="75%">
+                  <stop offset="0%" stop-color="#FBF7EF"/>
+                  <stop offset="100%" stop-color="#E8DFCC"/>
+                </radialGradient>
+                <linearGradient id="silk-burgundy" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0%"   stop-color="#4A0F18"/>
+                  <stop offset="40%"  stop-color="#7C1F2A"/>
+                  <stop offset="55%"  stop-color="#9A2A38"/>
+                  <stop offset="70%"  stop-color="#7C1F2A"/>
+                  <stop offset="100%" stop-color="#3A0A12"/>
+                </linearGradient>
+                <linearGradient id="knot-burgundy" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%"   stop-color="#5C1620"/>
+                  <stop offset="100%" stop-color="#3A0A12"/>
+                </linearGradient>
+              </defs>
+              <rect width="100" height="160" fill="url(#tie-bg-burgundy)"/>
+              <ellipse cx="50" cy="148" rx="22" ry="3" fill="#000" opacity="0.16"/>
+              <path d="M40 14 L60 14 L66 32 L34 32 Z" fill="url(#knot-burgundy)"/>
+              <path d="M40 14 L60 14 L58 18 L42 18 Z" fill="#000" opacity="0.22"/>
+              <path d="M50 30 L48 36 L52 36 Z" fill="#000" opacity="0.28"/>
+              <path d="M34 32 L66 32 L70 118 L50 146 L30 118 Z" fill="url(#silk-burgundy)"/>
+              <g fill="#E8DFCC" opacity="0.55">
+                <circle cx="42" cy="46" r="0.9"/><circle cx="50" cy="50" r="0.9"/><circle cx="58" cy="46" r="0.9"/>
+                <circle cx="44" cy="62" r="0.9"/><circle cx="52" cy="66" r="0.9"/><circle cx="60" cy="62" r="0.9"/>
+                <circle cx="42" cy="78" r="0.9"/><circle cx="50" cy="82" r="0.9"/><circle cx="58" cy="78" r="0.9"/>
+                <circle cx="44" cy="94" r="0.9"/><circle cx="52" cy="98" r="0.9"/><circle cx="60" cy="94" r="0.9"/>
+                <circle cx="46" cy="110" r="0.9"/><circle cx="54" cy="114" r="0.9"/>
+                <circle cx="48" cy="126" r="0.9"/><circle cx="52" cy="130" r="0.9"/>
               </g>
+              <path d="M48 33 Q50 80 50 145 Q49.5 80 48 33 Z" fill="#FFFFFF" opacity="0.10"/>
             </svg>
           </div>
           <div class="lm-offer-card__img lm-offer-card__img--mid">
-            <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-              <path d="M38 6 L62 6 L66 26 L34 26 Z" fill="#0E1729"/>
-              <path d="M34 26 L66 26 L72 145 L50 178 L28 145 Z" fill="#14213D"/>
-              <g stroke="#C9A961" stroke-width="3" opacity="0.55" fill="none">
-                <line x1="30" y1="42" x2="68" y2="62"/>
-                <line x1="28" y1="68" x2="70" y2="88"/>
-                <line x1="28" y1="94" x2="70" y2="114"/>
-                <line x1="30" y1="120" x2="68" y2="140"/>
-                <line x1="36" y1="148" x2="62" y2="164"/>
+            <svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <radialGradient id="tie-bg-navy" cx="50%" cy="40%" r="75%">
+                  <stop offset="0%" stop-color="#FBF7EF"/>
+                  <stop offset="100%" stop-color="#E8DFCC"/>
+                </radialGradient>
+                <linearGradient id="silk-navy" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0%"   stop-color="#06101F"/>
+                  <stop offset="40%"  stop-color="#142B52"/>
+                  <stop offset="55%"  stop-color="#1F3F75"/>
+                  <stop offset="70%"  stop-color="#142B52"/>
+                  <stop offset="100%" stop-color="#040A18"/>
+                </linearGradient>
+                <linearGradient id="knot-navy" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%"   stop-color="#0E1F3D"/>
+                  <stop offset="100%" stop-color="#040A18"/>
+                </linearGradient>
+              </defs>
+              <rect width="100" height="160" fill="url(#tie-bg-navy)"/>
+              <ellipse cx="50" cy="148" rx="22" ry="3" fill="#000" opacity="0.16"/>
+              <path d="M40 14 L60 14 L66 32 L34 32 Z" fill="url(#knot-navy)"/>
+              <path d="M40 14 L60 14 L58 18 L42 18 Z" fill="#000" opacity="0.22"/>
+              <path d="M50 30 L48 36 L52 36 Z" fill="#000" opacity="0.28"/>
+              <path d="M34 32 L66 32 L70 118 L50 146 L30 118 Z" fill="url(#silk-navy)"/>
+              <g stroke="#C9A961" stroke-width="1" opacity="0.55" fill="none">
+                <line x1="32" y1="44" x2="68" y2="58"/>
+                <line x1="31" y1="58" x2="69" y2="72"/>
+                <line x1="30" y1="72" x2="70" y2="86"/>
+                <line x1="30" y1="86" x2="70" y2="100"/>
+                <line x1="32" y1="100" x2="68" y2="114"/>
+                <line x1="34" y1="114" x2="66" y2="128"/>
+                <line x1="38" y1="128" x2="62" y2="140"/>
               </g>
+              <path d="M48 33 Q50 80 50 145 Q49.5 80 48 33 Z" fill="#FFFFFF" opacity="0.12"/>
             </svg>
           </div>
           <div class="lm-offer-card__img lm-offer-card__img--front">
-            <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-              <path d="M38 6 L62 6 L66 26 L34 26 Z" fill="#1A1A1A"/>
-              <path d="M34 26 L66 26 L72 145 L50 178 L28 145 Z" fill="#2A2A2A"/>
-              <g stroke="#3A3A3A" stroke-width="2" fill="none">
-                <line x1="34" y1="34" x2="66" y2="34"/>
-                <line x1="33" y1="60" x2="67" y2="60"/>
-                <line x1="32" y1="86" x2="68" y2="86"/>
-                <line x1="31" y1="112" x2="69" y2="112"/>
-                <line x1="32" y1="138" x2="68" y2="138"/>
-                <line x1="36" y1="160" x2="64" y2="160"/>
+            <svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <radialGradient id="tie-bg-charcoal" cx="50%" cy="40%" r="75%">
+                  <stop offset="0%" stop-color="#FBF7EF"/>
+                  <stop offset="100%" stop-color="#E8DFCC"/>
+                </radialGradient>
+                <linearGradient id="silk-charcoal" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0%"   stop-color="#0A0A0A"/>
+                  <stop offset="40%"  stop-color="#262626"/>
+                  <stop offset="55%"  stop-color="#3A3A3A"/>
+                  <stop offset="70%"  stop-color="#262626"/>
+                  <stop offset="100%" stop-color="#080808"/>
+                </linearGradient>
+                <linearGradient id="knot-charcoal" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%"   stop-color="#1F1F1F"/>
+                  <stop offset="100%" stop-color="#0A0A0A"/>
+                </linearGradient>
+              </defs>
+              <rect width="100" height="160" fill="url(#tie-bg-charcoal)"/>
+              <ellipse cx="50" cy="148" rx="22" ry="3" fill="#000" opacity="0.16"/>
+              <path d="M40 14 L60 14 L66 32 L34 32 Z" fill="url(#knot-charcoal)"/>
+              <path d="M40 14 L60 14 L58 18 L42 18 Z" fill="#000" opacity="0.22"/>
+              <path d="M50 30 L48 36 L52 36 Z" fill="#000" opacity="0.28"/>
+              <path d="M34 32 L66 32 L70 118 L50 146 L30 118 Z" fill="url(#silk-charcoal)"/>
+              <g stroke="#5A5A5A" stroke-width="0.8" opacity="0.85" fill="none">
+                <path d="M32 42 L40 46 L32 50 L40 54 L32 58 L40 62 L32 66 L40 70 L32 74 L40 78 L32 82 L40 86 L34 90 L40 94 L36 98 L40 102 L38 106 L40 110 L40 114"/>
+                <path d="M68 42 L60 46 L68 50 L60 54 L68 58 L60 62 L68 66 L60 70 L68 74 L60 78 L68 82 L60 86 L66 90 L60 94 L64 98 L60 102 L62 106 L60 110 L60 114"/>
+                <line x1="40" y1="46" x2="60" y2="46"/>
+                <line x1="40" y1="58" x2="60" y2="58"/>
+                <line x1="40" y1="70" x2="60" y2="70"/>
+                <line x1="40" y1="82" x2="60" y2="82"/>
+                <line x1="40" y1="94" x2="60" y2="94"/>
+                <line x1="40" y1="106" x2="60" y2="106"/>
               </g>
+              <path d="M48 33 Q50 80 50 145 Q49.5 80 48 33 Z" fill="#FFFFFF" opacity="0.10"/>
             </svg>
           </div>
         </div>

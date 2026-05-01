@@ -2874,3 +2874,89 @@ picture { display: contents; }
   .footer-sitemap { grid-template-columns: 1fr; gap: var(--s-3); padding-bottom: var(--s-3); margin-bottom: var(--s-3); }
 }
 
+/* =============================================================================
+   COMPACT SECTION VARIANTS (homepage pricing + FAQ)
+   Scoped modifiers that opt-in to a denser vertical rhythm. Default
+   .section / .section-header / .faq-list rules are unchanged for landing pages.
+   ============================================================================= */
+.section.section--dense { padding: var(--s-5) 0; }
+.section-header.section-header--tight { margin-bottom: var(--s-3); }
+.section-header.section-header--tight .lead { margin-top: 0; }
+.section-cta.section-cta--tight { margin-top: var(--s-3); }
+
+/* Price bar — divided horizontal row of price points (replaces stacked cards
+   on the homepage). Each item: label · price · short note, separated by a
+   thin gold rule on desktop. Drops to a 2-up grid on tablet, single column
+   with horizontal rules on mobile. */
+.price-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  max-width: 1080px;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.price-bar__item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--s-3) var(--s-3);
+  text-align: left;
+  border-left: 1px solid var(--rule);
+}
+.price-bar__item:first-child { border-left: 0; }
+.price-bar__label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  line-height: 1.2;
+}
+.price-bar__price {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.price-bar__note {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+@media (max-width: 860px) {
+  .price-bar { grid-template-columns: repeat(2, 1fr); }
+  .price-bar__item { border-left: 1px solid var(--rule); border-top: 1px solid var(--rule); }
+  .price-bar__item:nth-child(-n+2) { border-top: 0; }
+  .price-bar__item:nth-child(2n+1) { border-left: 0; }
+}
+@media (max-width: 480px) {
+  .price-bar { grid-template-columns: 1fr; }
+  .price-bar__item { border-left: 0; border-top: 1px solid var(--rule); padding: var(--s-2) var(--s-3); }
+  .price-bar__item:first-child { border-top: 0; }
+  .price-bar__item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "label price" "note note";
+    gap: 4px var(--s-2);
+    align-items: baseline;
+  }
+  .price-bar__label { grid-area: label; }
+  .price-bar__price { grid-area: price; font-size: 20px; }
+  .price-bar__note  { grid-area: note; }
+}
+
+/* Compact FAQ list — opt-in modifier used on the homepage. Tighter top margin
+   from the section header, shorter row padding per question. */
+.faq-list.faq-list--compact { margin-top: var(--s-2); }
+.faq-list.faq-list--compact .faq-question { padding: var(--s-2) 0; font-size: 16px; }
+.faq-list.faq-list--compact .faq-answer-inner { padding: 0 0 var(--s-2); font-size: 14px; }
+

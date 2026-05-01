@@ -53,10 +53,10 @@
   function renderOffer(offer) {
     const itemName = offer.name.replace(/^Free\s+/i, '');
     const head = $region('lm-headline');
-    if (head) head.textContent = `Get a free ${itemName}, on the house`;
+    if (head) head.innerHTML = `Get a free ${escapeHtml(itemName)}<br>on the house`;
 
     const sub = $region('lm-sub');
-    if (sub) sub.textContent = `${offer.itemDescription}`;
+    if (sub) sub.textContent = String(offer.itemDescription || '').replace(/hand[\s-]?finished\s+/gi, '');
 
     const remaining = $region('lm-remaining');
     if (remaining) remaining.textContent = String(offer.remaining);
