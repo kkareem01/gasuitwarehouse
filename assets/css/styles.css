@@ -2813,6 +2813,50 @@ picture { display: contents; }
   line-height: 1.5;
 }
 
+/* --- Service directory (compact text-only spoke links, no photos) ---------- */
+.service-directory {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+}
+.service-directory__item {
+  display: block;
+  padding: var(--s-2) var(--s-3);
+  background: var(--off-white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  transition: background 200ms var(--easing), border-color 200ms var(--easing), transform 200ms var(--easing);
+}
+.service-directory__item:hover,
+.service-directory__item:focus-visible {
+  background: var(--paper);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.service-directory__title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 0 0 4px;
+}
+.service-directory__copy {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+@media (max-width: 880px) {
+  .service-directory { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+  .service-directory { grid-template-columns: 1fr; }
+}
+
 /* --- Footer sitemap (top row of footer with 4 hub columns) ------------------ */
 .footer-sitemap {
   display: grid;
