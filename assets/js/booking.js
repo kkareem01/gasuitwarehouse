@@ -82,10 +82,27 @@
         state.leadId = prefillParams.lead;
         state.leadToken = prefillParams.t;
         state.prefill = { offerName: j.offer?.name || 'gift' };
+        // Prefill flow skips step 2 (the form), so the per-audience answers
+        // never get populated. Default the required ones so server-side
+        // validation (e.g. occasion required for general) passes.
+        state.answers = defaultAnswersForAudience(state.audience, j.offer?.name);
+        // Lead-magnet pickup: only the next 7 days are bookable.
+        state.maxDateOffsetDays = 7;
         state.step = 3;
         renderAll(root, state);
         loadMonthData(root, state);
       });
+    }
+
+    function defaultAnswersForAudience(aud, offerName) {
+      const purpose = `Free ${(offerName || 'tie').replace(/^Free\s+/i, '')} pickup`;
+      switch (aud) {
+        case 'weddings': return { eventDate: '', partySize: 'Just me', priorities: purpose };
+        case 'prom':     return { eventDate: '', partySize: 'Just me', notes: purpose };
+        case 'tuxedos':  return { occasion: 'Other', eventDate: '', notes: purpose };
+        case 'general':
+        default:         return { occasion: purpose, eventDate: '', notes: '' };
+      }
     }
 
     // Expose the prefill hook so /lead-magnet/ can re-trigger it after it

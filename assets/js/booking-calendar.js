@@ -97,8 +97,23 @@
   function buildCalendarHtml(state, monthData, locked) {
     const { year, month } = state.monthCursor;
     const today = todayInfo();
-    const isCurMonth = year === today.year && month === today.month;
     const canPrev = !(year < today.year || (year === today.year && month <= today.month));
+
+    // Optional cap: when set on state (e.g. lead-magnet pickup flow restricts
+    // bookings to the next 7 days), dates beyond today + N are non-clickable.
+    let maxDateStr = null;
+    if (typeof state.maxDateOffsetDays === 'number') {
+      const m = new Date();
+      m.setDate(m.getDate() + state.maxDateOffsetDays);
+      maxDateStr = m.toISOString().slice(0, 10);
+    }
+    const canNext = !maxDateStr || (() => {
+      // Disable next-month if the entire next month is past the cap.
+      let ny = year, nm = month + 1;
+      if (nm > 12) { nm = 1; ny += 1; }
+      const firstOfNext = `${ny}-${String(nm).padStart(2, '0')}-01`;
+      return firstOfNext <= maxDateStr;
+    })();
 
     const firstDow = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
     const daysCount = new Date(Date.UTC(year, month, 0)).getUTCDate();
@@ -110,12 +125,15 @@
     for (let d = 1; d <= daysCount; d++) {
       const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const past = dateStr < today.date;
+      const beyondMax = maxDateStr && dateStr > maxDateStr;
       const meta = monthMap.get(dateStr);
       const isOpen = meta?.hasOpenSlots;
       let cls = 'booking-calendar__day';
       let attrs = '';
       if (past) {
         cls += ' booking-calendar__day--past';
+      } else if (beyondMax) {
+        cls += ' booking-calendar__day--closed';
       } else if (!isOpen) {
         cls += ' booking-calendar__day--closed';
       } else {
@@ -142,7 +160,7 @@
           <div class="booking-calendar__month">${MONTH_NAMES[month - 1]} ${year}</div>
           <div class="booking-calendar__nav">
             <button type="button" data-action="change-month" data-delta="-1" ${!canPrev ? 'disabled' : ''} aria-label="Previous month">‹</button>
-            <button type="button" data-action="change-month" data-delta="1" aria-label="Next month">›</button>
+            <button type="button" data-action="change-month" data-delta="1" ${!canNext ? 'disabled' : ''} aria-label="Next month">›</button>
           </div>
         </div>
 
