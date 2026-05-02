@@ -37,7 +37,7 @@
         <p class="lm-popup__sub">A hand-finished <strong>${escapeHtml(itemName)}</strong> from our shop. No purchase necessary.</p>
         ${showChip ? `<div class="lm-popup__chip">${remaining} spots left</div>` : ''}
         <div class="lm-popup__actions">
-          <a href="/lead-magnet/" class="btn btn-primary lm-popup__cta">Get My Free Tie</a>
+          <a href="/free-tie/" class="btn btn-primary lm-popup__cta">Get My Free Tie</a>
           <button type="button" class="lm-popup__dismiss" data-lm-popup-close>No thanks, I'll just browse</button>
         </div>
       </div>

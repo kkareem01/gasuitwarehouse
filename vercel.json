@@ -8,6 +8,16 @@
       "has": [{ "type": "host", "value": "gasuitwarehouse.com" }],
       "destination": "https://www.gasuitwarehouse.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/lead-magnet",
+      "destination": "/free-tie",
+      "permanent": true
+    },
+    {
+      "source": "/lead-magnet/:path*",
+      "destination": "/free-tie/:path*",
+      "permanent": true
     }
   ],
   "crons": [

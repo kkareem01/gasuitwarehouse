@@ -277,7 +277,7 @@
               history.replaceState(
                 null,
                 '',
-                `/lead-magnet/?lead=${encodeURIComponent(lead)}&t=${encodeURIComponent(t)}`,
+                `/free-tie/?lead=${encodeURIComponent(lead)}&t=${encodeURIComponent(t)}`,
               );
               showPickupSection();
               return;
