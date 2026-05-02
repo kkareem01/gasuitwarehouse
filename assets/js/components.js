@@ -222,14 +222,8 @@ function setupFaq() {
 
 function injectLeadMagnetPopup() {
   const path = window.location.pathname;
-  const skip = (
-    path.startsWith('/lead-magnet') ||
-    path.startsWith('/styling-session') ||
-    path.startsWith('/booking') ||
-    path.startsWith('/staff') ||
-    path === '/booking-confirmed.html'
-  );
-  if (skip) return;
+  const isHome = path === '/' || path === '/index.html';
+  if (!isHome) return;
   if (document.querySelector('script[data-lm-popup]')) return;
   const s = document.createElement('script');
   s.src = '/assets/js/lead-magnet-popup.js';
