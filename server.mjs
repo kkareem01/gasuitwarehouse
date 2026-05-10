@@ -23,6 +23,7 @@ import {
   handleAvailabilityMonth,
   handleCreateLead,
   handleCreateBooking,
+  handleCreateIntake,
   handleGetBooking,
   handleGetBookingIcs,
   handleLeadMagnetOptIn,
@@ -139,6 +140,7 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'GET' && path === '/api/availability/month') return handleAvailabilityMonth(req, res);
       if (req.method === 'POST' && path === '/api/leads') return handleCreateLead(req, res);
       if (req.method === 'POST' && path === '/api/bookings') return handleCreateBooking(req, res);
+      if (req.method === 'POST' && path === '/api/intake') return handleCreateIntake(req, res);
       if (req.method === 'GET' && path === '/api/leads/lookup') return handleLeadLookup(req, res);
       if (req.method === 'POST' && path === '/api/lead-magnet/opt-in') return handleLeadMagnetOptIn(req, res);
       if (req.method === 'GET' && path === '/api/lead-magnet/active-offer') return handleGetActiveOffer(req, res);

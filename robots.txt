@@ -3,6 +3,7 @@ Allow: /
 Disallow: /api/
 Disallow: /booking-confirmed
 Disallow: /thank-you
+Disallow: /intake/
 
 # AI search crawlers — explicitly allow
 User-agent: GPTBot

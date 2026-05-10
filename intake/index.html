@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <title>Customer Intake · GA Suit Warehouse</title>
+  <meta name="description" content="In-store customer intake form for tailoring." />
+  <meta name="robots" content="noindex,nofollow" />
+
+  <!-- iOS PWA / Add-to-Home-Screen -->
+  <link rel="manifest" href="/intake/manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Intake" />
+  <meta name="theme-color" content="#14213D" />
+  <link rel="apple-touch-icon" href="/assets/img/favicon.png" />
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=PT+Serif:wght@400;700&display=optional" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/intake.css" />
+</head>
+<body class="intake-body">
+  <main class="intake-main" id="intake-root">
+
+    <!-- Form state -->
+    <section class="intake-stage" data-stage="form" aria-hidden="false">
+      <header class="intake-header">
+        <div class="intake-eyebrow">GA Suit Warehouse</div>
+        <h1 class="intake-title">Customer Information</h1>
+        <p class="intake-sub">Fill in your details so we can get your suit tailored and ready.</p>
+      </header>
+
+      <form id="intake-form" class="intake-form" novalidate autocomplete="off">
+        <!-- honeypot: hidden from real users -->
+        <input type="text" name="hp" class="intake-honeypot" tabindex="-1" aria-hidden="true" autocomplete="off" />
+
+        <div class="intake-error" id="intake-error" role="alert" hidden></div>
+
+        <fieldset class="intake-group">
+          <legend class="intake-legend">Your name</legend>
+          <div class="intake-row">
+            <label class="intake-field">
+              <span class="intake-label">First name</span>
+              <input type="text" name="firstName" autocomplete="given-name" autocapitalize="words" required maxlength="60" />
+            </label>
+            <label class="intake-field">
+              <span class="intake-label">Last name</span>
+              <input type="text" name="lastName" autocomplete="family-name" autocapitalize="words" required maxlength="60" />
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="intake-group">
+          <legend class="intake-legend">How we'll reach you</legend>
+          <label class="intake-field">
+            <span class="intake-label">Phone</span>
+            <div class="intake-phone-row">
+              <span class="intake-phone-prefix" aria-label="United States">+1</span>
+              <input type="tel" name="phone" inputmode="numeric" autocomplete="tel" required maxlength="14" placeholder="(404) 555-0123" />
+            </div>
+          </label>
+          <label class="intake-field">
+            <span class="intake-label">Email</span>
+            <input type="email" name="email" autocomplete="email" inputmode="email" required maxlength="254" placeholder="you@example.com" />
+          </label>
+        </fieldset>
+
+        <fieldset class="intake-group">
+          <legend class="intake-legend">The suit</legend>
+          <label class="intake-field">
+            <span class="intake-label">Suit size</span>
+            <input type="text" name="suitSize" required maxlength="16" placeholder="e.g. 42R, 38S, 46L" />
+            <span class="intake-hint">Jacket size — typically the chest measurement plus a length letter (S, R, L).</span>
+          </label>
+
+          <div class="intake-field">
+            <span class="intake-label">Suit color</span>
+            <div class="intake-chips" role="radiogroup" aria-label="Suit color">
+              <button type="button" class="intake-chip" data-color="Black">Black</button>
+              <button type="button" class="intake-chip" data-color="Navy">Navy</button>
+              <button type="button" class="intake-chip" data-color="Charcoal">Charcoal</button>
+              <button type="button" class="intake-chip" data-color="Grey">Grey</button>
+              <button type="button" class="intake-chip" data-color="Tan">Tan</button>
+              <button type="button" class="intake-chip" data-color="Brown">Brown</button>
+              <button type="button" class="intake-chip" data-color="Burgundy">Burgundy</button>
+              <button type="button" class="intake-chip" data-color="Other">Other</button>
+            </div>
+            <input type="text" name="suitColor" id="intake-color-other" maxlength="32" placeholder="Type the color" hidden />
+          </div>
+        </fieldset>
+
+        <fieldset class="intake-group">
+          <legend class="intake-legend">Tailoring</legend>
+          <label class="intake-field">
+            <span class="intake-label">What needs to be tailored?</span>
+            <textarea name="tailoringNotes" required maxlength="500" rows="4"
+              placeholder="e.g. Hem pants to 30 inches, take in waist 1 inch, shorten sleeves ½ inch."></textarea>
+            <span class="intake-hint">Describe everything that needs adjustment — hem, waist, sleeves, jacket.</span>
+          </label>
+          <label class="intake-field">
+            <span class="intake-label">Need it by</span>
+            <input type="date" name="needByDate" required />
+            <span class="intake-hint">The date you need to wear the suit.</span>
+          </label>
+        </fieldset>
+
+        <button type="submit" class="intake-submit" id="intake-submit">
+          Save customer
+        </button>
+        <noscript>
+          <p class="intake-hint" style="text-align:center;margin-top:16px;">
+            JavaScript must be enabled to submit this form.
+          </p>
+        </noscript>
+      </form>
+    </section>
+
+    <!-- Submitting state -->
+    <section class="intake-stage" data-stage="submitting" aria-hidden="true" hidden>
+      <div class="intake-loading">
+        <div class="intake-spinner" aria-hidden="true"></div>
+        <p>Saving…</p>
+      </div>
+    </section>
+
+    <!-- Confirmed state -->
+    <section class="intake-stage" data-stage="confirmed" aria-hidden="true" hidden>
+      <div class="intake-confirmed">
+        <div class="intake-check" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="72" height="72" role="presentation">
+            <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="3" />
+            <path d="M18 33 L29 44 L47 22" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <h2 class="intake-confirmed-title">Saved — thanks!</h2>
+        <p class="intake-confirmed-sub" id="intake-confirmed-sub">
+          We have your info. We'll be in touch before <span data-bind="needByDate">your date</span> if anything's needed.
+        </p>
+        <button type="button" class="intake-submit" id="intake-reset">
+          Start new customer
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script defer src="/assets/js/intake-form.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "GA Suit Intake",
+  "short_name": "Intake",
+  "description": "In-store customer intake form for GA Suit Warehouse.",
+  "start_url": "/intake/",
+  "scope": "/intake/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#14213D",
+  "background_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "/assets/img/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/img/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

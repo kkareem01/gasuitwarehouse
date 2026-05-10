@@ -1,0 +1,258 @@
+/* GA Suit Warehouse — in-store iPad customer intake.
+   Designed first for iPad portrait, finger-friendly, kiosk-style. */
+
+.intake-body {
+  background: var(--off-white);
+  color: var(--ink);
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Respect iOS safe areas when launched as PWA */
+  padding:
+    env(safe-area-inset-top, 0)
+    env(safe-area-inset-right, 0)
+    env(safe-area-inset-bottom, 0)
+    env(safe-area-inset-left, 0);
+}
+
+.intake-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* --- Header --------------------------------------------------------------- */
+.intake-header { text-align: center; margin-bottom: 32px; }
+.intake-eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 12px;
+}
+.intake-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0 0 12px;
+  color: var(--navy);
+}
+.intake-sub {
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* --- Form layout ---------------------------------------------------------- */
+.intake-form { display: flex; flex-direction: column; gap: 20px; }
+
+.intake-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intake-error {
+  background: #FFF1F0;
+  border: 1px solid #F0B5B0;
+  color: #8A1F19;
+  padding: 14px 16px;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.intake-group {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 20px 20px 22px;
+  margin: 0;
+}
+.intake-legend {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 8px;
+  margin-left: -8px;
+}
+
+.intake-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 520px) { .intake-row { grid-template-columns: 1fr; } }
+
+.intake-field { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.intake-field:first-of-type { margin-top: 8px; }
+
+.intake-label {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.intake-hint {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* --- Inputs --------------------------------------------------------------- */
+.intake-form input[type="text"],
+.intake-form input[type="tel"],
+.intake-form input[type="email"],
+.intake-form input[type="date"],
+.intake-form textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  /* 16px+ prevents iOS Safari from auto-zooming on focus */
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: 4px;
+  padding: 14px 14px;
+  /* Big touch target */
+  min-height: 56px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.intake-form textarea { min-height: 110px; resize: vertical; }
+.intake-form input:focus,
+.intake-form textarea:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(20, 33, 61, 0.12);
+}
+
+.intake-phone-row {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--paper);
+}
+.intake-phone-row:focus-within {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(20, 33, 61, 0.12);
+}
+.intake-phone-prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  background: var(--off-white);
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 700;
+  border-right: 1.5px solid var(--rule);
+}
+.intake-phone-row input { border: none; min-height: 56px; }
+.intake-phone-row input:focus { box-shadow: none; }
+
+/* --- Color chips ---------------------------------------------------------- */
+.intake-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.intake-chip {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  padding: 12px 20px;
+  min-height: 48px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.intake-chip:hover { border-color: var(--navy-soft); }
+.intake-chip.is-active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+/* --- Submit --------------------------------------------------------------- */
+.intake-submit {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 18px 22px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #fff;
+  background: var(--navy);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  min-height: 64px;
+  transition: background 0.15s;
+}
+.intake-submit:hover { background: var(--navy-deep); }
+.intake-submit:active { transform: translateY(1px); }
+.intake-submit:disabled { opacity: 0.6; cursor: progress; }
+
+/* --- Submitting / confirmed states --------------------------------------- */
+.intake-stage[hidden] { display: none; }
+
+.intake-loading {
+  text-align: center;
+  padding: 80px 20px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--muted);
+}
+.intake-spinner {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px;
+  border: 4px solid var(--rule);
+  border-top-color: var(--navy);
+  border-radius: 50%;
+  animation: intake-spin 0.9s linear infinite;
+}
+@keyframes intake-spin { to { transform: rotate(360deg); } }
+
+.intake-confirmed {
+  text-align: center;
+  padding: 60px 20px 40px;
+}
+.intake-check {
+  color: var(--success);
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+.intake-confirmed-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin: 0 0 16px;
+}
+.intake-confirmed-sub {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto 36px;
+}
