@@ -167,21 +167,15 @@
         <h1>Customer Intakes</h1>
         <p class="subtitle">In-store tailoring intakes — sorted by need-by date.</p>
       </div>
-      <div class="actions" data-region="actions" hidden>
+      <div class="actions" data-region="actions">
         <button class="btn" data-action="refresh">↻ Refresh</button>
         <button class="btn" data-action="download-csv">Download CSV</button>
       </div>
     </header>
 
-    <section class="auth-gate" data-region="auth-gate" hidden>
-      <label for="staff-token">Staff token</label>
-      <input id="staff-token" type="password" placeholder="Paste token" autocomplete="off" />
-      <button data-action="save-token">Load Intakes</button>
-    </section>
-
     <div class="alert error" data-region="alert" hidden></div>
 
-    <section data-region="dashboard" hidden>
+    <section data-region="dashboard">
       <div class="filterbar">
         <div class="pills" data-region="status-pills">
           <button class="pill-btn is-active" data-status="open">Open</button>

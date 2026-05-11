@@ -171,11 +171,8 @@
   }
 
   function init() {
-    if (!getToken()) {
-      showGate(true);
-    } else {
-      showGate(false);
-    }
+    // Auth gate removed — URLs are unguessable + robots-blocked + iPad-only.
+    showGate(false);
 
     document.addEventListener('click', (e) => {
       const t = e.target.closest('[data-action]');

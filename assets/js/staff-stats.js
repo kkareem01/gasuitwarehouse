@@ -67,15 +67,9 @@
 
   async function loadStats() {
     hideAlert();
-    if (!window.GASWStaff?.getToken()) return;
     try {
-      const res = await window.GASWStaff.authedFetch('/api/admin/funnel-stats?weeks=12');
+      const res = await fetch('/api/admin/funnel-stats?weeks=12');
       const j = await res.json().catch(() => ({}));
-      if (res.status === 401) {
-        window.GASWStaff.clearToken();
-        document.querySelector('[data-region="auth-gate"]').hidden = false;
-        return showAlert('Token rejected. Re-enter to continue.');
-      }
       if (!res.ok || !j.ok) return showAlert(j.error || 'Could not load stats.');
       renderWeeks(j.weeks);
     } catch (_) {
@@ -84,20 +78,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    if (!window.GASWStaff?.getToken()) {
-      const gate = $r('auth-gate');
-      if (gate) gate.hidden = false;
-    } else {
-      loadStats();
-    }
-    // Re-load after token saved (staff.js handles save-token; we react by polling state).
-    let last = window.GASWStaff?.getToken();
-    setInterval(() => {
-      const cur = window.GASWStaff?.getToken();
-      if (cur && cur !== last) {
-        last = cur;
-        loadStats();
-      }
-    }, 500);
+    loadStats();
   });
 })();

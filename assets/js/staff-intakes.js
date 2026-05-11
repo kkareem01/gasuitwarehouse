@@ -17,7 +17,6 @@
   let currentSearch = '';
   let searchDebounce = null;
   let pollTimer = null;
-  let lastToken = '';
 
   // --- formatting --------------------------------------------------------
 
@@ -70,17 +69,6 @@
   function hideAlert() {
     const el = $r('alert');
     if (el) el.hidden = true;
-  }
-
-  // --- gate / dashboard visibility --------------------------------------
-
-  function showDashboard(show) {
-    const gate = $r('auth-gate');
-    const dash = $r('dashboard');
-    const acts = $r('actions');
-    if (gate) gate.hidden = show;
-    if (dash) dash.hidden = !show;
-    if (acts) acts.hidden = !show;
   }
 
   // --- table rendering --------------------------------------------------
@@ -145,25 +133,14 @@
 
   // --- API calls --------------------------------------------------------
 
-  function authedFetch(path, opts = {}) {
-    if (!window.GASWStaff?.authedFetch) return fetch(path, opts);
-    return window.GASWStaff.authedFetch(path, opts);
-  }
-
   async function loadIntakes() {
-    if (!window.GASWStaff?.getToken()) return;
     hideAlert();
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
     if (currentSearch) params.set('q', currentSearch);
     try {
-      const res = await authedFetch(`/api/admin/intakes?${params.toString()}`);
+      const res = await fetch(`/api/admin/intakes?${params.toString()}`);
       const j = await res.json().catch(() => ({}));
-      if (res.status === 401) {
-        window.GASWStaff.clearToken();
-        showDashboard(false);
-        return showAlert('error', 'Token rejected. Re-enter to continue.');
-      }
       if (!res.ok || !j.ok) return showAlert('error', j.error || 'Could not load intakes.');
       renderTable(j.intakes || []);
     } catch (_) {
@@ -175,17 +152,12 @@
     hideAlert();
     selectEl.disabled = true;
     try {
-      const res = await authedFetch('/api/admin/intake-status', {
+      const res = await fetch('/api/admin/intake-status', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id, tailorStatus: status }),
       });
       const j = await res.json().catch(() => ({}));
-      if (res.status === 401) {
-        window.GASWStaff.clearToken();
-        showDashboard(false);
-        return showAlert('error', 'Token rejected.');
-      }
       if (!res.ok || !j.ok) {
         return showAlert('error', j.error || 'Could not update status.');
       }
@@ -207,39 +179,18 @@
   }
 
   function downloadCsv() {
-    const token = window.GASWStaff?.getToken();
-    if (!token) return;
-    // CSV endpoint requires Authorization header → fetch as blob → trigger download.
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
     if (currentSearch) params.set('q', currentSearch);
     params.set('format', 'csv');
-    authedFetch(`/api/admin/intakes?${params.toString()}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Could not download.');
-        return res.blob();
-      })
-      .then((blob) => {
-        const stamp = new Date().toISOString().slice(0, 10);
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `intakes-${stamp}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      })
-      .catch(() => showAlert('error', 'CSV download failed.'));
+    // Plain GET to a same-origin URL with content-disposition — let the browser handle the download.
+    window.location.href = `/api/admin/intakes?${params.toString()}`;
   }
 
   // --- wire up ----------------------------------------------------------
 
   function init() {
-    const hasToken = !!window.GASWStaff?.getToken();
-    showDashboard(hasToken);
-    if (hasToken) loadIntakes();
-    lastToken = window.GASWStaff?.getToken() || '';
+    loadIntakes();
 
     // Status pill click
     document.addEventListener('click', (e) => {
@@ -276,27 +227,12 @@
       });
     }
 
-    // Poll for token appearance (after staff.js handles save-token)
-    setInterval(() => {
-      const cur = window.GASWStaff?.getToken() || '';
-      if (cur && cur !== lastToken) {
-        lastToken = cur;
-        showDashboard(true);
-        loadIntakes();
-      } else if (!cur && lastToken) {
-        lastToken = '';
-        showDashboard(false);
-      }
-    }, 500);
-
     // Auto-refresh every 60s
-    pollTimer = setInterval(() => {
-      if (window.GASWStaff?.getToken()) loadIntakes();
-    }, 60000);
+    pollTimer = setInterval(loadIntakes, 60000);
 
-    // Pause refresh when tab is hidden, resume when visible
+    // Pause refresh when tab is hidden, resume + refresh when visible
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && window.GASWStaff?.getToken()) loadIntakes();
+      if (!document.hidden) loadIntakes();
     });
   }
 
