@@ -149,6 +149,30 @@
     .status-select.s-back { color: #6EE7B7; border-color: #064E3B; }
     .status-select.s-picked_up { color: #9CA3AF; border-color: #2A3654; }
 
+    .btn-notify {
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border-radius: 4px;
+      border: 1px solid #C9A961;
+      background: #C9A961;
+      color: #0E1729;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-notify:hover:not(:disabled) { background: #D4B775; border-color: #D4B775; }
+    .btn-notify:disabled { opacity: 0.6; cursor: wait; }
+    .notice-sent {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #6EE7B7;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .notify-na { color: #4B5563; font-size: 13px; }
+
     .empty {
       text-align: center;
       padding: 60px 20px;
@@ -198,6 +222,7 @@
               <th>Tailoring</th>
               <th>Need by</th>
               <th>Status</th>
+              <th>Notify</th>
               <th>Submitted</th>
             </tr>
           </thead>

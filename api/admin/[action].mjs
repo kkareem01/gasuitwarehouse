@@ -9,9 +9,10 @@ import {
   handleAdminFunnelStats,
   handleAdminListIntakes,
   handleAdminUpdateIntake,
+  handleAdminNotifyIntakeReady,
 } from '../../lib/handlers.mjs';
 
-const KNOWN_ACTIONS = ['lookup-code', 'redeem', 'funnel-stats', 'intakes', 'intake-status'];
+const KNOWN_ACTIONS = ['lookup-code', 'redeem', 'funnel-stats', 'intakes', 'intake-status', 'intake-notify-ready'];
 
 export default async function (req, res) {
   const action = req.query?.action || req.url.split('?')[0].split('/').pop();
@@ -30,6 +31,9 @@ export default async function (req, res) {
   }
   if (action === 'intake-status' && req.method === 'POST') {
     return handleAdminUpdateIntake(req, res);
+  }
+  if (action === 'intake-notify-ready' && req.method === 'POST') {
+    return handleAdminNotifyIntakeReady(req, res);
   }
 
   res.statusCode = KNOWN_ACTIONS.includes(action) ? 405 : 404;

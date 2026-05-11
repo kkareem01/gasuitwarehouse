@@ -57,6 +57,16 @@
     return `In ${days} days`;
   }
 
+  function relativeTime(iso) {
+    if (!iso) return '';
+    const delta = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (delta < 60) return 'just now';
+    if (delta < 3600) return `${Math.floor(delta / 60)}m ago`;
+    if (delta < 86400) return `${Math.floor(delta / 3600)}h ago`;
+    const days = Math.floor(delta / 86400);
+    return `${days}d ago`;
+  }
+
   // --- alerts ------------------------------------------------------------
 
   function showAlert(kind, msg) {
@@ -72,6 +82,20 @@
   }
 
   // --- table rendering --------------------------------------------------
+
+  function renderNotifyCell(intake) {
+    const status = intake.tailorStatus || 'pending';
+    const noticeStatus = intake.pickupNoticeStatus || 'pending';
+
+    if (status !== 'back' && noticeStatus !== 'sent') {
+      return '<span class="notify-na">—</span>';
+    }
+    if (noticeStatus === 'sent') {
+      return `<span class="notice-sent" title="Sent ${esc(fmtIso(intake.pickupNoticeSentAt))}">✓ Sent ${esc(relativeTime(intake.pickupNoticeSentAt))}</span>`;
+    }
+    // status === 'back' && noticeStatus === 'pending'
+    return `<button class="btn-notify" data-action="notify-ready" data-id="${esc(intake.id)}" data-name="${esc(intake.firstName)} ${esc(intake.lastName)}">Send ready for pickup</button>`;
+  }
 
   function renderRow(intake) {
     const days = daysUntil(intake.needByDate);
@@ -106,6 +130,7 @@
             ${Object.entries(STATUS_LABELS).map(([v, l]) => `<option value="${v}"${v === status ? ' selected' : ''}>${esc(l)}</option>`).join('')}
           </select>
         </td>
+        <td>${renderNotifyCell(intake)}</td>
         <td><span style="color:#9CA3AF;font-size:13px;">${fmtIso(intake.createdAt)}</span></td>
       </tr>
     `;
@@ -139,6 +164,44 @@
       renderTable(j.intakes || []);
     } catch (_) {
       showAlert('error', 'Network error. Will retry on next refresh.');
+    }
+  }
+
+  async function notifyReady(id, name, btnEl) {
+    hideAlert();
+    const who = (name || '').trim() || 'this customer';
+    if (!confirm(`Send pickup-ready email + SMS to ${who}?`)) return;
+    btnEl.disabled = true;
+    const originalText = btnEl.textContent;
+    btnEl.textContent = 'Sending…';
+    try {
+      const res = await fetch('/api/admin/intake-notify-ready', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        const detail = j.email?.error || j.sms?.error || j.error || 'Send failed.';
+        showAlert('error', detail);
+        btnEl.disabled = false;
+        btnEl.textContent = originalText;
+        return;
+      }
+      const emailOk = j.email?.ok;
+      const smsOk = j.sms?.ok;
+      let msg;
+      if (emailOk && smsOk) msg = 'Email + SMS sent.';
+      else if (emailOk) msg = `Email sent (SMS failed: ${j.sms?.error || 'unknown'}).`;
+      else if (smsOk) msg = `SMS sent (email failed: ${j.email?.error || 'unknown'}).`;
+      else msg = 'Sent.';
+      showAlert('success', msg);
+      setTimeout(hideAlert, 4000);
+      loadIntakes();
+    } catch (_) {
+      showAlert('error', 'Network error. Try again.');
+      btnEl.disabled = false;
+      btnEl.textContent = originalText;
     }
   }
 
@@ -197,9 +260,13 @@
         loadIntakes();
         return;
       }
-      const action = e.target.closest('[data-action]')?.dataset.action;
+      const actionEl = e.target.closest('[data-action]');
+      const action = actionEl?.dataset.action;
       if (action === 'refresh') loadIntakes();
       if (action === 'download-csv') downloadCsv();
+      if (action === 'notify-ready') {
+        notifyReady(actionEl.dataset.id, actionEl.dataset.name, actionEl);
+      }
     });
 
     // Status dropdown change
