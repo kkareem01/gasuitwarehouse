@@ -37,6 +37,8 @@ import {
   handleAdminLookupCode,
   handleAdminRedeem,
   handleAdminFunnelStats,
+  handleAdminListIntakes,
+  handleAdminUpdateIntake,
 } from './lib/handlers.mjs';
 import * as log from './lib/log.mjs';
 
@@ -156,6 +158,8 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'GET'  && path === '/api/admin/lookup-code')  return handleAdminLookupCode(req, res);
       if (req.method === 'POST' && path === '/api/admin/redeem')       return handleAdminRedeem(req, res);
       if (req.method === 'GET'  && path === '/api/admin/funnel-stats') return handleAdminFunnelStats(req, res);
+      if (req.method === 'GET'  && path === '/api/admin/intakes')      return handleAdminListIntakes(req, res);
+      if (req.method === 'POST' && path === '/api/admin/intake-status') return handleAdminUpdateIntake(req, res);
 
       const icsMatch = path.match(/^\/api\/bookings\/([A-Za-z0-9-]+)\/ics$/);
       if (req.method === 'GET' && icsMatch) return handleGetBookingIcs(req, res, icsMatch[1]);

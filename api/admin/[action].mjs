@@ -7,7 +7,11 @@ import {
   handleAdminLookupCode,
   handleAdminRedeem,
   handleAdminFunnelStats,
+  handleAdminListIntakes,
+  handleAdminUpdateIntake,
 } from '../../lib/handlers.mjs';
+
+const KNOWN_ACTIONS = ['lookup-code', 'redeem', 'funnel-stats', 'intakes', 'intake-status'];
 
 export default async function (req, res) {
   const action = req.query?.action || req.url.split('?')[0].split('/').pop();
@@ -21,8 +25,14 @@ export default async function (req, res) {
   if (action === 'funnel-stats' && req.method === 'GET') {
     return handleAdminFunnelStats(req, res);
   }
+  if (action === 'intakes' && req.method === 'GET') {
+    return handleAdminListIntakes(req, res);
+  }
+  if (action === 'intake-status' && req.method === 'POST') {
+    return handleAdminUpdateIntake(req, res);
+  }
 
-  res.statusCode = ['lookup-code', 'redeem', 'funnel-stats'].includes(action) ? 405 : 404;
+  res.statusCode = KNOWN_ACTIONS.includes(action) ? 405 : 404;
   res.setHeader('content-type', 'application/json; charset=utf-8');
   return res.end(JSON.stringify({ ok: false, error: res.statusCode === 405 ? 'METHOD_NOT_ALLOWED' : 'UNKNOWN_ACTION', action }));
 }
