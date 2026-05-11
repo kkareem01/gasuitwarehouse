@@ -14,27 +14,21 @@
   const stageSubmitting = $('[data-stage="submitting"]');
   const stageConfirmed = $('[data-stage="confirmed"]');
   const resetBtn = $('#intake-reset');
-  const colorOther = $('#intake-color-other');
   const phoneInput = form.elements.phone;
   const dateInput = form.elements.needByDate;
   const chips = $$('.intake-chip', form);
 
-  // --- state ---------------------------------------------------------------
-
   let formStartedAt = Date.now();
-  let selectedColor = '';
 
-  // Set min on the date input to today (in local time).
+  // --- date min = today (local) -----------------------------------------
+
   function todayLocalISO() {
     const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
   dateInput.min = todayLocalISO();
 
-  // --- phone formatting ----------------------------------------------------
+  // --- phone formatting -------------------------------------------------
 
   function formatPhone(raw) {
     const digits = raw.replace(/\D/g, '').slice(0, 10);
@@ -48,31 +42,23 @@
     if (cursorAtEnd) phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
   });
 
-  // --- color chip picker ---------------------------------------------------
+  // --- tailoring chip multi-select --------------------------------------
 
-  function selectChip(chip) {
-    const color = chip.dataset.color;
-    chips.forEach((c) => c.classList.toggle('is-active', c === chip));
-    selectedColor = color;
-    if (color === 'Other') {
-      colorOther.hidden = false;
-      colorOther.required = true;
-      colorOther.focus();
-    } else {
-      colorOther.hidden = true;
-      colorOther.required = false;
-      colorOther.value = '';
-    }
+  chips.forEach((c) => {
+    c.addEventListener('click', () => {
+      c.classList.toggle('is-active');
+      c.setAttribute('aria-pressed', c.classList.contains('is-active') ? 'true' : 'false');
+    });
+    c.setAttribute('aria-pressed', 'false');
+  });
+
+  function selectedTailoring() {
+    return chips
+      .filter((c) => c.classList.contains('is-active'))
+      .map((c) => c.dataset.item);
   }
-  chips.forEach((c) => c.addEventListener('click', () => selectChip(c)));
 
-  // --- validation (mirror of server-side rules) ----------------------------
-
-  function getColorValue() {
-    if (!selectedColor) return '';
-    if (selectedColor === 'Other') return colorOther.value.trim();
-    return selectedColor;
-  }
+  // --- validation -------------------------------------------------------
 
   function readForm() {
     const fd = new FormData(form);
@@ -81,29 +67,25 @@
       lastName: String(fd.get('lastName') || '').trim(),
       phone: String(fd.get('phone') || '').trim(),
       email: String(fd.get('email') || '').trim(),
-      suitSize: String(fd.get('suitSize') || '').trim(),
-      suitColor: getColorValue(),
-      tailoringNotes: String(fd.get('tailoringNotes') || '').trim(),
+      tailoringItems: selectedTailoring(),
       needByDate: String(fd.get('needByDate') || '').trim(),
       hp: String(fd.get('hp') || ''),
     };
   }
 
-  function validate(values) {
+  function validate(v) {
     const errors = [];
-    if (!values.firstName) errors.push('Enter your first name.');
-    if (!values.lastName) errors.push('Enter your last name.');
-    if (values.phone.replace(/\D/g, '').length < 10) errors.push('Enter a 10-digit phone number.');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) errors.push('Enter a valid email.');
-    if (!values.suitSize) errors.push('Enter the suit size.');
-    if (!values.suitColor) errors.push('Pick a suit color.');
-    if (!values.tailoringNotes) errors.push('Describe what needs to be tailored.');
-    if (!values.needByDate) errors.push('Pick the date you need it by.');
-    else if (values.needByDate < todayLocalISO()) errors.push('Need-by date must be today or later.');
+    if (!v.firstName) errors.push('Enter your first name.');
+    if (!v.lastName) errors.push('Enter your last name.');
+    if (v.phone.replace(/\D/g, '').length < 10) errors.push('Enter a 10-digit phone number.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) errors.push('Enter a valid email.');
+    if (v.tailoringItems.length === 0) errors.push('Pick at least one item that needs tailoring.');
+    if (!v.needByDate) errors.push('Pick the date you need it by.');
+    else if (v.needByDate < todayLocalISO()) errors.push('Need-by date must be today or later.');
     return errors;
   }
 
-  // --- stage transitions ---------------------------------------------------
+  // --- stage transitions -----------------------------------------------
 
   function showStage(name) {
     [stageForm, stageSubmitting, stageConfirmed].forEach((s) => {
@@ -125,10 +107,10 @@
 
   function resetForm() {
     form.reset();
-    chips.forEach((c) => c.classList.remove('is-active'));
-    selectedColor = '';
-    colorOther.hidden = true;
-    colorOther.required = false;
+    chips.forEach((c) => {
+      c.classList.remove('is-active');
+      c.setAttribute('aria-pressed', 'false');
+    });
     dateInput.min = todayLocalISO();
     formStartedAt = Date.now();
     clearError();
@@ -138,19 +120,26 @@
     if (first) first.focus({ preventScroll: true });
   }
 
-  // --- submit --------------------------------------------------------------
+  // --- submit ----------------------------------------------------------
 
   function formatDateHuman(iso) {
     if (!iso) return 'your date';
     const [y, m, d] = iso.split('-').map(Number);
     if (!y || !m || !d) return iso;
-    const dt = new Date(y, m - 1, d);
-    return dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+      weekday: 'long', month: 'long', day: 'numeric',
+    });
   }
 
   async function submit(values) {
     const payload = {
-      ...values,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      phone: values.phone,
+      email: values.email,
+      tailoringNotes: values.tailoringItems.join(', '),
+      needByDate: values.needByDate,
+      hp: values.hp,
       startedAt: formStartedAt,
     };
 
@@ -175,13 +164,11 @@
       showError(errors[0]);
       return;
     }
-
     submitBtn.disabled = true;
     showStage('submitting');
-
     try {
       await submit(values);
-      const sub = $('#intake-confirmed-sub [data-bind="needByDate"]');
+      const sub = $('[data-bind="needByDate"]');
       if (sub) sub.textContent = formatDateHuman(values.needByDate);
       showStage('confirmed');
     } catch (e) {
@@ -193,8 +180,6 @@
   });
 
   resetBtn.addEventListener('click', resetForm);
-
-  // --- init ----------------------------------------------------------------
 
   formStartedAt = Date.now();
 })();

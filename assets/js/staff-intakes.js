@@ -94,12 +94,6 @@
             <a href="mailto:${esc(intake.email)}">${esc(intake.email)}</a>
           </div>
         </td>
-        <td>
-          <div class="suit">
-            <div class="size">${esc(intake.suitSize)}</div>
-            <div class="color">${esc(intake.suitColor)}</div>
-          </div>
-        </td>
         <td><div class="notes">${esc(intake.tailoringNotes)}</div></td>
         <td>
           <div class="date-cell">
