@@ -20,6 +20,9 @@
       "permanent": true
     }
   ],
+  "rewrites": [
+    { "source": "/api/intake", "destination": "/api/leads?__route=intake" }
+  ],
   "crons": [
     { "path": "/api/cron/expire-codes",  "schedule": "0 7 * * *" },
     { "path": "/api/cron/rotate-offer",  "schedule": "0 9 * * 1" },
