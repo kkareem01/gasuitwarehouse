@@ -188,11 +188,6 @@
         const codeInput = $('#code-input');
         if (codeInput) codeInput.focus();
       }
-      if (action === 'forget-token') {
-        clearToken();
-        showGate(true);
-        showAlert('warn', 'Token cleared. Re-enter to continue.');
-      }
       if (action === 'lookup') lookup();
       if (action === 'redeem') redeem();
       if (action === 'reset') reset();
