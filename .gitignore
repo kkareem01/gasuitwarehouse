@@ -52,3 +52,8 @@ favicon copy.png
 # High-res originals of review screenshots — only the optimized .png variants
 # are referenced by the site, the .original.png files would just bloat the repo.
 assets/reviews/*.original.png
+.vercel
+
+# Secrets / recovery codes — never commit.
+twilio_2FA_recovery_code.txt
+*_recovery_code.txt
