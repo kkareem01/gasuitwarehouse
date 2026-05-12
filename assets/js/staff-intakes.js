@@ -13,7 +13,7 @@
     picked_up: 'Picked up',
   };
 
-  let currentStatus = 'open';
+  let currentStatus = 'pending';
   let currentSearch = '';
   let searchDebounce = null;
   let pollTimer = null;
@@ -223,9 +223,7 @@
       showAlert('success', `Status updated to "${STATUS_LABELS[status]}"`);
       setTimeout(hideAlert, 2500);
       // If the new status filters this row out, reload.
-      if (currentStatus !== 'all' && currentStatus !== 'open' && currentStatus !== status) {
-        loadIntakes();
-      } else if (currentStatus === 'open' && status === 'picked_up') {
+      if (currentStatus !== 'all' && currentStatus !== status) {
         loadIntakes();
       }
     } catch (_) {
