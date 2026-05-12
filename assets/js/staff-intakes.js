@@ -22,15 +22,11 @@
 
   const KNOWN_CHIPS = ['Hem', 'Waist', 'Sleeves', 'Shirt', 'Jacket', 'Vest', 'Slim Pants'];
 
-  function splitTailoring(str) {
-    const parts = String(str || '').split(',').map((s) => s.trim()).filter(Boolean);
-    const chips = [];
-    const other = [];
-    for (const p of parts) {
-      if (KNOWN_CHIPS.includes(p)) chips.push(p);
-      else other.push(p);
-    }
-    return { chips, other: other.join(', ') };
+  function activeChipsFromNotes(str) {
+    const set = new Set(
+      String(str || '').split(',').map((s) => s.trim()).filter(Boolean)
+    );
+    return KNOWN_CHIPS.filter((c) => set.has(c));
   }
 
   // --- formatting --------------------------------------------------------
@@ -307,9 +303,7 @@
     form.elements.needByDate.value = intake.needByDate || '';
     form.elements.additionalNotes.value = intake.additionalNotes || '';
 
-    const { chips, other } = splitTailoring(intake.tailoringNotes);
-    renderChips(new Set(chips));
-    form.elements.tailoringOther.value = other;
+    renderChips(new Set(activeChipsFromNotes(intake.tailoringNotes)));
 
     setEditError('');
 
@@ -335,16 +329,12 @@
     btn.setAttribute('aria-pressed', active ? 'true' : 'false');
   }
 
-  function collectTailoringPayload(form) {
+  function collectTailoringPayload() {
     const wrap = $r('edit-modal-chips');
-    const activeChips = wrap
-      ? Array.from(wrap.querySelectorAll('.edit-chip.is-active')).map((b) => b.dataset.chip)
-      : [];
-    const otherRaw = String(form.elements.tailoringOther.value || '').trim();
-    const otherParts = otherRaw
-      ? otherRaw.split(',').map((s) => s.trim()).filter(Boolean)
-      : [];
-    return [...activeChips, ...otherParts].join(', ');
+    if (!wrap) return '';
+    return Array.from(wrap.querySelectorAll('.edit-chip.is-active'))
+      .map((b) => b.dataset.chip)
+      .join(', ');
   }
 
   async function saveEditModal() {
@@ -361,7 +351,7 @@
       phone: form.elements.phone.value.trim(),
       email: form.elements.email.value.trim(),
       ticketNumber: form.elements.ticketNumber.value.trim(),
-      tailoringNotes: collectTailoringPayload(form),
+      tailoringNotes: collectTailoringPayload(),
       needByDate: form.elements.needByDate.value.trim(),
       additionalNotes: form.elements.additionalNotes.value.trim(),
     };
