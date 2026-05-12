@@ -120,8 +120,8 @@
 
     .customer { display: flex; flex-direction: column; gap: 2px; }
     .customer .name { font-weight: 700; color: #fff; }
-    .customer .name-link { display: inline-block; cursor: pointer; text-decoration: none; border-bottom: 1px dashed #6B7280; }
-    .customer .name-link:hover { color: #C9A961; border-bottom-color: #C9A961; }
+    .customer .name-link { display: inline-block; cursor: pointer; text-decoration: none; color: inherit; }
+    .customer .name-link:hover { color: #C9A961; }
     .customer .id { font-family: 'Courier New', monospace; font-size: 11px; color: #6B7280; }
     .contact { display: flex; flex-direction: column; gap: 4px; }
     .contact a { color: #C9A961; text-decoration: none; font-size: 13px; }
@@ -310,9 +310,6 @@
       <div class="actions" data-region="actions">
         <button class="btn" data-action="refresh">↻ Refresh</button>
         <button class="btn" data-action="download-csv">Download CSV</button>
-        <a class="btn" href="/staff/redeem.html">Redeem</a>
-        <a class="btn" href="/staff/stats.html">Stats</a>
-        <a class="btn" href="/intake/">Open intake form ↗</a>
       </div>
     </header>
 
