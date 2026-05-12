@@ -106,6 +106,102 @@
   border-radius: 5px;
   letter-spacing: 0.03em;
 }
+.intake-body .booking-form button[type="submit"]:disabled {
+  background: #C7CBD3;
+  color: #FFF;
+  cursor: not-allowed;
+  opacity: 1;
+}
+.intake-body .booking-form button[type="submit"]:disabled:hover {
+  background: #C7CBD3;
+}
+
+/* --- Region transitions (customer / handoff / staff) -------------------- */
+.intake-region[hidden] { display: none; }
+.intake-region:not([hidden]) {
+  animation: intake-region-in 220ms var(--easing, ease-out) both;
+}
+@keyframes intake-region-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Handoff stage ------------------------------------------------------ */
+.intake-handoff {
+  text-align: center;
+  padding: 36px 12px 18px;
+}
+.intake-handoff__title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 36px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+.intake-handoff__sub {
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 0 0 36px;
+}
+.intake-handoff__continue {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 8px 18px;
+  min-height: 36px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.intake-handoff__continue:hover {
+  color: var(--navy);
+  border-color: var(--navy-soft);
+}
+
+/* --- Staff stage topbar ------------------------------------------------- */
+.intake-staff__topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.intake-back {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  margin-left: -8px;
+  cursor: pointer;
+  text-decoration: underline;
+  min-height: 32px;
+}
+.intake-back:hover { color: var(--navy-soft); }
+.intake-customer-chip {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--off-white);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 4px 10px;
+  max-width: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* --- Tailoring chips (multi-select) -------------------------------------- */
 .intake-chips-field > label { margin-bottom: 8px; }

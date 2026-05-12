@@ -1,28 +1,37 @@
 /* GA Suit Warehouse — in-store iPad intake form.
-   Vanilla module loaded by /intake/index.html.
-   UI mirrors the booking flow: Phone + First/Last visible at step 1, the rest
-   of the form smoothly expands once those three are valid. */
+   Three sub-stages in one card:
+     1) customer  — first/last/phone/email + "I'm done" (gated)
+     2) handoff   — "Thanks, X! Please hand the iPad back" + small Continue
+     3) staff     — chips/date/ticket/notes + Submit (single POST) */
 
 (function () {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
   const card = $('#intake-card');
-  const form = $('#intake-form');
-  if (!card || !form) return;
+  if (!card) return;
 
+  const customerForm = $('#intake-customer-form');
+  const staffForm = $('#intake-staff-form');
+  const doneBtn = $('#intake-customer-done');
+  const continueBtn = $('#intake-handoff-continue');
+  const backBtn = $('#intake-back');
   const submitBtn = $('#intake-submit');
+  const resetBtn = $('#intake-reset');
   const errorBox = $('#intake-error');
+
   const stageForm = $('[data-stage="form"]');
   const stageSubmitting = $('[data-stage="submitting"]');
   const stageConfirmed = $('[data-stage="confirmed"]');
-  const resetBtn = $('#intake-reset');
+  const regions = $$('.intake-region');
+  const regionByName = Object.fromEntries(regions.map((r) => [r.dataset.region, r]));
+
   const phoneInput = $('#bk-phone');
   const firstInput = $('#bk-first');
   const lastInput = $('#bk-last');
+  const emailInput = $('#bk-email');
   const dateInput = $('#bk-needby');
-  const chips = $$('.intake-chip', form);
-  const extended = $('.booking-form__extended', form);
+  const chips = $$('.intake-chip', staffForm);
 
   let formStartedAt = Date.now();
 
@@ -43,7 +52,6 @@
     if (digits.length > 0) return `(${digits}`;
     return '';
   }
-
   phoneInput.addEventListener('input', () => {
     const next = formatPhone(phoneInput.value);
     if (next !== phoneInput.value) {
@@ -52,7 +60,7 @@
     }
   });
 
-  // --- tailoring chip multi-select --------------------------------------
+  // --- chip multi-select ------------------------------------------------
 
   chips.forEach((c) => {
     c.setAttribute('aria-pressed', 'false');
@@ -68,89 +76,53 @@
       .map((c) => c.dataset.item);
   }
 
-  // --- step-state (mirrors booking auto-expand/collapse) ----------------
+  // --- validation -------------------------------------------------------
 
-  function step1Valid() {
-    const digits = phoneInput.value.replace(/\D/g, '');
-    if (digits.length < 10) return false;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function customerValid() {
+    if (phoneInput.value.replace(/\D/g, '').length < 10) return false;
     if (!firstInput.value.trim()) return false;
     if (!lastInput.value.trim()) return false;
+    if (!EMAIL_RE.test(emailInput.value.trim())) return false;
     return true;
   }
 
-  function setStep(step) {
-    card.dataset.step = String(step);
-    extended.setAttribute('aria-hidden', step === 1 ? 'true' : 'false');
+  function refreshDoneButton() {
+    doneBtn.disabled = !customerValid();
   }
-
-  // Auto-expand when first 3 fields satisfy validation; auto-collapse when
-  // any of them goes invalid again. Mirrors booking.js:230-278.
-  function onStepInput(ev) {
-    const t = ev.target;
-    if (t !== phoneInput && t !== firstInput && t !== lastInput) return;
-
-    const currentStep = parseInt(card.dataset.step || '1', 10);
-    const valid = step1Valid();
-
-    if (currentStep === 1 && valid) {
-      setStep(2);
-      // Keep focus where the user is typing — they may have hit validity
-      // mid-word (e.g. one-letter last name).
-      queueMicrotask(() => {
-        try {
-          t.focus();
-          const len = t.value.length;
-          t.setSelectionRange(len, len);
-        } catch {}
-      });
-    } else if (currentStep === 2 && !valid) {
-      setStep(1);
-      queueMicrotask(() => {
-        try { t.focus(); } catch {}
-      });
-    }
-  }
-
-  form.addEventListener('input', onStepInput);
-
-  // --- validation -------------------------------------------------------
+  customerForm.addEventListener('input', refreshDoneButton);
+  refreshDoneButton();
 
   function readForm() {
-    const fd = new FormData(form);
+    const cf = new FormData(customerForm);
+    const sf = new FormData(staffForm);
     return {
-      firstName: String(fd.get('firstName') || '').trim(),
-      lastName: String(fd.get('lastName') || '').trim(),
-      phone: String(fd.get('phone') || '').trim(),
-      email: String(fd.get('email') || '').trim(),
-      ticketNumber: String(fd.get('ticketNumber') || '').trim(),
+      firstName: String(cf.get('firstName') || '').trim(),
+      lastName: String(cf.get('lastName') || '').trim(),
+      phone: String(cf.get('phone') || '').trim(),
+      email: String(cf.get('email') || '').trim(),
+      hp: String(cf.get('hp') || ''),
+      ticketNumber: String(sf.get('ticketNumber') || '').trim(),
       tailoringItems: selectedTailoring(),
-      needByDate: String(fd.get('needByDate') || '').trim(),
-      additionalNotes: String(fd.get('additionalNotes') || '').trim(),
-      hp: String(fd.get('hp') || ''),
+      needByDate: String(sf.get('needByDate') || '').trim(),
+      additionalNotes: String(sf.get('additionalNotes') || '').trim(),
     };
   }
 
-  function validate(v) {
+  function validateAll(v) {
     const errors = [];
     if (!v.firstName) errors.push('Enter your first name.');
     if (!v.lastName) errors.push('Enter your last name.');
     if (v.phone.replace(/\D/g, '').length < 10) errors.push('Enter a 10-digit phone number.');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) errors.push('Enter a valid email.');
+    if (!EMAIL_RE.test(v.email)) errors.push('Enter a valid email.');
     if (v.tailoringItems.length === 0) errors.push('Pick at least one item that needs tailoring.');
     if (!v.needByDate) errors.push('Pick the date you need it by.');
     else if (v.needByDate < todayLocalISO()) errors.push('Need-by date must be today or later.');
     return errors;
   }
 
-  // --- stage transitions -----------------------------------------------
-
-  function showStage(name) {
-    [stageForm, stageSubmitting, stageConfirmed].forEach((s) => {
-      const match = s.dataset.stage === name;
-      s.hidden = !match;
-      s.setAttribute('aria-hidden', match ? 'false' : 'true');
-    });
-  }
+  // --- error display ----------------------------------------------------
 
   function showError(msg) {
     errorBox.textContent = msg;
@@ -162,22 +134,54 @@
     errorBox.textContent = '';
   }
 
-  function resetForm() {
-    form.reset();
-    chips.forEach((c) => {
-      c.classList.remove('is-active');
-      c.setAttribute('aria-pressed', 'false');
+  // --- stage / step transitions ----------------------------------------
+
+  function showStage(name) {
+    [stageForm, stageSubmitting, stageConfirmed].forEach((s) => {
+      const match = s.dataset.stage === name;
+      s.hidden = !match;
+      s.setAttribute('aria-hidden', match ? 'false' : 'true');
     });
-    dateInput.min = todayLocalISO();
-    setStep(1);
-    formStartedAt = Date.now();
-    clearError();
-    showStage('form');
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
-    if (firstInput) firstInput.focus({ preventScroll: true });
   }
 
-  // --- submit ----------------------------------------------------------
+  function setStep(n) {
+    card.dataset.step = String(n);
+    const wanted = n === 1 ? 'customer' : n === 2 ? 'handoff' : 'staff';
+    Object.entries(regionByName).forEach(([name, el]) => {
+      el.hidden = name !== wanted;
+    });
+    clearError();
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }
+
+  // --- step transitions ------------------------------------------------
+
+  customerForm.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    if (!customerValid()) {
+      refreshDoneButton();
+      return;
+    }
+    const firstNameBind = $('[data-bind="firstName"]');
+    if (firstNameBind) firstNameBind.textContent = firstInput.value.trim();
+    setStep(2);
+  });
+
+  continueBtn.addEventListener('click', () => {
+    const summaryBind = $('[data-bind="customerSummary"]');
+    if (summaryBind) {
+      const summary = `${firstInput.value.trim()} ${lastInput.value.trim()} · ${emailInput.value.trim()} · ${phoneInput.value.trim()}`;
+      summaryBind.textContent = summary;
+    }
+    setStep(3);
+  });
+
+  backBtn.addEventListener('click', () => {
+    setStep(1);
+    refreshDoneButton();
+  });
+
+  // --- final submit (staff stage) --------------------------------------
 
   function formatDateHuman(iso) {
     if (!iso) return 'your date';
@@ -201,7 +205,6 @@
       hp: values.hp,
       startedAt: formStartedAt,
     };
-
     const res = await fetch('/api/intake', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -214,11 +217,11 @@
     return data.data;
   }
 
-  form.addEventListener('submit', async (ev) => {
+  staffForm.addEventListener('submit', async (ev) => {
     ev.preventDefault();
     clearError();
     const values = readForm();
-    const errors = validate(values);
+    const errors = validateAll(values);
     if (errors.length > 0) {
       showError(errors[0]);
       return;
@@ -238,6 +241,22 @@
     }
   });
 
+  // --- reset -----------------------------------------------------------
+
+  function resetForm() {
+    customerForm.reset();
+    staffForm.reset();
+    chips.forEach((c) => {
+      c.classList.remove('is-active');
+      c.setAttribute('aria-pressed', 'false');
+    });
+    dateInput.min = todayLocalISO();
+    setStep(1);
+    refreshDoneButton();
+    formStartedAt = Date.now();
+    showStage('form');
+    if (firstInput) firstInput.focus({ preventScroll: true });
+  }
   resetBtn.addEventListener('click', resetForm);
 
   formStartedAt = Date.now();
