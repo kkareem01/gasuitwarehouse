@@ -167,14 +167,17 @@
   flex-direction: column;
   justify-content: center;
 }
-.intake-handoff__title {
+/* Selector deliberately scoped through .intake-body .intake-handoff so it
+   beats `.intake-body .booking-pane h2` (specificity 0,2,1) which would
+   otherwise clamp this title to 20px. */
+.intake-body .intake-handoff .intake-handoff__title {
   font-family: var(--font-display);
-  font-size: clamp(64px, 11vw, 104px);
+  font-size: clamp(112px, 18vw, 220px);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--navy);
-  margin: 0 0 28px;
-  line-height: 1.05;
+  margin: 0 0 32px;
+  line-height: 1.0;
 }
 .intake-handoff__sub {
   font-family: var(--font-body);
