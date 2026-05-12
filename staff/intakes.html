@@ -242,7 +242,7 @@
       border-radius: 4px;
       letter-spacing: normal; text-transform: none;
     }
-    .edit-modal__form textarea { resize: vertical; min-height: 70px; }
+    .edit-modal__form textarea { resize: vertical; min-height: 150px; line-height: 1.5; }
     .edit-modal__form input:focus,
     .edit-modal__form textarea:focus {
       outline: none; border-color: #C9A961;
@@ -375,7 +375,7 @@
             <div class="edit-modal__chips" data-region="edit-modal-chips"></div>
           </div>
           <label>Need by<input type="date" name="needByDate" required /></label>
-          <label>Additional notes<textarea name="additionalNotes" rows="3" maxlength="500"></textarea></label>
+          <label>Additional notes<textarea name="additionalNotes" rows="6" maxlength="500"></textarea></label>
           <div class="edit-modal__error" data-region="edit-modal-error" hidden></div>
         </form>
         <footer class="edit-modal__footer">
