@@ -17,6 +17,21 @@
   let currentSearch = '';
   let searchDebounce = null;
   let pollTimer = null;
+  let currentIntakes = [];
+  let currentEditId = null;
+
+  const KNOWN_CHIPS = ['Hem', 'Waist', 'Sleeves', 'Shirt', 'Jacket', 'Vest', 'Slim Pants'];
+
+  function splitTailoring(str) {
+    const parts = String(str || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const chips = [];
+    const other = [];
+    for (const p of parts) {
+      if (KNOWN_CHIPS.includes(p)) chips.push(p);
+      else other.push(p);
+    }
+    return { chips, other: other.join(', ') };
+  }
 
   // --- formatting --------------------------------------------------------
 
@@ -114,7 +129,7 @@
       <tr class="${rowCls}">
         <td>
           <div class="customer">
-            <div class="name">${esc(intake.firstName)} ${esc(intake.lastName)}</div>
+            <a href="#" class="name name-link" data-action="open-edit" data-id="${esc(intake.id)}">${esc(intake.firstName)} ${esc(intake.lastName)}</a>
             <div class="id">${esc(intake.id)}</div>
           </div>
         </td>
@@ -171,7 +186,8 @@
       const res = await fetch(`/api/admin/intakes?${params.toString()}`);
       const j = await res.json().catch(() => ({}));
       if (!res.ok || !j.ok) return showAlert('error', j.error || 'Could not load intakes.');
-      renderTable(j.intakes || []);
+      currentIntakes = j.intakes || [];
+      renderTable(currentIntakes);
     } catch (_) {
       showAlert('error', 'Network error. Will retry on next refresh.');
     }
@@ -252,6 +268,155 @@
     window.location.href = `/api/admin/intakes?${params.toString()}`;
   }
 
+  // --- edit modal ------------------------------------------------------
+
+  function renderChips(activeSet) {
+    const wrap = $r('edit-modal-chips');
+    if (!wrap) return;
+    wrap.innerHTML = KNOWN_CHIPS.map((label) => {
+      const active = activeSet.has(label) ? ' is-active' : '';
+      return `<button type="button" class="edit-chip${active}" data-chip="${esc(label)}" aria-pressed="${active ? 'true' : 'false'}">${esc(label)}</button>`;
+    }).join('');
+  }
+
+  function setEditError(msg) {
+    const box = $r('edit-modal-error');
+    if (!box) return;
+    if (!msg) { box.hidden = true; box.textContent = ''; return; }
+    box.textContent = msg;
+    box.hidden = false;
+  }
+
+  function openEditModal(id) {
+    const intake = currentIntakes.find((i) => i.id === id);
+    if (!intake) {
+      showAlert('error', 'Could not find that intake. Refreshing.');
+      loadIntakes();
+      return;
+    }
+    currentEditId = id;
+    const form = $r('edit-modal-form');
+    if (!form) return;
+
+    form.elements.id.value = intake.id;
+    form.elements.firstName.value = intake.firstName || '';
+    form.elements.lastName.value = intake.lastName || '';
+    form.elements.phone.value = intake.phone || '';
+    form.elements.email.value = intake.email || '';
+    form.elements.ticketNumber.value = intake.ticketNumber || '';
+    form.elements.needByDate.value = intake.needByDate || '';
+    form.elements.additionalNotes.value = intake.additionalNotes || '';
+
+    const { chips, other } = splitTailoring(intake.tailoringNotes);
+    renderChips(new Set(chips));
+    form.elements.tailoringOther.value = other;
+
+    setEditError('');
+
+    const modal = $r('edit-modal');
+    if (!modal) return;
+    modal.hidden = false;
+    // Defer adding is-open by one frame so the transition plays.
+    requestAnimationFrame(() => modal.classList.add('is-open'));
+  }
+
+  function closeEditModal() {
+    const modal = $r('edit-modal');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    setEditError('');
+    // Hide after transition finishes.
+    setTimeout(() => { modal.hidden = true; }, 220);
+    currentEditId = null;
+  }
+
+  function toggleChip(btn) {
+    const active = btn.classList.toggle('is-active');
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  }
+
+  function collectTailoringPayload(form) {
+    const wrap = $r('edit-modal-chips');
+    const activeChips = wrap
+      ? Array.from(wrap.querySelectorAll('.edit-chip.is-active')).map((b) => b.dataset.chip)
+      : [];
+    const otherRaw = String(form.elements.tailoringOther.value || '').trim();
+    const otherParts = otherRaw
+      ? otherRaw.split(',').map((s) => s.trim()).filter(Boolean)
+      : [];
+    return [...activeChips, ...otherParts].join(', ');
+  }
+
+  async function saveEditModal() {
+    if (!currentEditId) return;
+    const form = $r('edit-modal-form');
+    if (!form) return;
+    const saveBtn = document.querySelector('[data-action="save-edit-modal"]');
+    setEditError('');
+
+    const payload = {
+      id: currentEditId,
+      firstName: form.elements.firstName.value.trim(),
+      lastName: form.elements.lastName.value.trim(),
+      phone: form.elements.phone.value.trim(),
+      email: form.elements.email.value.trim(),
+      ticketNumber: form.elements.ticketNumber.value.trim(),
+      tailoringNotes: collectTailoringPayload(form),
+      needByDate: form.elements.needByDate.value.trim(),
+      additionalNotes: form.elements.additionalNotes.value.trim(),
+    };
+
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
+    try {
+      const res = await fetch('/api/admin/intake-edit', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        setEditError(j.error || 'Could not save. Try again.');
+        return;
+      }
+      const updated = j.data;
+      if (updated) {
+        const idx = currentIntakes.findIndex((i) => i.id === updated.id);
+        if (idx >= 0) currentIntakes[idx] = updated;
+        renderTable(currentIntakes);
+      }
+      closeEditModal();
+    } catch (_) {
+      setEditError('Network error. Try again.');
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save changes'; }
+    }
+  }
+
+  async function deleteIntakeFromModal() {
+    if (!currentEditId) return;
+    const intake = currentIntakes.find((i) => i.id === currentEditId);
+    const who = intake ? `${intake.firstName} ${intake.lastName}`.trim() : 'this intake';
+    if (!confirm(`Delete ${who}? This cannot be undone.`)) return;
+    setEditError('');
+    try {
+      const res = await fetch('/api/admin/intake-delete', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: currentEditId }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        setEditError(j.error || 'Could not delete. Try again.');
+        return;
+      }
+      currentIntakes = currentIntakes.filter((i) => i.id !== currentEditId);
+      renderTable(currentIntakes);
+      closeEditModal();
+    } catch (_) {
+      setEditError('Network error. Try again.');
+    }
+  }
+
   // --- wire up ----------------------------------------------------------
 
   function init() {
@@ -268,6 +433,14 @@
         loadIntakes();
         return;
       }
+      // Chip toggle inside the edit modal — handle before generic actions
+      // so it doesn't interfere.
+      const chipBtn = e.target.closest('.edit-chip[data-chip]');
+      if (chipBtn) {
+        toggleChip(chipBtn);
+        return;
+      }
+
       const actionEl = e.target.closest('[data-action]');
       const action = actionEl?.dataset.action;
       if (action === 'refresh') loadIntakes();
@@ -275,6 +448,26 @@
       if (action === 'notify-ready') {
         notifyReady(actionEl.dataset.id, actionEl.dataset.name, actionEl);
       }
+      if (action === 'open-edit') {
+        e.preventDefault();
+        openEditModal(actionEl.dataset.id);
+      }
+      if (action === 'close-edit-modal') {
+        closeEditModal();
+      }
+      if (action === 'save-edit-modal') {
+        saveEditModal();
+      }
+      if (action === 'delete-intake') {
+        deleteIntakeFromModal();
+      }
+    });
+
+    // Escape key closes the modal.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const modal = $r('edit-modal');
+      if (modal && !modal.hidden) closeEditModal();
     });
 
     // Status dropdown change

@@ -95,7 +95,7 @@
     .filterbar .count { color: #9CA3AF; font-size: 13px; }
 
     /* Table */
-    .table-wrap { overflow-x: auto; border: 1px solid #2A3654; border-radius: 4px; background: #14213D; }
+    .table-wrap { border: 1px solid #2A3654; border-radius: 4px; background: #14213D; }
     table { width: 100%; border-collapse: collapse; min-width: 920px; }
     thead th {
       background: #1F2D4F;
@@ -120,6 +120,8 @@
 
     .customer { display: flex; flex-direction: column; gap: 2px; }
     .customer .name { font-weight: 700; color: #fff; }
+    .customer .name-link { display: inline-block; cursor: pointer; text-decoration: none; border-bottom: 1px dashed #6B7280; }
+    .customer .name-link:hover { color: #C9A961; border-bottom-color: #C9A961; }
     .customer .id { font-family: 'Courier New', monospace; font-size: 11px; color: #6B7280; }
     .contact { display: flex; flex-direction: column; gap: 4px; }
     .contact a { color: #C9A961; text-decoration: none; font-size: 13px; }
@@ -183,8 +185,119 @@
     }
     .empty .big { font-size: 18px; color: #fff; margin-bottom: 8px; }
 
-    .footer { margin-top: 32px; text-align: center; }
-    .footer a { color: #9CA3AF; text-decoration: none; padding: 8px 16px; border: 1px solid #2A3654; border-radius: 4px; font-size: 14px; margin: 0 4px; }
+    /* --- Edit modal ----------------------------------------------------- */
+    .edit-modal { position: fixed; inset: 0; z-index: 9999; }
+    .edit-modal[hidden] { display: none; }
+    .edit-modal__overlay {
+      position: absolute; inset: 0;
+      background: rgba(8, 13, 26, 0.78);
+      opacity: 0; transition: opacity 180ms ease;
+    }
+    .edit-modal__card {
+      position: relative;
+      max-width: 600px;
+      margin: 4vh auto;
+      background: #14213D;
+      color: #fff;
+      border: 1px solid #2A3654;
+      border-radius: 6px;
+      padding: 0;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 200ms ease, transform 200ms ease;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .edit-modal.is-open .edit-modal__overlay { opacity: 1; }
+    .edit-modal.is-open .edit-modal__card { opacity: 1; transform: translateY(0); }
+    .edit-modal__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #2A3654;
+    }
+    .edit-modal__header h2 { margin: 0; font-size: 17px; font-weight: 700; }
+    .edit-modal__close {
+      background: transparent; border: none; color: #9CA3AF;
+      font-size: 24px; line-height: 1; cursor: pointer; padding: 4px 8px;
+    }
+    .edit-modal__close:hover { color: #fff; }
+    .edit-modal__form {
+      display: flex; flex-direction: column; gap: 14px;
+      padding: 20px; overflow-y: auto;
+    }
+    .edit-modal__form label {
+      display: flex; flex-direction: column; gap: 4px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #C9A961;
+    }
+    .edit-modal__form input,
+    .edit-modal__form textarea {
+      width: 100%;
+      padding: 10px 12px;
+      font-family: inherit; font-size: 14px;
+      background: #0E1729;
+      color: #fff;
+      border: 1px solid #2A3654;
+      border-radius: 4px;
+      letter-spacing: normal; text-transform: none;
+    }
+    .edit-modal__form textarea { resize: vertical; min-height: 70px; }
+    .edit-modal__form input:focus,
+    .edit-modal__form textarea:focus {
+      outline: none; border-color: #C9A961;
+    }
+    .edit-modal__row { display: flex; gap: 12px; }
+    .edit-modal__row > label { flex: 1; }
+    .edit-modal__chips-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .edit-modal__chips-wrap .chip-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #C9A961;
+    }
+    .edit-modal__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .edit-chip {
+      padding: 6px 12px;
+      font-size: 13px; font-weight: 600;
+      border-radius: 999px;
+      border: 1px solid #2A3654;
+      background: transparent;
+      color: #9CA3AF;
+      cursor: pointer;
+    }
+    .edit-chip:hover { color: #fff; }
+    .edit-chip.is-active { background: #C9A961; color: #0E1729; border-color: #C9A961; }
+    .edit-modal__error {
+      background: #4A1E1B; color: #FBE9E7;
+      padding: 10px 12px; border-radius: 4px; font-size: 13px;
+    }
+    .edit-modal__footer {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-top: 1px solid #2A3654;
+      background: #0E1729;
+      border-radius: 0 0 6px 6px;
+    }
+    .edit-modal__actions { display: flex; gap: 8px; }
+    .btn-delete {
+      padding: 9px 14px; font-size: 13px; font-weight: 600;
+      background: transparent; color: #FF6B6B;
+      border: 1px solid #4A1E1B; border-radius: 4px; cursor: pointer;
+    }
+    .btn-delete:hover { background: #4A1E1B; border-color: #FF6B6B; }
+    .btn-cancel {
+      padding: 9px 14px; font-size: 13px; font-weight: 600;
+      background: transparent; color: #9CA3AF;
+      border: 1px solid #2A3654; border-radius: 4px; cursor: pointer;
+    }
+    .btn-cancel:hover { color: #fff; }
+    .btn-save {
+      padding: 9px 16px; font-size: 13px; font-weight: 700;
+      background: #C9A961; color: #0E1729;
+      border: 1px solid #C9A961; border-radius: 4px; cursor: pointer;
+    }
+    .btn-save:hover:not(:disabled) { background: #D4B775; border-color: #D4B775; }
+    .btn-save:disabled { opacity: 0.6; cursor: wait; }
   </style>
 </head>
 <body>
@@ -197,6 +310,9 @@
       <div class="actions" data-region="actions">
         <button class="btn" data-action="refresh">↻ Refresh</button>
         <button class="btn" data-action="download-csv">Download CSV</button>
+        <a class="btn" href="/staff/redeem.html">Redeem</a>
+        <a class="btn" href="/staff/stats.html">Stats</a>
+        <a class="btn" href="/intake/">Open intake form ↗</a>
       </div>
     </header>
 
@@ -242,6 +358,41 @@
       <a href="/staff/redeem.html">Redeem</a>
       <a href="/staff/stats.html">Stats</a>
       <a href="/intake/">Open intake form ↗</a>
+    </div>
+
+    <div class="edit-modal" data-region="edit-modal" hidden>
+      <div class="edit-modal__overlay" data-action="close-edit-modal"></div>
+      <div class="edit-modal__card" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+        <header class="edit-modal__header">
+          <h2 id="edit-modal-title">Edit intake</h2>
+          <button type="button" class="edit-modal__close" data-action="close-edit-modal" aria-label="Close">×</button>
+        </header>
+        <form class="edit-modal__form" data-region="edit-modal-form" novalidate>
+          <input type="hidden" name="id" />
+          <div class="edit-modal__row">
+            <label>First name<input type="text" name="firstName" required maxlength="60" /></label>
+            <label>Last name<input type="text" name="lastName" required maxlength="60" /></label>
+          </div>
+          <label>Phone<input type="tel" name="phone" required maxlength="14" /></label>
+          <label>Email<input type="email" name="email" required maxlength="254" /></label>
+          <label>Ticket number<input type="text" name="ticketNumber" maxlength="32" /></label>
+          <div class="edit-modal__chips-wrap">
+            <span class="chip-label">What needs tailoring?</span>
+            <div class="edit-modal__chips" data-region="edit-modal-chips"></div>
+            <label>Other items <input type="text" name="tailoringOther" maxlength="200" placeholder="Comma-separated, optional" /></label>
+          </div>
+          <label>Need by<input type="date" name="needByDate" required /></label>
+          <label>Additional notes<textarea name="additionalNotes" rows="3" maxlength="500"></textarea></label>
+          <div class="edit-modal__error" data-region="edit-modal-error" hidden></div>
+        </form>
+        <footer class="edit-modal__footer">
+          <button type="button" class="btn-delete" data-action="delete-intake">Delete</button>
+          <div class="edit-modal__actions">
+            <button type="button" class="btn-cancel" data-action="close-edit-modal">Cancel</button>
+            <button type="button" class="btn-save" data-action="save-edit-modal">Save changes</button>
+          </div>
+        </footer>
+      </div>
     </div>
   </main>
 
