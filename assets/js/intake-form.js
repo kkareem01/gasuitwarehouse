@@ -1,12 +1,15 @@
 /* GA Suit Warehouse — in-store iPad intake form.
-   Vanilla ES module loaded by /intake/index.html. */
+   Vanilla module loaded by /intake/index.html.
+   UI mirrors the booking flow: Phone + First/Last visible at step 1, the rest
+   of the form smoothly expands once those three are valid. */
 
 (function () {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
+  const card = $('#intake-card');
   const form = $('#intake-form');
-  if (!form) return;
+  if (!card || !form) return;
 
   const submitBtn = $('#intake-submit');
   const errorBox = $('#intake-error');
@@ -14,9 +17,12 @@
   const stageSubmitting = $('[data-stage="submitting"]');
   const stageConfirmed = $('[data-stage="confirmed"]');
   const resetBtn = $('#intake-reset');
-  const phoneInput = form.elements.phone;
-  const dateInput = form.elements.needByDate;
+  const phoneInput = $('#bk-phone');
+  const firstInput = $('#bk-first');
+  const lastInput = $('#bk-last');
+  const dateInput = $('#bk-needby');
   const chips = $$('.intake-chip', form);
+  const extended = $('.booking-form__extended', form);
 
   let formStartedAt = Date.now();
 
@@ -28,28 +34,32 @@
   }
   dateInput.min = todayLocalISO();
 
-  // --- phone formatting -------------------------------------------------
+  // --- phone formatting (matches booking) -------------------------------
 
   function formatPhone(raw) {
     const digits = raw.replace(/\D/g, '').slice(0, 10);
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    if (digits.length > 6) return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    if (digits.length > 3) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    if (digits.length > 0) return `(${digits}`;
+    return '';
   }
+
   phoneInput.addEventListener('input', () => {
-    const cursorAtEnd = phoneInput.selectionStart === phoneInput.value.length;
-    phoneInput.value = formatPhone(phoneInput.value);
-    if (cursorAtEnd) phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+    const next = formatPhone(phoneInput.value);
+    if (next !== phoneInput.value) {
+      phoneInput.value = next;
+      try { phoneInput.setSelectionRange(next.length, next.length); } catch {}
+    }
   });
 
   // --- tailoring chip multi-select --------------------------------------
 
   chips.forEach((c) => {
+    c.setAttribute('aria-pressed', 'false');
     c.addEventListener('click', () => {
       c.classList.toggle('is-active');
       c.setAttribute('aria-pressed', c.classList.contains('is-active') ? 'true' : 'false');
     });
-    c.setAttribute('aria-pressed', 'false');
   });
 
   function selectedTailoring() {
@@ -57,6 +67,51 @@
       .filter((c) => c.classList.contains('is-active'))
       .map((c) => c.dataset.item);
   }
+
+  // --- step-state (mirrors booking auto-expand/collapse) ----------------
+
+  function step1Valid() {
+    const digits = phoneInput.value.replace(/\D/g, '');
+    if (digits.length < 10) return false;
+    if (!firstInput.value.trim()) return false;
+    if (!lastInput.value.trim()) return false;
+    return true;
+  }
+
+  function setStep(step) {
+    card.dataset.step = String(step);
+    extended.setAttribute('aria-hidden', step === 1 ? 'true' : 'false');
+  }
+
+  // Auto-expand when first 3 fields satisfy validation; auto-collapse when
+  // any of them goes invalid again. Mirrors booking.js:230-278.
+  function onStepInput(ev) {
+    const t = ev.target;
+    if (t !== phoneInput && t !== firstInput && t !== lastInput) return;
+
+    const currentStep = parseInt(card.dataset.step || '1', 10);
+    const valid = step1Valid();
+
+    if (currentStep === 1 && valid) {
+      setStep(2);
+      // Keep focus where the user is typing — they may have hit validity
+      // mid-word (e.g. one-letter last name).
+      queueMicrotask(() => {
+        try {
+          t.focus();
+          const len = t.value.length;
+          t.setSelectionRange(len, len);
+        } catch {}
+      });
+    } else if (currentStep === 2 && !valid) {
+      setStep(1);
+      queueMicrotask(() => {
+        try { t.focus(); } catch {}
+      });
+    }
+  }
+
+  form.addEventListener('input', onStepInput);
 
   // --- validation -------------------------------------------------------
 
@@ -114,12 +169,12 @@
       c.setAttribute('aria-pressed', 'false');
     });
     dateInput.min = todayLocalISO();
+    setStep(1);
     formStartedAt = Date.now();
     clearError();
     showStage('form');
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
-    const first = form.elements.firstName;
-    if (first) first.focus({ preventScroll: true });
+    if (firstInput) firstInput.focus({ preventScroll: true });
   }
 
   // --- submit ----------------------------------------------------------

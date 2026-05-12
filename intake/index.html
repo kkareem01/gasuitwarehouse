@@ -31,70 +31,89 @@
         <h1 class="intake-title">Let's tailor your suit</h1>
       </header>
 
-      <form id="intake-form" class="intake-form" novalidate autocomplete="off">
-        <input type="text" name="hp" class="intake-honeypot" tabindex="-1" aria-hidden="true" autocomplete="off" />
+      <div class="booking-card" id="intake-card" data-step="1">
+        <div class="booking-card__body">
+          <div class="booking-pane">
+            <h2>Customer details</h2>
+            <p class="booking-pane__sub">A few quick details and you're done.</p>
 
-        <div class="intake-error" id="intake-error" role="alert" hidden></div>
+            <div class="booking-error" id="intake-error" role="alert" hidden></div>
 
-        <div class="intake-card">
-          <div class="intake-row">
-            <label class="intake-field">
-              <span class="intake-label">First name</span>
-              <input type="text" name="firstName" autocomplete="given-name" autocapitalize="words" required maxlength="60" />
-            </label>
-            <label class="intake-field">
-              <span class="intake-label">Last name</span>
-              <input type="text" name="lastName" autocomplete="family-name" autocapitalize="words" required maxlength="60" />
-            </label>
+            <form id="intake-form" class="booking-form" novalidate autocomplete="off">
+              <div class="field">
+                <label for="bk-phone">Phone</label>
+                <div class="booking-form__phone-row">
+                  <span class="booking-form__country" aria-label="United States">+1</span>
+                  <input id="bk-phone" type="tel" name="phone" required
+                    data-action="phone-input" inputmode="numeric" autocomplete="tel"
+                    maxlength="14" placeholder="(404) 555-0123" />
+                </div>
+              </div>
+
+              <div class="booking-form__row">
+                <div class="field">
+                  <label for="bk-first">First name</label>
+                  <input id="bk-first" type="text" name="firstName" required
+                    placeholder="First name *" autocomplete="given-name"
+                    autocapitalize="words" maxlength="60" />
+                </div>
+                <div class="field">
+                  <label for="bk-last">Last name</label>
+                  <input id="bk-last" type="text" name="lastName" required
+                    placeholder="Last name *" autocomplete="family-name"
+                    autocapitalize="words" maxlength="60" />
+                </div>
+              </div>
+
+              <div class="booking-form__extended" aria-hidden="true">
+                <div class="field">
+                  <label for="bk-email">Email</label>
+                  <input id="bk-email" type="email" name="email" required
+                    placeholder="you@example.com" autocomplete="email"
+                    inputmode="email" maxlength="254" />
+                </div>
+
+                <div class="field intake-chips-field">
+                  <label>What needs tailoring? <span class="intake-label-hint">(tap all that apply)</span></label>
+                  <div class="intake-chips" data-region="tailoring-chips" role="group" aria-label="Tailoring needs">
+                    <button type="button" class="intake-chip" data-item="Hem">Hem</button>
+                    <button type="button" class="intake-chip" data-item="Waist">Waist</button>
+                    <button type="button" class="intake-chip" data-item="Sleeves">Sleeves</button>
+                    <button type="button" class="intake-chip" data-item="Shirt">Shirt</button>
+                    <button type="button" class="intake-chip" data-item="Jacket">Jacket</button>
+                    <button type="button" class="intake-chip" data-item="Vest">Vest</button>
+                    <button type="button" class="intake-chip" data-item="Slim Pants">Slim Pants</button>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="bk-needby">Need it by</label>
+                  <input id="bk-needby" type="date" name="needByDate" required />
+                </div>
+
+                <div class="field">
+                  <label for="bk-ticket">Ticket number <span class="intake-label-hint">(optional)</span></label>
+                  <input id="bk-ticket" type="text" name="ticketNumber" maxlength="32"
+                    inputmode="numeric" autocomplete="off" placeholder="Ticket #" />
+                </div>
+
+                <div class="field">
+                  <label for="bk-notes">Additional notes <span class="intake-label-hint">(optional)</span></label>
+                  <textarea id="bk-notes" name="additionalNotes" rows="3" maxlength="500"></textarea>
+                </div>
+              </div>
+
+              <input type="text" name="hp" class="booking-form__honeypot"
+                tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+              <button type="submit" class="btn btn-primary" id="intake-submit">Submit ›</button>
+              <noscript>
+                <p class="intake-hint" style="text-align:center;margin-top:16px;">JavaScript must be enabled.</p>
+              </noscript>
+            </form>
           </div>
-
-          <label class="intake-field">
-            <span class="intake-label">Phone</span>
-            <div class="intake-phone-row">
-              <span class="intake-phone-prefix" aria-label="United States">+1</span>
-              <input type="tel" name="phone" inputmode="numeric" autocomplete="tel" required maxlength="14" placeholder="(404) 555-0123" />
-            </div>
-          </label>
-
-          <label class="intake-field">
-            <span class="intake-label">Email</span>
-            <input type="email" name="email" autocomplete="email" inputmode="email" required maxlength="254" placeholder="you@example.com" />
-          </label>
-
-          <div class="intake-field">
-            <span class="intake-label">What needs tailoring? <span class="intake-label-hint">(tap all that apply)</span></span>
-            <div class="intake-chips" data-region="tailoring-chips" role="group" aria-label="Tailoring needs">
-              <button type="button" class="intake-chip" data-item="Hem">Hem</button>
-              <button type="button" class="intake-chip" data-item="Waist">Waist</button>
-              <button type="button" class="intake-chip" data-item="Sleeves">Sleeves</button>
-              <button type="button" class="intake-chip" data-item="Shirt">Shirt</button>
-              <button type="button" class="intake-chip" data-item="Jacket">Jacket</button>
-              <button type="button" class="intake-chip" data-item="Vest">Vest</button>
-              <button type="button" class="intake-chip" data-item="Slim Pants">Slim Pants</button>
-            </div>
-          </div>
-
-          <label class="intake-field">
-            <span class="intake-label">Need it by</span>
-            <input type="date" name="needByDate" required />
-          </label>
-
-          <label class="intake-field">
-            <span class="intake-label">Ticket number <span class="intake-label-hint">(optional)</span></span>
-            <input type="text" name="ticketNumber" maxlength="32" inputmode="numeric" autocomplete="off" />
-          </label>
-
-          <label class="intake-field">
-            <span class="intake-label">Additional notes <span class="intake-label-hint">(optional)</span></span>
-            <textarea name="additionalNotes" rows="3" maxlength="500"></textarea>
-          </label>
         </div>
-
-        <button type="submit" class="intake-submit" id="intake-submit">Submit</button>
-        <noscript>
-          <p class="intake-hint" style="text-align:center;margin-top:16px;">JavaScript must be enabled.</p>
-        </noscript>
-      </form>
+      </div>
     </section>
 
     <!-- Submitting state -->
@@ -118,7 +137,7 @@
         <p class="intake-confirmed-sub">
           We have your info. We'll be in touch before <span data-bind="needByDate">your date</span> if anything's needed.
         </p>
-        <button type="button" class="intake-submit" id="intake-reset">All done</button>
+        <button type="button" class="btn btn-primary" id="intake-reset">All done</button>
       </div>
     </section>
   </main>

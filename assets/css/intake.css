@@ -1,5 +1,9 @@
 /* GA Suit Warehouse — in-store iPad customer intake.
-   Compact, iPad-first, kiosk-style. Single visual card, finger-friendly. */
+   Most of the form chrome (card, fields, phone row, submit button,
+   step-2 reveal animation) is provided by the shared .booking-* rules in
+   styles.css. This file holds only intake-specific bits: page chrome,
+   the multi-select tailoring chips, the submitting/confirmed stages,
+   and iPad-friendly sizing overrides scoped to .intake-body. */
 
 .intake-body {
   background: var(--off-white);
@@ -40,113 +44,71 @@
   color: var(--navy);
 }
 
-/* --- Form layout ---------------------------------------------------------- */
-.intake-form { display: flex; flex-direction: column; gap: 14px; }
-
-.intake-honeypot {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.intake-error {
-  background: #FFF1F0;
-  border: 1px solid #F0B5B0;
-  color: #8A1F19;
-  padding: 12px 14px;
-  border-radius: 4px;
-  font-size: 15px;
-  line-height: 1.4;
-}
-
-/* Single card containing all inputs — tighter than the old per-fieldset cards. */
-.intake-card {
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.intake-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 420px) { .intake-row { grid-template-columns: 1fr; } }
-
-.intake-field { display: flex; flex-direction: column; gap: 6px; }
-
-.intake-label {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--ink);
-}
 .intake-label-hint {
   font-weight: 400;
   color: var(--muted);
   font-size: 12px;
 }
 
-/* --- Inputs --------------------------------------------------------------- */
-.intake-form input[type="text"],
-.intake-form input[type="tel"],
-.intake-form input[type="email"],
-.intake-form input[type="date"],
-.intake-form textarea {
-  width: 100%;
-  font-family: var(--font-body);
-  /* 16px+ prevents iOS Safari from auto-zooming on focus */
-  font-size: 17px;
-  line-height: 1.4;
-  color: var(--ink);
-  background: var(--paper);
-  border: 1.5px solid var(--rule);
-  border-radius: 4px;
-  padding: 12px 14px;
-  min-height: 52px;
-  -webkit-appearance: none;
-  appearance: none;
+/* --- iPad-friendly sizing overrides ---------------------------------------
+   Scoped to .intake-body so we don't change the booking flow on the web.
+   16px+ input font prevents iOS Safari auto-zoom on focus.
+   ~50px tap targets are comfortable for finger taps at the counter. */
+.intake-body .booking-card { max-width: 560px; }
+
+.intake-body .booking-pane { padding: 20px 22px; }
+
+.intake-body .booking-pane h2 {
+  font-size: 20px;
+  margin-bottom: 6px;
 }
-.intake-form textarea {
-  resize: vertical;
+.intake-body .booking-pane__sub { font-size: 14.5px; }
+
+.intake-body .booking-form { gap: 14px; }
+
+.intake-body .booking-form .field > label,
+.intake-body .booking-form__extended .field > label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--navy);
+  margin-bottom: 6px;
+  text-transform: none;
+}
+
+.intake-body .booking-form .field input,
+.intake-body .booking-form .field select,
+.intake-body .booking-form .field textarea {
+  font-size: 16px;
+  min-height: 50px;
+  padding: 13px 14px;
+  border-radius: 5px;
+}
+.intake-body .booking-form .field textarea {
   min-height: 88px;
 }
-.intake-form input:focus,
-.intake-form textarea:focus {
-  outline: none;
-  border-color: var(--navy);
-  box-shadow: 0 0 0 3px rgba(20, 33, 61, 0.12);
+
+.intake-body .booking-form__phone-row { gap: 8px; }
+.intake-body .booking-form__country {
+  font-size: 16px;
+  min-height: 50px;
+  padding: 0 12px;
+  border-radius: 5px;
 }
 
-.intake-phone-row {
-  display: flex;
-  align-items: stretch;
-  border: 1.5px solid var(--rule);
-  border-radius: 4px;
-  overflow: hidden;
-  background: var(--paper);
-}
-.intake-phone-row:focus-within {
-  border-color: var(--navy);
-  box-shadow: 0 0 0 3px rgba(20, 33, 61, 0.12);
-}
-.intake-phone-prefix {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 14px;
-  background: var(--off-white);
-  color: var(--muted);
+.intake-body .booking-form button[type="submit"],
+.intake-body .booking-form .btn {
   font-size: 16px;
-  font-weight: 700;
-  border-right: 1.5px solid var(--rule);
+  min-height: 54px;
+  padding: 14px 18px;
+  border-radius: 5px;
+  letter-spacing: 0.03em;
 }
-.intake-phone-row input { border: none; min-height: 52px; }
-.intake-phone-row input:focus { box-shadow: none; }
 
 /* --- Tailoring chips (multi-select) -------------------------------------- */
+.intake-chips-field > label { margin-bottom: 8px; }
 .intake-chips {
   display: flex;
   flex-wrap: wrap;
@@ -178,28 +140,6 @@
   content: '✓ ';
   margin-right: 2px;
 }
-
-/* --- Submit --------------------------------------------------------------- */
-.intake-submit {
-  display: block;
-  width: 100%;
-  margin-top: 6px;
-  padding: 16px 22px;
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: #fff;
-  background: var(--navy);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  min-height: 58px;
-  transition: background 0.15s;
-}
-.intake-submit:hover { background: var(--navy-deep); }
-.intake-submit:active { transform: translateY(1px); }
-.intake-submit:disabled { opacity: 0.6; cursor: progress; }
 
 /* --- Submitting / confirmed states --------------------------------------- */
 .intake-stage[hidden] { display: none; }
@@ -248,3 +188,20 @@
   max-width: 460px;
   margin: 0 auto 32px;
 }
+.intake-confirmed .btn {
+  display: inline-block;
+  width: auto;
+  min-width: 220px;
+  font-size: 16px;
+  min-height: 54px;
+  padding: 14px 28px;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.intake-confirmed .btn:hover { background: var(--navy-soft); }
