@@ -164,18 +164,20 @@
   function fitHandoffTitle() {
     const title = $('.intake-handoff__title');
     if (!title) return;
-    const container = title.closest('.intake-handoff') || title.parentElement;
-    if (!container || !container.clientWidth) return;
+    // title is block-level — its clientWidth IS the available render width
+    // (the .intake-handoff container has its own padding that scrollWidth
+    // cannot use). Subtract a tiny safety pad for sub-pixel rounding.
+    const available = title.clientWidth - 4;
+    if (available <= 0) return;
 
     const MAX = 240;
-    const MIN = 56;
-    const available = container.clientWidth - 8;
+    const MIN = 32;
 
     let size = MAX;
     title.style.fontSize = size + 'px';
     let guard = 0;
-    while (title.scrollWidth > available && size > MIN && guard < 80) {
-      size -= 4;
+    while (title.scrollWidth > available && size > MIN && guard < 120) {
+      size -= 2;
       title.style.fontSize = size + 'px';
       guard += 1;
     }
