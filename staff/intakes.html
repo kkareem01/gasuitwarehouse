@@ -185,6 +185,58 @@
     }
     .empty .big { font-size: 18px; color: #fff; margin-bottom: 8px; }
 
+    /* --- View tabs ------------------------------------------------------ */
+    .view-tabs {
+      display: flex;
+      gap: 4px;
+      margin: 0 0 16px;
+      border-bottom: 1px solid #2A3654;
+    }
+    .view-tab {
+      padding: 11px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #9CA3AF;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      margin-bottom: -1px;
+      letter-spacing: 0.01em;
+    }
+    .view-tab:hover { color: #fff; }
+    .view-tab.is-active {
+      color: #C9A961;
+      border-bottom-color: #C9A961;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .panel-header h2 { margin: 0; font-size: 16px; font-weight: 600; color: #fff; }
+    .panel-header .panel-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Special-orders specific cells */
+    .so-item { display: flex; flex-direction: column; gap: 2px; }
+    .so-item .type {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #C9A961;
+    }
+    .so-item .specs { font-weight: 600; color: #fff; }
+    .so-item .specs .muted { color: #9CA3AF; font-weight: 400; }
+    .so-empty-cell { color: #4B5563; font-size: 13px; }
+
+    .status-select.s-ordered { color: #93C5FD; border-color: #1E40AF; }
+    .status-select.s-arrived { color: #6EE7B7; border-color: #064E3B; }
+
     /* --- Edit modal ----------------------------------------------------- */
     .edit-modal { position: fixed; inset: 0; z-index: 9999; }
     .edit-modal[hidden] { display: none; }
@@ -232,7 +284,8 @@
       text-transform: uppercase; color: #C9A961;
     }
     .edit-modal__form input,
-    .edit-modal__form textarea {
+    .edit-modal__form textarea,
+    .edit-modal__form select {
       width: 100%;
       padding: 10px 12px;
       font-family: inherit; font-size: 14px;
@@ -244,8 +297,17 @@
     }
     .edit-modal__form textarea { resize: vertical; min-height: 150px; line-height: 1.5; }
     .edit-modal__form input:focus,
-    .edit-modal__form textarea:focus {
+    .edit-modal__form textarea:focus,
+    .edit-modal__form select:focus {
       outline: none; border-color: #C9A961;
+    }
+    .edit-modal__hint {
+      font-size: 12px;
+      color: #9CA3AF;
+      font-weight: 400;
+      letter-spacing: normal;
+      text-transform: none;
+      margin-top: -8px;
     }
     .edit-modal__row { display: flex; gap: 12px; }
     .edit-modal__row > label { flex: 1; }
@@ -318,7 +380,12 @@
 
     <div class="alert error" data-region="alert" hidden></div>
 
-    <section data-region="dashboard">
+    <nav class="view-tabs" data-region="view-tabs" role="tablist" aria-label="Dashboard view">
+      <button class="view-tab is-active" data-view="intakes" role="tab" aria-selected="true">Tailoring Intakes</button>
+      <button class="view-tab" data-view="special-orders" role="tab" aria-selected="false">Special Orders</button>
+    </nav>
+
+    <section data-view-panel="intakes" data-region="dashboard">
       <div class="filterbar">
         <div class="pills" data-region="status-pills">
           <button class="pill-btn is-active" data-status="pending">Pending</button>
@@ -353,6 +420,99 @@
         <div>Try switching to "All" or clearing the search box.</div>
       </div>
     </section>
+
+    <section data-view-panel="special-orders" hidden>
+      <div class="panel-header">
+        <h2>Items being special-ordered for customers</h2>
+        <div class="panel-actions">
+          <button class="btn btn-primary" data-action="so-new">+ New special order</button>
+          <button class="btn" data-action="so-refresh">↻ Refresh</button>
+          <button class="btn" data-action="so-download-csv">Download CSV</button>
+        </div>
+      </div>
+
+      <div class="filterbar">
+        <div class="pills" data-region="so-status-pills">
+          <button class="pill-btn is-active" data-so-status="pending">Pending</button>
+          <button class="pill-btn" data-so-status="ordered">Ordered</button>
+          <button class="pill-btn" data-so-status="arrived">Arrived</button>
+          <button class="pill-btn" data-so-status="picked_up">Picked up</button>
+          <button class="pill-btn" data-so-status="all">All</button>
+        </div>
+        <input class="search" data-region="so-search" placeholder="Search name, phone, email, item…" />
+        <span class="count" data-region="so-count">—</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Item</th>
+              <th>Contact</th>
+              <th>Notes</th>
+              <th>Need by</th>
+              <th>Status</th>
+              <th>Notify</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody data-region="so-rows"></tbody>
+        </table>
+      </div>
+      <div class="empty" data-region="so-empty" hidden>
+        <div class="big">No special orders match these filters</div>
+        <div>Click "+ New special order" to log one, or switch to "All".</div>
+      </div>
+    </section>
+
+    <div class="edit-modal" data-region="so-modal" hidden>
+      <div class="edit-modal__overlay" data-action="so-close-modal"></div>
+      <div class="edit-modal__card" role="dialog" aria-modal="true" aria-labelledby="so-modal-title">
+        <header class="edit-modal__header">
+          <h2 id="so-modal-title" data-region="so-modal-title">New special order</h2>
+          <button type="button" class="edit-modal__close" data-action="so-close-modal" aria-label="Close">×</button>
+        </header>
+        <form class="edit-modal__form" data-region="so-modal-form" novalidate>
+          <input type="hidden" name="id" />
+          <div class="edit-modal__hint">All customer fields are optional — fill in whatever you have. At least one is required.</div>
+          <div class="edit-modal__row">
+            <label>First name<input type="text" name="firstName" maxlength="60" /></label>
+            <label>Last name<input type="text" name="lastName" maxlength="60" /></label>
+          </div>
+          <div class="edit-modal__row">
+            <label>Phone<input type="tel" name="phone" maxlength="14" inputmode="tel" /></label>
+            <label>Email<input type="email" name="email" maxlength="254" /></label>
+          </div>
+          <label>Item type
+            <select name="itemType" required>
+              <option value="suit">Suit</option>
+              <option value="shirt">Shirt</option>
+              <option value="shoes">Shoes</option>
+              <option value="accessory">Accessory (tie, belt, suspenders…)</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <div class="edit-modal__row">
+            <label>Color<input type="text" name="color" maxlength="60" placeholder="e.g. navy" /></label>
+            <label>Size<input type="text" name="size" maxlength="32" placeholder="e.g. 42R" /></label>
+          </div>
+          <label>Description / brand / style
+            <textarea name="description" rows="3" maxlength="500" placeholder="e.g. Calvin Klein, slim-fit, charcoal pinstripe" style="min-height:80px;"></textarea>
+          </label>
+          <label>Need by (optional)<input type="date" name="needByDate" /></label>
+          <label>Additional notes<textarea name="additionalNotes" rows="6" maxlength="500"></textarea></label>
+          <div class="edit-modal__error" data-region="so-modal-error" hidden></div>
+        </form>
+        <footer class="edit-modal__footer">
+          <button type="button" class="btn-delete" data-action="so-delete" data-region="so-delete-btn" hidden>Delete</button>
+          <div class="edit-modal__actions">
+            <button type="button" class="btn-cancel" data-action="so-close-modal">Cancel</button>
+            <button type="button" class="btn-save" data-action="so-save" data-region="so-save-btn">Save</button>
+          </div>
+        </footer>
+      </div>
+    </div>
 
     <div class="edit-modal" data-region="edit-modal" hidden>
       <div class="edit-modal__overlay" data-action="close-edit-modal"></div>
@@ -391,5 +551,6 @@
 
   <script src="/assets/js/staff.js" defer></script>
   <script src="/assets/js/staff-intakes.js" defer></script>
+  <script src="/assets/js/staff-special-orders.js" defer></script>
 </body>
 </html>

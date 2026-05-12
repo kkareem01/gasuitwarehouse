@@ -12,9 +12,20 @@ import {
   handleAdminEditIntake,
   handleAdminDeleteIntake,
   handleAdminNotifyIntakeReady,
+  handleAdminListSpecialOrders,
+  handleAdminCreateSpecialOrder,
+  handleAdminEditSpecialOrder,
+  handleAdminUpdateSpecialOrderStatus,
+  handleAdminDeleteSpecialOrder,
+  handleAdminNotifySpecialOrderArrived,
 } from '../../lib/handlers.mjs';
 
-const KNOWN_ACTIONS = ['lookup-code', 'redeem', 'funnel-stats', 'intakes', 'intake-status', 'intake-edit', 'intake-delete', 'intake-notify-ready'];
+const KNOWN_ACTIONS = [
+  'lookup-code', 'redeem', 'funnel-stats',
+  'intakes', 'intake-status', 'intake-edit', 'intake-delete', 'intake-notify-ready',
+  'special-orders', 'special-order-create', 'special-order-edit',
+  'special-order-status', 'special-order-delete', 'special-order-notify-arrived',
+];
 
 export default async function (req, res) {
   const action = req.query?.action || req.url.split('?')[0].split('/').pop();
@@ -42,6 +53,24 @@ export default async function (req, res) {
   }
   if (action === 'intake-notify-ready' && req.method === 'POST') {
     return handleAdminNotifyIntakeReady(req, res);
+  }
+  if (action === 'special-orders' && req.method === 'GET') {
+    return handleAdminListSpecialOrders(req, res);
+  }
+  if (action === 'special-order-create' && req.method === 'POST') {
+    return handleAdminCreateSpecialOrder(req, res);
+  }
+  if (action === 'special-order-edit' && req.method === 'POST') {
+    return handleAdminEditSpecialOrder(req, res);
+  }
+  if (action === 'special-order-status' && req.method === 'POST') {
+    return handleAdminUpdateSpecialOrderStatus(req, res);
+  }
+  if (action === 'special-order-delete' && req.method === 'POST') {
+    return handleAdminDeleteSpecialOrder(req, res);
+  }
+  if (action === 'special-order-notify-arrived' && req.method === 'POST') {
+    return handleAdminNotifySpecialOrderArrived(req, res);
   }
 
   res.statusCode = KNOWN_ACTIONS.includes(action) ? 405 : 404;

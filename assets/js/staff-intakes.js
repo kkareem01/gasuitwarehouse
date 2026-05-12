@@ -407,10 +407,36 @@
     }
   }
 
+  // --- tab switching ----------------------------------------------------
+
+  const ACTIVE_TAB_KEY = 'gasw.staff.activeTab';
+
+  function switchView(view) {
+    document.querySelectorAll('.view-tab').forEach((t) => {
+      const active = t.dataset.view === view;
+      t.classList.toggle('is-active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-view-panel]').forEach((p) => {
+      p.hidden = p.dataset.viewPanel !== view;
+    });
+    try { localStorage.setItem(ACTIVE_TAB_KEY, view); } catch (_) { /* private mode */ }
+    document.dispatchEvent(new CustomEvent('gasw:view-changed', { detail: { view } }));
+  }
+
   // --- wire up ----------------------------------------------------------
 
   function init() {
     loadIntakes();
+
+    // View-tab click
+    document.addEventListener('click', (e) => {
+      const tab = e.target.closest('.view-tab[data-view]');
+      if (tab) {
+        switchView(tab.dataset.view);
+        return;
+      }
+    });
 
     // Status pill click
     document.addEventListener('click', (e) => {

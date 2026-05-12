@@ -42,6 +42,12 @@ import {
   handleAdminEditIntake,
   handleAdminDeleteIntake,
   handleAdminNotifyIntakeReady,
+  handleAdminListSpecialOrders,
+  handleAdminCreateSpecialOrder,
+  handleAdminEditSpecialOrder,
+  handleAdminUpdateSpecialOrderStatus,
+  handleAdminDeleteSpecialOrder,
+  handleAdminNotifySpecialOrderArrived,
 } from './lib/handlers.mjs';
 import * as log from './lib/log.mjs';
 
@@ -166,6 +172,12 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && path === '/api/admin/intake-edit') return handleAdminEditIntake(req, res);
       if (req.method === 'POST' && path === '/api/admin/intake-delete') return handleAdminDeleteIntake(req, res);
       if (req.method === 'POST' && path === '/api/admin/intake-notify-ready') return handleAdminNotifyIntakeReady(req, res);
+      if (req.method === 'GET'  && path === '/api/admin/special-orders')             return handleAdminListSpecialOrders(req, res);
+      if (req.method === 'POST' && path === '/api/admin/special-order-create')       return handleAdminCreateSpecialOrder(req, res);
+      if (req.method === 'POST' && path === '/api/admin/special-order-edit')         return handleAdminEditSpecialOrder(req, res);
+      if (req.method === 'POST' && path === '/api/admin/special-order-status')       return handleAdminUpdateSpecialOrderStatus(req, res);
+      if (req.method === 'POST' && path === '/api/admin/special-order-delete')       return handleAdminDeleteSpecialOrder(req, res);
+      if (req.method === 'POST' && path === '/api/admin/special-order-notify-arrived') return handleAdminNotifySpecialOrderArrived(req, res);
 
       const icsMatch = path.match(/^\/api\/bookings\/([A-Za-z0-9-]+)\/ics$/);
       if (req.method === 'GET' && icsMatch) return handleGetBookingIcs(req, res, icsMatch[1]);
