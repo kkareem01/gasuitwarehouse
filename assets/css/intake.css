@@ -137,24 +137,23 @@
 }
 .intake-handoff__title {
   font-family: var(--font-display);
-  font-size: clamp(44px, 8vw, 64px);
+  font-size: clamp(64px, 11vw, 104px);
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--navy);
-  margin: 0 0 24px;
-  line-height: 1.1;
+  margin: 0 0 28px;
+  line-height: 1.05;
 }
 .intake-handoff__sub {
   font-family: var(--font-body);
-  font-size: clamp(22px, 3vw, 28px);
+  font-size: clamp(13px, 1.3vw, 16px);
   line-height: 1.4;
+  letter-spacing: 0.06em;
   color: var(--muted);
-  margin: 0 0 64px;
+  margin: 0 auto 48px;
   max-width: 540px;
-  margin-left: auto;
-  margin-right: auto;
 }
-.intake-handoff__sub:last-child { margin-bottom: 64px; }
+.intake-handoff__sub:last-child { margin-bottom: 48px; }
 .intake-handoff__continue {
   font-family: var(--font-body);
   font-size: 13px;
