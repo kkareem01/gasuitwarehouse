@@ -152,7 +152,43 @@
     });
     clearError();
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    if (n === 2) requestAnimationFrame(fitHandoffTitle);
   }
+
+  // --- handoff title auto-fit ------------------------------------------
+  // The handoff headline ("Thanks, X!") needs to scale with the customer's
+  // name so short names like "Suit" feel huge and long names like
+  // "Christopher" still fit on one line inside the booking card. The CSS
+  // rule sets a fallback range; this function picks the largest size that
+  // fits on one line.
+  function fitHandoffTitle() {
+    const title = $('.intake-handoff__title');
+    if (!title) return;
+    const container = title.closest('.intake-handoff') || title.parentElement;
+    if (!container || !container.clientWidth) return;
+
+    const MAX = 240;
+    const MIN = 56;
+    const available = container.clientWidth - 8;
+
+    let size = MAX;
+    title.style.fontSize = size + 'px';
+    let guard = 0;
+    while (title.scrollWidth > available && size > MIN && guard < 80) {
+      size -= 4;
+      title.style.fontSize = size + 'px';
+      guard += 1;
+    }
+  }
+
+  // Re-fit on resize while the handoff stage is visible.
+  let resizeDebounce = null;
+  window.addEventListener('resize', () => {
+    const handoff = regionByName.handoff;
+    if (!handoff || handoff.hidden) return;
+    clearTimeout(resizeDebounce);
+    resizeDebounce = setTimeout(() => requestAnimationFrame(fitHandoffTitle), 80);
+  });
 
   // --- step transitions ------------------------------------------------
 

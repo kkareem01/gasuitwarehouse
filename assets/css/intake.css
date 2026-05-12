@@ -172,12 +172,15 @@
    otherwise clamp this title to 20px. */
 .intake-body .intake-handoff .intake-handoff__title {
   font-family: var(--font-display);
-  font-size: clamp(112px, 18vw, 220px);
+  /* Fallback only — assets/js/intake-form.js dynamically picks the largest
+     size that fits on one line via fitHandoffTitle(). */
+  font-size: clamp(80px, 16vw, 200px);
   font-weight: 600;
   letter-spacing: -0.025em;
   color: var(--navy);
   margin: 0 0 32px;
   line-height: 1.0;
+  white-space: nowrap;
 }
 .intake-handoff__sub {
   font-family: var(--font-body);
