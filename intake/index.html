@@ -61,6 +61,11 @@
             <input type="email" name="email" autocomplete="email" inputmode="email" required maxlength="254" placeholder="you@example.com" />
           </label>
 
+          <label class="intake-field">
+            <span class="intake-label">Ticket number <span class="intake-label-hint">(optional — from the paper ticket on your suit)</span></span>
+            <input type="text" name="ticketNumber" maxlength="32" inputmode="numeric" autocomplete="off" />
+          </label>
+
           <div class="intake-field">
             <span class="intake-label">What needs tailoring? <span class="intake-label-hint">(tap all that apply)</span></span>
             <div class="intake-chips" data-region="tailoring-chips" role="group" aria-label="Tailoring needs">
@@ -69,12 +74,19 @@
               <button type="button" class="intake-chip" data-item="Sleeves">Sleeves</button>
               <button type="button" class="intake-chip" data-item="Shirt">Shirt</button>
               <button type="button" class="intake-chip" data-item="Jacket">Jacket</button>
+              <button type="button" class="intake-chip" data-item="Vest">Vest</button>
+              <button type="button" class="intake-chip" data-item="Slim Pants">Slim Pants</button>
             </div>
           </div>
 
           <label class="intake-field">
             <span class="intake-label">Need it by</span>
             <input type="date" name="needByDate" required />
+          </label>
+
+          <label class="intake-field">
+            <span class="intake-label">Additional notes <span class="intake-label-hint">(optional)</span></span>
+            <textarea name="additionalNotes" rows="3" maxlength="500"></textarea>
           </label>
         </div>
 

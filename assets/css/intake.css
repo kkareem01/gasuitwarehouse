@@ -94,7 +94,8 @@
 .intake-form input[type="text"],
 .intake-form input[type="tel"],
 .intake-form input[type="email"],
-.intake-form input[type="date"] {
+.intake-form input[type="date"],
+.intake-form textarea {
   width: 100%;
   font-family: var(--font-body);
   /* 16px+ prevents iOS Safari from auto-zooming on focus */
@@ -109,7 +110,12 @@
   -webkit-appearance: none;
   appearance: none;
 }
-.intake-form input:focus {
+.intake-form textarea {
+  resize: vertical;
+  min-height: 88px;
+}
+.intake-form input:focus,
+.intake-form textarea:focus {
   outline: none;
   border-color: var(--navy);
   box-shadow: 0 0 0 3px rgba(20, 33, 61, 0.12);

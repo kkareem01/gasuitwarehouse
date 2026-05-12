@@ -67,8 +67,10 @@
       lastName: String(fd.get('lastName') || '').trim(),
       phone: String(fd.get('phone') || '').trim(),
       email: String(fd.get('email') || '').trim(),
+      ticketNumber: String(fd.get('ticketNumber') || '').trim(),
       tailoringItems: selectedTailoring(),
       needByDate: String(fd.get('needByDate') || '').trim(),
+      additionalNotes: String(fd.get('additionalNotes') || '').trim(),
       hp: String(fd.get('hp') || ''),
     };
   }
@@ -137,8 +139,10 @@
       lastName: values.lastName,
       phone: values.phone,
       email: values.email,
+      ticketNumber: values.ticketNumber,
       tailoringNotes: values.tailoringItems.join(', '),
       needByDate: values.needByDate,
+      additionalNotes: values.additionalNotes,
       hp: values.hp,
       startedAt: formStartedAt,
     };

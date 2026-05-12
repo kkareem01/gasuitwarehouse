@@ -104,6 +104,12 @@
     const phoneDigits = (intake.phone || '').replace(/\D/g, '');
     const status = intake.tailorStatus || 'pending';
 
+    const ticket = (intake.ticketNumber || '').trim();
+    const ticketCell = ticket
+      ? `<span class="ticket-num">${esc(ticket)}</span>`
+      : `<span class="ticket-num empty">—</span>`;
+    const extraNotes = (intake.additionalNotes || '').trim();
+
     return `
       <tr class="${rowCls}">
         <td>
@@ -112,13 +118,17 @@
             <div class="id">${esc(intake.id)}</div>
           </div>
         </td>
+        <td>${ticketCell}</td>
         <td>
           <div class="contact">
             <a href="tel:+1${esc(phoneDigits)}">${esc(intake.phone)}</a>
             <a href="mailto:${esc(intake.email)}">${esc(intake.email)}</a>
           </div>
         </td>
-        <td><div class="notes">${esc(intake.tailoringNotes)}</div></td>
+        <td>
+          <div class="notes">${esc(intake.tailoringNotes)}</div>
+          ${extraNotes ? `<div class="notes-extra">${esc(extraNotes)}</div>` : ''}
+        </td>
         <td>
           <div class="date-cell">
             <div class="primary">${fmtDate(intake.needByDate)}</div>
