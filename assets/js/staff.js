@@ -134,14 +134,13 @@
     const codeEl = $r('result-code');
     const code = codeEl?.textContent || '';
     if (!/^GIFT-[A-Z2-9]{6}$/.test(code)) return;
-    const staffId = prompt('Your initials (for the log)?') || '';
     const btn = $r('redeem-btn');
     if (btn) { btn.disabled = true; btn.textContent = 'Marking…'; }
     try {
       const res = await authedFetch('/api/admin/redeem', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ code, staffId: staffId.trim().slice(0, 60) }),
+        body: JSON.stringify({ code }),
       });
       const j = await res.json().catch(() => ({}));
       if (res.status === 401) {
