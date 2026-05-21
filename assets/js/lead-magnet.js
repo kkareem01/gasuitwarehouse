@@ -135,7 +135,6 @@
       const item = payload?.itemName ? ` "${payload.itemName}"` : ' this item';
       return `You've already claimed${item}. Stay tuned — we rotate to a new gift each week.`;
     }
-    if (code === 'DUPLICATE_RECENT') return 'You already claimed this week. Check your email for your code.';
     if (code === 'HONEYPOT' || code === 'TOO_FAST') return 'Submission rejected. Please try again.';
     return 'Something went wrong. Please try again.';
   }
@@ -267,6 +266,12 @@
         }
         if (j.exhausted) {
           return finish('Sorry, the offer is unavailable right now. Please call (470) 595-7775.');
+        }
+        // Recover & resume: this email already claimed and booked a pickup —
+        // jump straight to the confirmed state (the code was just re-sent).
+        if (j.alreadyBooked) {
+          showAllDoneState(j.booking);
+          return;
         }
         if (j.redirect && j.redirect.startsWith('/booking/')) {
           try {

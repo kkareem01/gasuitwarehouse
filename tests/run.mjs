@@ -298,14 +298,70 @@ test('newBookingId is unique across 1000 calls', () => {
 });
 
 // =========================================================================
+console.log('\noffers.mjs findUnredeemedCodeForOffer');
+// =========================================================================
+
+await testAsync('findUnredeemedCodeForOffer: recovers reserved/issued, ignores redeemed', async () => {
+  // Fresh test DB (TURSO_DATABASE_URL from .env.test, defaults to file:test.db).
+  await rm('test.db', { force: true });
+  await rm('test.db-journal', { force: true });
+  await migrate();
+
+  const { createLead } = await import('../lib/store.mjs');
+  const { insertRedemptionCode, findUnredeemedCodeForOffer } = await import('../lib/offers.mjs');
+  const db = getDb();
+
+  const offerId = 'OF-RESUME-TEST';
+  await db.execute({
+    sql: `INSERT INTO lead_magnet_offers
+          (id, name, item_description, retail_value_cents, week_start, week_end,
+           redemption_cap, redemptions_used, active, image_url, created_at)
+          VALUES (?, 'Free Silk Tie', 'A tie', 4500, '2099-01-01', '2099-12-31', 50, 0, 1, NULL, ?)`,
+    args: [offerId, new Date().toISOString()],
+  });
+
+  const email = 'resume@test.co';
+  const lead = await createLead(
+    { audience: 'general', firstName: 'Re', lastName: 'Sume', phone: '(470) 555-0001', email, consent: true },
+    newLeadId
+  );
+  await insertRedemptionCode({
+    code: 'GIFT-AAAAAA',
+    leadId: lead.lead.id,
+    offerId,
+    expiresAt: '2099-12-31T00:00:00.000Z',
+  });
+
+  // reserved → recoverable
+  const reserved = await findUnredeemedCodeForOffer(email, offerId);
+  assert.ok(reserved, 'reserved code should be found');
+  assert.equal(reserved.status, 'reserved');
+  assert.equal(reserved.code, 'GIFT-AAAAAA');
+  assert.equal(reserved.leadId, lead.lead.id);
+
+  // issued → still recoverable
+  await db.execute({ sql: `UPDATE redemption_codes SET status = 'issued' WHERE code = ?`, args: ['GIFT-AAAAAA'] });
+  const issued = await findUnredeemedCodeForOffer(email, offerId);
+  assert.ok(issued && issued.status === 'issued', 'issued code should be found');
+
+  // redeemed → not "unredeemed", must not be returned
+  await db.execute({ sql: `UPDATE redemption_codes SET status = 'redeemed' WHERE code = ?`, args: ['GIFT-AAAAAA'] });
+  assert.equal(await findUnredeemedCodeForOffer(email, offerId), null, 'redeemed code must not be returned');
+
+  // unknown email / unknown offer → null
+  assert.equal(await findUnredeemedCodeForOffer('nobody@test.co', offerId), null);
+  assert.equal(await findUnredeemedCodeForOffer(email, 'OF-NOPE'), null);
+});
+
+// =========================================================================
 console.log('\nstore.mjs concurrent createBooking');
 // =========================================================================
 
 await testAsync('createBooking: 50 concurrent writes at same slot, exactly one wins', async () => {
-  // Uses TURSO_DATABASE_URL from .env.test (defaults to file:test.db).
-  // Wipe the test DB file before running so previous test rows don't pollute.
-  await rm('test.db', { force: true });
-  await rm('test.db-journal', { force: true });
+  // Uses TURSO_DATABASE_URL from .env.test (defaults to file:test.db). The DB
+  // was already wiped + migrated by the findUnredeemedCodeForOffer test above;
+  // re-wiping here would move the file out from under the open connection
+  // (SQLITE_READONLY_DBMOVED). migrate() is idempotent, so just re-run it.
   await migrate();
 
   const { createBooking } = await import('../lib/store.mjs');
