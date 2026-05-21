@@ -48,8 +48,31 @@
                   <div class="booking-form__phone-row">
                     <span class="booking-form__country" aria-label="United States">+1</span>
                     <input id="bk-phone" type="tel" name="phone" required
-                      data-action="phone-input" inputmode="tel" autocomplete="tel"
+                      data-action="phone-input" inputmode="none" autocomplete="off"
                       maxlength="14" placeholder="(404) 555-0123" />
+                  </div>
+
+                  <!-- Custom on-screen number pad. iPadOS has no compact dial
+                       pad for web inputs, so inputmode="none" above suppresses
+                       the device keyboard for this field and this 10-key pad
+                       takes over. Shown on focus / hidden on blur — wired up in
+                       assets/js/intake-form.js. -->
+                  <div class="numpad" id="bk-numpad" role="group"
+                    aria-label="Phone number keypad" hidden>
+                    <button type="button" class="numpad__key" data-key="1">1</button>
+                    <button type="button" class="numpad__key" data-key="2">2</button>
+                    <button type="button" class="numpad__key" data-key="3">3</button>
+                    <button type="button" class="numpad__key" data-key="4">4</button>
+                    <button type="button" class="numpad__key" data-key="5">5</button>
+                    <button type="button" class="numpad__key" data-key="6">6</button>
+                    <button type="button" class="numpad__key" data-key="7">7</button>
+                    <button type="button" class="numpad__key" data-key="8">8</button>
+                    <button type="button" class="numpad__key" data-key="9">9</button>
+                    <button type="button" class="numpad__key numpad__key--util"
+                      data-key="back" aria-label="Delete last digit">⌫</button>
+                    <button type="button" class="numpad__key" data-key="0">0</button>
+                    <button type="button" class="numpad__key numpad__key--done"
+                      data-key="done">Done</button>
                   </div>
                 </div>
 

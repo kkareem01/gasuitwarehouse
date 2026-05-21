@@ -130,6 +130,77 @@
   border-radius: 5px;
 }
 
+/* --- Phone number keypad ------------------------------------------------
+   iPadOS has no compact numeric/dial keyboard for web inputs, so #bk-phone
+   uses inputmode="none" (device keyboard suppressed) and this custom 10-key
+   pad drives it. Shown only while the phone field is focused — see
+   assets/js/intake-form.js. Layout mirrors a phone dial pad:
+       1 2 3 / 4 5 6 / 7 8 9 / ⌫ 0 Done */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+  animation: intake-region-in 160ms var(--easing, ease-out) both;
+}
+.numpad[hidden] { display: none; }
+
+.numpad__key {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--navy);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: 6px;
+  min-height: 62px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.1s, border-color 0.1s, color 0.1s, transform 0.05s;
+}
+.numpad__key:hover { border-color: var(--navy-soft); }
+
+/* Digit press — fills navy for a clear tap confirmation. */
+.numpad__key:active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+  transform: scale(0.96);
+}
+
+/* Backspace — quieter than the digits so the 10 numbers stay the focus. */
+.numpad__key--util {
+  font-family: var(--font-body);
+  font-size: 22px;
+  color: var(--muted);
+  background: var(--off-white);
+}
+.numpad__key--util:active {
+  background: var(--rule);
+  border-color: var(--rule);
+  color: var(--navy);
+  transform: scale(0.96);
+}
+
+/* Done — confirms the number and dismisses the pad. */
+.numpad__key--done {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.numpad__key--done:active {
+  background: var(--navy-soft);
+  border-color: var(--navy-soft);
+  color: #fff;
+  transform: scale(0.96);
+}
+
 .intake-body .booking-form button[type="submit"],
 .intake-body .booking-form .btn {
   font-size: 16px;

@@ -61,6 +61,52 @@
     }
   });
 
+  // --- on-screen number pad (phone field) -------------------------------
+  // iPadOS has no compact dial pad for web inputs, so #bk-phone uses
+  // inputmode="none" and this 10-key pad drives it. The pad is shown only
+  // while the phone field is focused. mousedown is prevented on the pad so
+  // tapping a key never blurs the field (which would hide the pad).
+
+  const numpad = $('#bk-numpad');
+
+  function showNumpad() {
+    if (numpad) numpad.hidden = false;
+  }
+  function hideNumpad() {
+    if (numpad) numpad.hidden = true;
+  }
+
+  function pressNumpadKey(key) {
+    if (key === 'done') {
+      phoneInput.blur();
+      return;
+    }
+    const digits = phoneInput.value.replace(/\D/g, '');
+    const nextDigits = key === 'back'
+      ? digits.slice(0, -1)
+      : (digits.length >= 10 ? digits : digits + key);
+    if (nextDigits === digits) return;
+    phoneInput.value = formatPhone(nextDigits);
+    try {
+      const end = phoneInput.value.length;
+      phoneInput.setSelectionRange(end, end);
+    } catch {}
+    // Mirror a real keystroke: re-runs phone formatting + the done-button gate.
+    phoneInput.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  if (numpad) {
+    phoneInput.addEventListener('focus', showNumpad);
+    phoneInput.addEventListener('blur', hideNumpad);
+    // Prevent focus leaving the input when a key is tapped — otherwise the
+    // blur handler above would hide the pad mid-entry.
+    numpad.addEventListener('mousedown', (ev) => ev.preventDefault());
+    numpad.addEventListener('click', (ev) => {
+      const key = ev.target.closest('.numpad__key');
+      if (key) pressNumpadKey(key.dataset.key);
+    });
+  }
+
   // --- chip multi-select ------------------------------------------------
 
   chips.forEach((c) => {
@@ -287,6 +333,7 @@
   function resetForm() {
     customerForm.reset();
     staffForm.reset();
+    hideNumpad();
     chips.forEach((c) => {
       c.classList.remove('is-active');
       c.setAttribute('aria-pressed', 'false');
