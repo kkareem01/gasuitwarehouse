@@ -193,6 +193,9 @@
       border-bottom: 1px solid #2A3654;
     }
     .view-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       padding: 11px 18px;
       font-size: 14px;
       font-weight: 600;
@@ -209,6 +212,22 @@
       color: #C9A961;
       border-bottom-color: #C9A961;
     }
+    /* Red "new appointments" priority badge on the Appointments tab. */
+    .tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      background: #FF6B6B;
+      color: #fff;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .tab-badge[hidden] { display: none; }
 
     .panel-header {
       display: flex;
@@ -236,6 +255,26 @@
 
     .status-select.s-ordered { color: #93C5FD; border-color: #1E40AF; }
     .status-select.s-arrived { color: #6EE7B7; border-color: #064E3B; }
+
+    /* --- Appointments view --------------------------------------------- */
+    .status-select.s-new       { color: #FF6B6B; border-color: #4A1E1B; }
+    .status-select.s-confirmed { color: #93C5FD; border-color: #1E40AF; }
+    .status-select.s-completed { color: #6EE7B7; border-color: #064E3B; }
+    .status-select.s-no_show   { color: #FBBF24; border-color: #6B5A18; }
+    .status-select.s-cancelled { color: #9CA3AF; border-color: #2A3654; }
+    tbody tr.is-new td:first-child { border-left: 3px solid #FF6B6B; padding-left: 11px; }
+    .appt-type {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #C9A961;
+    }
+    .appt-details { display: flex; flex-direction: column; gap: 3px; max-width: 280px; }
+    .appt-details .row { font-size: 13px; color: #E5E7EB; line-height: 1.4; }
+    .appt-details .row .k { color: #9CA3AF; }
+    .appt-details .none { color: #4B5563; font-size: 13px; }
 
     /* --- Edit modal ----------------------------------------------------- */
     .edit-modal { position: fixed; inset: 0; z-index: 9999; }
@@ -383,6 +422,10 @@
     <nav class="view-tabs" data-region="view-tabs" role="tablist" aria-label="Dashboard view">
       <button class="view-tab is-active" data-view="intakes" role="tab" aria-selected="true">Tailoring Intakes</button>
       <button class="view-tab" data-view="special-orders" role="tab" aria-selected="false">Special Orders</button>
+      <button class="view-tab" data-view="appointments" role="tab" aria-selected="false">
+        Appointments
+        <span class="tab-badge" data-region="appt-badge" hidden aria-label="new appointments"></span>
+      </button>
     </nav>
 
     <section data-view-panel="intakes" data-region="dashboard">
@@ -463,6 +506,50 @@
       <div class="empty" data-region="so-empty" hidden>
         <div class="big">No special orders match these filters</div>
         <div>Click "+ New special order" to log one, or switch to "All".</div>
+      </div>
+    </section>
+
+    <section data-view-panel="appointments" hidden>
+      <div class="panel-header">
+        <h2>Styling-session &amp; fitting appointments booked online</h2>
+        <div class="panel-actions">
+          <button class="btn" data-action="appt-refresh">↻ Refresh</button>
+          <button class="btn" data-action="appt-download-csv">Download CSV</button>
+        </div>
+      </div>
+
+      <div class="filterbar">
+        <div class="pills" data-region="appt-status-pills">
+          <button class="pill-btn is-active" data-appt-status="new">New</button>
+          <button class="pill-btn" data-appt-status="confirmed">Confirmed</button>
+          <button class="pill-btn" data-appt-status="completed">Completed</button>
+          <button class="pill-btn" data-appt-status="no_show">No-show</button>
+          <button class="pill-btn" data-appt-status="cancelled">Cancelled</button>
+          <button class="pill-btn" data-appt-status="all">All</button>
+        </div>
+        <input class="search" data-region="appt-search" placeholder="Search name, phone, or email…" />
+        <span class="count" data-region="appt-count">—</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Contact</th>
+              <th>Type</th>
+              <th>Date &amp; Time</th>
+              <th>Details</th>
+              <th>Status</th>
+              <th>Booked</th>
+            </tr>
+          </thead>
+          <tbody data-region="appt-rows"></tbody>
+        </table>
+      </div>
+      <div class="empty" data-region="appt-empty" hidden>
+        <div class="big">No appointments match these filters</div>
+        <div>Try switching to "All" or clearing the search box.</div>
       </div>
     </section>
 
@@ -552,5 +639,6 @@
   <script src="/assets/js/staff.js" defer></script>
   <script src="/assets/js/staff-intakes.js" defer></script>
   <script src="/assets/js/staff-special-orders.js" defer></script>
+  <script src="/assets/js/staff-appointments.js" defer></script>
 </body>
 </html>

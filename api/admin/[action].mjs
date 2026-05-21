@@ -18,6 +18,9 @@ import {
   handleAdminUpdateSpecialOrderStatus,
   handleAdminDeleteSpecialOrder,
   handleAdminNotifySpecialOrderArrived,
+  handleAdminListBookings,
+  handleAdminBookingsCount,
+  handleAdminUpdateBookingStatus,
 } from '../../lib/handlers.mjs';
 
 const KNOWN_ACTIONS = [
@@ -25,6 +28,7 @@ const KNOWN_ACTIONS = [
   'intakes', 'intake-status', 'intake-edit', 'intake-delete', 'intake-notify-ready',
   'special-orders', 'special-order-create', 'special-order-edit',
   'special-order-status', 'special-order-delete', 'special-order-notify-arrived',
+  'bookings', 'bookings-count', 'booking-status',
 ];
 
 export default async function (req, res) {
@@ -71,6 +75,15 @@ export default async function (req, res) {
   }
   if (action === 'special-order-notify-arrived' && req.method === 'POST') {
     return handleAdminNotifySpecialOrderArrived(req, res);
+  }
+  if (action === 'bookings' && req.method === 'GET') {
+    return handleAdminListBookings(req, res);
+  }
+  if (action === 'bookings-count' && req.method === 'GET') {
+    return handleAdminBookingsCount(req, res);
+  }
+  if (action === 'booking-status' && req.method === 'POST') {
+    return handleAdminUpdateBookingStatus(req, res);
   }
 
   res.statusCode = KNOWN_ACTIONS.includes(action) ? 405 : 404;
