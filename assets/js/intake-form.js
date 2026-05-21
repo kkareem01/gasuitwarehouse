@@ -30,6 +30,7 @@
   const firstInput = $('#bk-first');
   const lastInput = $('#bk-last');
   const emailInput = $('#bk-email');
+  const consentInput = $('#bk-sms-consent');
   const dateInput = $('#bk-needby');
   const chips = $$('.intake-chip', staffForm);
 
@@ -85,6 +86,7 @@
     if (!firstInput.value.trim()) return false;
     if (!lastInput.value.trim()) return false;
     if (!EMAIL_RE.test(emailInput.value.trim())) return false;
+    if (!consentInput || !consentInput.checked) return false;
     return true;
   }
 
@@ -92,6 +94,7 @@
     doneBtn.disabled = !customerValid();
   }
   customerForm.addEventListener('input', refreshDoneButton);
+  if (consentInput) consentInput.addEventListener('change', refreshDoneButton);
   refreshDoneButton();
 
   function readForm() {
