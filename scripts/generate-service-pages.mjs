@@ -8,7 +8,7 @@
  * (MensClothingStore + BreadcrumbList + Service + FAQPage), hidden NAP, hero,
  * content sections, pricing table, booking section, FAQ, related services.
  *
- * Title format on every page: "{Service} in Gainesville, GA · GA SuitWarehouse"
+ * Title format on every page: "{Service} in Gainesville, GA · GA Suit Warehouse"
  *
  * Run: `node scripts/generate-service-pages.mjs`
  */
@@ -960,8 +960,8 @@ function renderPage(svc, idx) {
   const pageUrl = urlFor(svc);
   const pagePath = pathFor(svc);
   const titleService = svc.name;
-  const title = `${titleService} in Gainesville, GA &middot; GA SuitWarehouse`;
-  const titleText = `${titleService} in Gainesville, GA · GA SuitWarehouse`;
+  const title = `${titleService} in Gainesville, GA &middot; GA Suit Warehouse`;
+  const titleText = `${titleService} in Gainesville, GA · GA Suit Warehouse`;
   const desc = svc.description;
   const heroImg = pickImg(idx);
   const featImg1 = pickImg(idx + 1);
@@ -983,7 +983,7 @@ function renderPage(svc, idx) {
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="900" />
   <meta property="og:url" content="${pageUrl}" />
-  <meta property="og:site_name" content="GA SuitWarehouse" />
+  <meta property="og:site_name" content="GA Suit Warehouse" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${escAttr(titleText)}" />

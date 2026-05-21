@@ -15,9 +15,9 @@
   ],
   "redirects": [
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "gasuitwarehouse.com" }],
-      "destination": "https://www.gasuitwarehouse.com/$1",
+      "destination": "https://www.gasuitwarehouse.com/:path*",
       "permanent": true
     },
     {

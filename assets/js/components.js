@@ -164,7 +164,7 @@ const FOOTER_HTML = `
       </ul>
     </div>
   </div>
-  <div class="footer-watermark" aria-hidden="true">GA SuitWarehouse</div>
+  <div class="footer-watermark" aria-hidden="true">GA Suit Warehouse</div>
   <div class="footer-bottom">
     <span>&copy; ${new Date().getFullYear()} GA Suit Warehouse, LLC. All rights reserved.</span>
     <span><a href="/privacy">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms">Terms</a></span>
