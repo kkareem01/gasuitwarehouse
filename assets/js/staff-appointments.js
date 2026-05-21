@@ -20,6 +20,12 @@
     cancelled: 'Cancelled',
   };
 
+  // Statuses a staff member can assign from the row dropdown. 'new' is the
+  // internal unacknowledged state that drives the red badge — it is never
+  // staff-assignable (staff clear it by moving a booking forward). Any booking
+  // still in 'new' (or a legacy 'cancelled') shows a read-only placeholder.
+  const SELECTABLE_STATUSES = ['confirmed', 'completed', 'no_show'];
+
   const AUDIENCE_LABELS = {
     weddings: 'Wedding fitting',
     general: 'Styling session',
@@ -40,7 +46,7 @@
   const POLL_MS = 60000;
   const BASE_TITLE = document.title;
 
-  let currentStatus = 'new';   // matches the pill marked is-active in the HTML
+  let currentStatus = 'all';   // matches the pill marked is-active in the HTML
   let currentSearch = '';
   let searchDebounce = null;
   let currentBookings = [];
@@ -148,7 +154,7 @@
     const name = `${(c.firstName || '').trim()} ${(c.lastName || '').trim()}`.trim() || '—';
     return `
       <div class="customer">
-        <span class="name">${esc(name)}</span>
+        <a href="#" class="name name-link" data-action="appt-edit" data-id="${esc(b.id)}">${esc(name)}</a>
         <div class="id">${esc(b.id)}</div>
       </div>
     `;
@@ -197,6 +203,21 @@
     return `<div class="appt-details">${rows.join('')}</div>`;
   }
 
+  function renderStatusSelect(b) {
+    const status = b.staffStatus || 'new';
+    const opts = [];
+    // A booking still in 'new' (or a legacy 'cancelled') gets a disabled
+    // placeholder so its real state stays visible — staff can only move it
+    // forward to one of the selectable statuses.
+    if (!SELECTABLE_STATUSES.includes(status)) {
+      opts.push(`<option value="${esc(status)}" disabled selected>${esc(STATUS_LABELS[status] || status)}</option>`);
+    }
+    for (const v of SELECTABLE_STATUSES) {
+      opts.push(`<option value="${v}"${v === status ? ' selected' : ''}>${esc(STATUS_LABELS[v])}</option>`);
+    }
+    return `<select class="status-select s-${esc(status)}" data-action="appt-status-change" data-id="${esc(b.id)}">${opts.join('')}</select>`;
+  }
+
   function renderRow(b) {
     const status = b.staffStatus || 'new';
     const rowCls = status === 'new' ? 'is-new' : '';
@@ -207,11 +228,7 @@
         <td>${renderTypeCell(b)}</td>
         <td>${renderDateTimeCell(b)}</td>
         <td>${renderDetailsCell(b)}</td>
-        <td>
-          <select class="status-select s-${status}" data-action="appt-status-change" data-id="${esc(b.id)}">
-            ${Object.entries(STATUS_LABELS).map(([v, l]) => `<option value="${v}"${v === status ? ' selected' : ''}>${esc(l)}</option>`).join('')}
-          </select>
-        </td>
+        <td>${renderStatusSelect(b)}</td>
         <td><span style="color:#9CA3AF;font-size:13px;">${fmtIso(b.createdAt)}</span></td>
       </tr>
     `;
@@ -293,6 +310,177 @@
     window.location.href = `/api/admin/bookings?${params.toString()}`;
   }
 
+  // --- edit / delete modal ----------------------------------------------
+
+  function answerLabel(audience, key) {
+    const known = (ANSWER_FIELDS[audience] || []).find(([k]) => k === key);
+    if (known) return known[1];
+    // Humanize an unknown key: serviceType -> "Service type".
+    const s = key.replace(/([A-Z])/g, ' $1').replace(/[_-]+/g, ' ').trim();
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  // Renders one input per key actually stored in the booking's answers, so
+  // every audience-specific field is editable (and merge-preserved on save).
+  function renderAnswerInputs(b) {
+    const wrap = $r('appt-modal-answers');
+    if (!wrap) return;
+    const answers = b.answers || {};
+    wrap.innerHTML = Object.keys(answers).map((key) => {
+      const label = esc(answerLabel(b.audience, key));
+      const val = esc(answers[key] == null ? '' : String(answers[key]));
+      if (key === 'eventDate') {
+        return `<label>${label}<input type="date" data-answer-key="${esc(key)}" value="${val}" /></label>`;
+      }
+      if (/notes|priorities|comment/i.test(key)) {
+        return `<label>${label}<textarea data-answer-key="${esc(key)}" rows="3" maxlength="500">${val}</textarea></label>`;
+      }
+      return `<label>${label}<input type="text" data-answer-key="${esc(key)}" maxlength="500" value="${val}" /></label>`;
+    }).join('');
+  }
+
+  function setModalError(msg) {
+    const box = $r('appt-modal-error');
+    if (!box) return;
+    if (!msg) { box.hidden = true; box.textContent = ''; return; }
+    box.textContent = msg;
+    box.hidden = false;
+  }
+
+  function showModal() {
+    const modal = $r('appt-modal');
+    if (!modal) return;
+    modal.hidden = false;
+    requestAnimationFrame(() => modal.classList.add('is-open'));
+  }
+
+  function closeModal() {
+    const modal = $r('appt-modal');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    setModalError('');
+    setTimeout(() => { modal.hidden = true; }, 220);
+  }
+
+  function openEditModal(id) {
+    const b = currentBookings.find((x) => x.id === id);
+    if (!b) {
+      showAlert('error', 'Could not find that appointment. Refreshing.');
+      loadBookings();
+      return;
+    }
+    const form = $r('appt-modal-form');
+    if (!form) return;
+    const c = b.customer || {};
+    form.elements.id.value = b.id;
+    form.elements.firstName.value = c.firstName || '';
+    form.elements.lastName.value = c.lastName || '';
+    form.elements.phone.value = c.phone || '';
+    form.elements.email.value = c.email || '';
+    form.elements.slotDate.value = b.slot?.date || '';
+    form.elements.slotTime.value = b.slot?.time || '';
+    renderAnswerInputs(b);
+
+    const title = $r('appt-modal-title');
+    if (title) title.textContent = `Edit appointment · ${b.id}`;
+    const typeHint = $r('appt-modal-type');
+    if (typeHint) typeHint.textContent = AUDIENCE_LABELS[b.audience] || b.audience || '';
+
+    setModalError('');
+    showModal();
+  }
+
+  function collectFormPayload() {
+    const form = $r('appt-modal-form');
+    if (!form) return null;
+    const answers = {};
+    const wrap = $r('appt-modal-answers');
+    if (wrap) {
+      wrap.querySelectorAll('[data-answer-key]').forEach((el) => {
+        answers[el.dataset.answerKey] = el.value.trim();
+      });
+    }
+    return {
+      id: form.elements.id.value,
+      firstName: form.elements.firstName.value.trim(),
+      lastName: form.elements.lastName.value.trim(),
+      phone: form.elements.phone.value.trim(),
+      email: form.elements.email.value.trim(),
+      slotDate: form.elements.slotDate.value.trim(),
+      slotTime: form.elements.slotTime.value.trim(),
+      answers,
+    };
+  }
+
+  async function saveModal() {
+    const payload = collectFormPayload();
+    if (!payload) return;
+    const saveBtn = $r('appt-save-btn');
+    setModalError('');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.dataset.originalText = saveBtn.textContent;
+      saveBtn.textContent = 'Saving…';
+    }
+    try {
+      const res = await fetch('/api/admin/booking-edit', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        setModalError(j.error === 'SLOT_TAKEN'
+          ? 'That date & time is already booked. Pick another slot.'
+          : (j.error || 'Could not save. Try again.'));
+        return;
+      }
+      closeModal();
+      loadBookings({ quiet: true });
+      showAlert('success', 'Appointment updated.');
+      setTimeout(hideAlert, 2500);
+    } catch (_) {
+      setModalError('Network error. Try again.');
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = saveBtn.dataset.originalText || 'Save changes';
+      }
+    }
+  }
+
+  async function deleteFromModal() {
+    const form = $r('appt-modal-form');
+    const id = form?.elements.id.value;
+    if (!id) return;
+    const b = currentBookings.find((x) => x.id === id);
+    const who = b
+      ? `${b.customer?.firstName || ''} ${b.customer?.lastName || ''}`.trim() || id
+      : 'this appointment';
+    if (!confirm(`Delete the appointment for ${who}? This frees the slot and cannot be undone.`)) return;
+    setModalError('');
+    try {
+      const res = await fetch('/api/admin/booking-delete', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        setModalError(j.error || 'Could not delete. Try again.');
+        return;
+      }
+      if (typeof j.newCount === 'number') setBadge(j.newCount);
+      currentBookings = currentBookings.filter((x) => x.id !== id);
+      renderTable(currentBookings);
+      closeModal();
+      showAlert('success', 'Appointment deleted.');
+      setTimeout(hideAlert, 2500);
+    } catch (_) {
+      setModalError('Network error. Try again.');
+    }
+  }
+
   // --- tab activation + per-tab auto-refresh ----------------------------
 
   function startRefreshTimer() {
@@ -346,6 +534,23 @@
         downloadCsv();
         return;
       }
+      if (action === 'appt-edit') {
+        e.preventDefault();
+        openEditModal(actionEl.dataset.id);
+        return;
+      }
+      if (action === 'appt-close-modal') {
+        closeModal();
+        return;
+      }
+      if (action === 'appt-save') {
+        saveModal();
+        return;
+      }
+      if (action === 'appt-delete') {
+        deleteFromModal();
+        return;
+      }
     });
 
     // Status dropdown change scoped to appointment rows.
@@ -353,6 +558,13 @@
       const sel = e.target.closest('select[data-action="appt-status-change"]');
       if (!sel) return;
       changeStatus(sel.dataset.id, sel.value, sel);
+    });
+
+    // Escape closes the edit modal.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const modal = $r('appt-modal');
+      if (modal && !modal.hidden) closeModal();
     });
 
     // Activate when the user switches to this tab; track active/inactive so

@@ -275,6 +275,8 @@
     .appt-details .row { font-size: 13px; color: #E5E7EB; line-height: 1.4; }
     .appt-details .row .k { color: #9CA3AF; }
     .appt-details .none { color: #4B5563; font-size: 13px; }
+    .edit-modal__answers { display: flex; flex-direction: column; gap: 14px; }
+    .edit-modal__answers:empty { display: none; }
 
     /* --- Edit modal ----------------------------------------------------- */
     .edit-modal { position: fixed; inset: 0; z-index: 9999; }
@@ -520,12 +522,10 @@
 
       <div class="filterbar">
         <div class="pills" data-region="appt-status-pills">
-          <button class="pill-btn is-active" data-appt-status="new">New</button>
           <button class="pill-btn" data-appt-status="confirmed">Confirmed</button>
           <button class="pill-btn" data-appt-status="completed">Completed</button>
           <button class="pill-btn" data-appt-status="no_show">No-show</button>
-          <button class="pill-btn" data-appt-status="cancelled">Cancelled</button>
-          <button class="pill-btn" data-appt-status="all">All</button>
+          <button class="pill-btn is-active" data-appt-status="all">All</button>
         </div>
         <input class="search" data-region="appt-search" placeholder="Search name, phone, or email…" />
         <span class="count" data-region="appt-count">—</span>
@@ -630,6 +630,39 @@
           <div class="edit-modal__actions">
             <button type="button" class="btn-cancel" data-action="close-edit-modal">Cancel</button>
             <button type="button" class="btn-save" data-action="save-edit-modal">Save changes</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <div class="edit-modal" data-region="appt-modal" hidden>
+      <div class="edit-modal__overlay" data-action="appt-close-modal"></div>
+      <div class="edit-modal__card" role="dialog" aria-modal="true" aria-labelledby="appt-modal-title">
+        <header class="edit-modal__header">
+          <h2 id="appt-modal-title" data-region="appt-modal-title">Edit appointment</h2>
+          <button type="button" class="edit-modal__close" data-action="appt-close-modal" aria-label="Close">×</button>
+        </header>
+        <form class="edit-modal__form" data-region="appt-modal-form" novalidate>
+          <input type="hidden" name="id" />
+          <div class="edit-modal__hint" data-region="appt-modal-type"></div>
+          <div class="edit-modal__row">
+            <label>First name<input type="text" name="firstName" required maxlength="60" /></label>
+            <label>Last name<input type="text" name="lastName" required maxlength="60" /></label>
+          </div>
+          <label>Phone<input type="tel" name="phone" required maxlength="14" /></label>
+          <label>Email<input type="email" name="email" required maxlength="254" /></label>
+          <div class="edit-modal__row">
+            <label>Appointment date<input type="date" name="slotDate" required /></label>
+            <label>Appointment time<input type="time" name="slotTime" required /></label>
+          </div>
+          <div class="edit-modal__answers" data-region="appt-modal-answers"></div>
+          <div class="edit-modal__error" data-region="appt-modal-error" hidden></div>
+        </form>
+        <footer class="edit-modal__footer">
+          <button type="button" class="btn-delete" data-action="appt-delete">Delete</button>
+          <div class="edit-modal__actions">
+            <button type="button" class="btn-cancel" data-action="appt-close-modal">Cancel</button>
+            <button type="button" class="btn-save" data-action="appt-save" data-region="appt-save-btn">Save changes</button>
           </div>
         </footer>
       </div>
