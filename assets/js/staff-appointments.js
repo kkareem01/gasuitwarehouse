@@ -13,18 +13,19 @@
   function esc(s)   { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
   const STATUS_LABELS = {
-    new: 'New',
+    new: 'New Booking',
     confirmed: 'Confirmed',
     completed: 'Completed',
     no_show: 'No-show',
     cancelled: 'Cancelled',
   };
 
-  // Statuses a staff member can assign from the row dropdown. 'new' is the
-  // internal unacknowledged state that drives the red badge — it is never
-  // staff-assignable (staff clear it by moving a booking forward). Any booking
-  // still in 'new' (or a legacy 'cancelled') shows a read-only placeholder.
-  const SELECTABLE_STATUSES = ['confirmed', 'completed', 'no_show'];
+  // Statuses a staff member can assign from the row dropdown. A booking is a
+  // "New Booking" (status 'new') until staff close it out as Completed or
+  // No-show — that 'new' state drives the red badge and is never directly
+  // staff-assignable. Legacy 'confirmed'/'cancelled' bookings likewise show a
+  // read-only placeholder until moved forward.
+  const SELECTABLE_STATUSES = ['completed', 'no_show'];
 
   const AUDIENCE_LABELS = {
     weddings: 'Wedding fitting',
@@ -46,7 +47,7 @@
   const POLL_MS = 60000;
   const BASE_TITLE = document.title;
 
-  let currentStatus = 'all';   // matches the pill marked is-active in the HTML
+  let currentStatus = 'new';   // matches the pill marked is-active in the HTML
   let currentSearch = '';
   let searchDebounce = null;
   let currentBookings = [];
