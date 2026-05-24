@@ -384,6 +384,27 @@ em, .italic { font-style: italic; }
 .nav-cta:hover  { background: var(--navy-deep); transform: translateY(-1px); }
 .nav-cta:active { transform: translateY(0); opacity: 0.92; }
 
+.nav-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+  padding: 8px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--navy);
+  flex-shrink: 0;
+  transition: border-color 180ms var(--easing), color 180ms var(--easing);
+}
+.nav-phone:hover { color: var(--gold-deep); border-color: var(--gold); }
+.nav-phone__icon { color: var(--gold-deep); flex-shrink: 0; }
+.nav-links + .nav-phone { margin-left: 0; }
+.nav-links__phone-item { display: none; }
+
 .nav-toggle {
   display: none;
   margin-left: auto;
@@ -423,6 +444,31 @@ em, .italic { font-style: italic; }
     box-shadow: 0 8px 24px -10px rgba(20,33,61,0.12);
   }
   .nav-cta { display: none; }
+  .nav-phone { display: none; }
+  .nav-links__phone-item {
+    display: block;
+    margin-top: var(--s-3);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--rule);
+  }
+  .nav-links__phone {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 0.01em;
+    padding: 18px 28px;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(20,33,61,0.18);
+    font-variant-numeric: tabular-nums;
+  }
+  .nav-links__phone svg { color: var(--navy); width: 22px; height: 22px; flex-shrink: 0; }
   .nav-logo { font-size: 17px; }
   .nav-logo img { width: 30px; height: 30px; }
 
@@ -593,7 +639,7 @@ picture { display: contents; }
 
 @media (max-width: 760px) {
   .hero-centered { padding: var(--s-5) var(--s-2); }
-  .hero-centered h1 { font-size: clamp(48px, 13vw, 76px); line-height: 1.05; max-width: 100%; }
+  .hero-centered h1 { font-size: clamp(28px, 8vw, 40px); line-height: 1.12; max-width: 100%; letter-spacing: -0.02em; }
   .cred-row { gap: var(--s-2); font-size: 12px; }
   .cred-pill { font-size: 11px; padding: 5px 10px; }
   .avatar-stack img { width: 26px; height: 26px; margin-left: -7px; }
@@ -1022,6 +1068,77 @@ picture { display: contents; }
 .section-navy .benefit-card p { color: #B8C0D0; }
 .section-navy .benefit-card .num { color: var(--gold-bright); }
 @media (max-width: 760px) { .benefits-3 { grid-template-columns: 1fr; gap: var(--s-4); } }
+
+/* =============================================================================
+   WHY SHOP — editorial value pillars (no card chrome, hairline dividers)
+   ============================================================================= */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: var(--s-6);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.why-item {
+  padding: var(--s-6) var(--s-4);
+  text-align: center;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.why-item:last-child { border-right: none; }
+.why-icon {
+  color: var(--gold);
+  margin-bottom: var(--s-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.why-icon::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.55;
+}
+.why-num {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin: var(--s-2) 0 var(--s-2);
+}
+.why-item h3 {
+  font-size: 26px;
+  margin-bottom: var(--s-3);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.why-item p {
+  font-size: 16px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.65;
+  max-width: 34ch;
+}
+@media (max-width: 860px) {
+  .why-grid { grid-template-columns: 1fr; }
+  .why-item {
+    border-right: none;
+    border-bottom: 1px solid var(--rule);
+    padding: var(--s-5) var(--s-3);
+  }
+  .why-item:last-child { border-bottom: none; }
+}
 
 /* =============================================================================
    REVIEWS GRID (landing pages still use this)

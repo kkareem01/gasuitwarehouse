@@ -26,7 +26,21 @@ const NAV_HTML = `
       <li><a href="/#hours" data-section="hours">Hours</a></li>
       <li><a href="/#pricing" data-section="pricing">Pricing</a></li>
       <li><a href="/#faqs" data-section="faqs">FAQ</a></li>
+      <li class="nav-links__phone-item">
+        <a href="tel:+14705957775" class="nav-links__phone" aria-label="Call GA Suit Warehouse">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+          </svg>
+          <span>(470) 595-7775</span>
+        </a>
+      </li>
     </ul>
+    <a href="tel:+14705957775" class="nav-phone" aria-label="Call GA Suit Warehouse">
+      <svg class="nav-phone__icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+      </svg>
+      <span>(470) 595-7775</span>
+    </a>
     <a href="/#choose" class="nav-cta">Get Me Suited</a>
     <button class="nav-toggle" aria-label="Toggle menu" id="nav-toggle">
       <span></span>
