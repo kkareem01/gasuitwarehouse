@@ -1,20 +1,26 @@
-/* GA Suit Warehouse — first-visit lead magnet popup.
-   Surfaces the rotating free-gift offer to visitors who haven't opted in yet.
-   Auto-injected by components.js on pages where the styling session is the
-   primary CTA (homepage + verticals).
+/* GA Suit Warehouse — return-visit lead magnet popup.
+   Surfaces the rotating free-gift offer to visitors who have been to the
+   site at least once before and haven't opted in yet. We intentionally
+   skip first-time visitors so the first impression is trust-building, not
+   a giveaway prompt.
 
-   Suppression model: a single localStorage flag — `gasw-lm-opted-in` — set
-   when the visitor successfully submits the lead-magnet form. Until that
-   flag is set, the popup shows on every page load (after a short delay)
-   unless the active-offer endpoint reports nothing live. */
+   Suppression model: two localStorage flags —
+     • `gasw-lm-visited`   set on first page load; popup is skipped that visit
+     • `gasw-lm-opted-in`  set when the visitor submits the lead-magnet form
+   The popup only fires when `visited` is already set and `opted-in` is not. */
 
 (function () {
   const OPTED_IN_KEY = 'gasw-lm-opted-in';
+  const VISITED_KEY = 'gasw-lm-visited';
   const SHOW_DELAY_MS = 2500;
 
   function shouldSuppress() {
     try {
       if (localStorage.getItem(OPTED_IN_KEY)) return true;
+      if (!localStorage.getItem(VISITED_KEY)) {
+        localStorage.setItem(VISITED_KEY, '1');
+        return true;
+      }
     } catch (_) { /* storage blocked — show anyway */ }
     return false;
   }
