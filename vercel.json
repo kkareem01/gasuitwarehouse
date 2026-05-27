@@ -32,7 +32,8 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/intake", "destination": "/api/leads?__route=intake" }
+    { "source": "/api/intake", "destination": "/api/leads?__route=intake" },
+    { "source": "/api/google-rating", "destination": "/api/config?__route=google-rating" }
   ],
   "crons": [
     { "path": "/api/cron/expire-codes",  "schedule": "0 7 * * *" },
