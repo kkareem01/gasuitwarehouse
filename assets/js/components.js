@@ -1,15 +1,23 @@
 /* GA Suit Warehouse — shared nav + footer injector, mobile menu, scroll reveals, FAQ accordion */
 
 const ANNOUNCE_BAR_HTML = `
-<a href="/#choose" class="announce-bar" aria-label="New 2026 Executive Styling Session — find out if you are a fit">
-  <span class="announce-bar__inner">
-    <span class="announce-bar__text">
-      <strong>New 2026 Executive Styling Session:</strong>
-      <span class="announce-bar__cta">Find out if you are a fit</span>
-    </span>
-    <span class="announce-bar__arrow" aria-hidden="true">&rarr;</span>
-  </span>
-</a>
+<div class="announce-bar">
+  <div class="announce-bar__inner">
+    <a href="/#choose" class="announce-bar__msg" aria-label="New 2026 Executive Styling Session — find out if you are a fit">
+      <span class="announce-bar__text">
+        <strong>New 2026 Executive Styling Session:</strong>
+        <span class="announce-bar__cta">Find out if you are a fit</span>
+      </span>
+      <span class="announce-bar__arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a href="tel:+14705957775" class="announce-bar__phone" aria-label="Call GA Suit Warehouse">
+      <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+      </svg>
+      <span>(470) 595-7775</span>
+    </a>
+  </div>
+</div>
 `;
 
 const NAV_HTML = `
@@ -207,6 +215,54 @@ function injectComponents() {
   }
 }
 
+function setupNavAutoHide() {
+  const siteNav = document.querySelector('.site-nav');
+  if (!siteNav) return;
+
+  const announceBar = document.querySelector('.announce-bar');
+  const root = document.documentElement;
+
+  const syncAnnounceHeight = () => {
+    const h = announceBar ? announceBar.offsetHeight : 0;
+    root.style.setProperty('--announce-h', h + 'px');
+  };
+  syncAnnounceHeight();
+  window.addEventListener('resize', syncAnnounceHeight, { passive: true });
+
+  const SHOW_AT_TOP = 96;
+  const DELTA_DOWN = 8;
+  const DELTA_UP = 4;
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  const update = () => {
+    const currentScrollY = Math.max(0, window.scrollY);
+    const delta = currentScrollY - lastScrollY;
+
+    if (currentScrollY < SHOW_AT_TOP) {
+      siteNav.classList.remove('site-nav--hidden');
+    } else if (delta > DELTA_DOWN) {
+      siteNav.classList.add('site-nav--hidden');
+    } else if (delta < -DELTA_UP) {
+      siteNav.classList.remove('site-nav--hidden');
+    }
+
+    lastScrollY = currentScrollY;
+    ticking = false;
+  };
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+}
+
 function setupScrollReveal() {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -248,6 +304,7 @@ function injectLeadMagnetPopup() {
 
 document.addEventListener('DOMContentLoaded', () => {
   injectComponents();
+  setupNavAutoHide();
   setupScrollReveal();
   setupFaq();
   injectLeadMagnetPopup();
