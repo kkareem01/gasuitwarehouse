@@ -377,7 +377,7 @@
             </svg>
           </span>
           <span class="stars">★★★★★</span>
-          <strong>4.9 / 5</strong>
+          <strong id="g-rating">4.9 / 5</strong>
         </span>
         <div class="avatar-stack" aria-label="Recent reviewers">
           <img src="/assets/reviews/review%20pfp%20for%20home%20page/pfp1.png" alt="" width="144" height="144" loading="lazy" />
@@ -878,5 +878,18 @@
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
+
+  <script>
+    (async () => {
+      const el = document.getElementById('g-rating');
+      if (!el) return;
+      try {
+        const r = await fetch('/api/google-rating');
+        if (!r.ok) return;
+        const { rating } = await r.json();
+        if (typeof rating === 'number') el.textContent = `${rating.toFixed(1)} / 5`;
+      } catch {}
+    })();
+  </script>
 </body>
 </html>
