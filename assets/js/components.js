@@ -219,16 +219,6 @@ function setupNavAutoHide() {
   const siteNav = document.querySelector('.site-nav');
   if (!siteNav) return;
 
-  const announceBar = document.querySelector('.announce-bar');
-  const root = document.documentElement;
-
-  const syncAnnounceHeight = () => {
-    const h = announceBar ? announceBar.offsetHeight : 0;
-    root.style.setProperty('--announce-h', h + 'px');
-  };
-  syncAnnounceHeight();
-  window.addEventListener('resize', syncAnnounceHeight, { passive: true });
-
   const SHOW_AT_TOP = 96;
   const DELTA_DOWN = 8;
   const DELTA_UP = 4;
