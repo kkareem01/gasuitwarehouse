@@ -2713,7 +2713,7 @@ picture { display: contents; }
   align-items: center;
 }
 .breadcrumbs li + li::before {
-  content: '\\203A';
+  content: '\203A';
   margin: 0 8px;
   color: var(--muted-light);
 }
@@ -2806,7 +2806,7 @@ picture { display: contents; }
   padding-top: var(--s-2);
 }
 .spoke-card__cta::after {
-  content: ' \\2192';
+  content: ' \2192';
   display: inline-block;
   transition: transform 180ms var(--easing);
 }
