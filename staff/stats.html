@@ -65,6 +65,32 @@
     .conv-row > div .v { font-size: 16px; font-weight: 700; color: #fff; margin-top: 2px; }
     .footer { margin-top: 40px; text-align: center; }
     .footer a { color: #9CA3AF; text-decoration: none; padding: 8px 16px; border: 1px solid #2A3654; border-radius: 4px; font-size: 14px; }
+
+    /* --- Revenue & CAC ---------------------------------------------------- */
+    h2 { margin: 32px 0 4px; font-size: 18px; }
+    .rev-card { background: #1F2D4F; border: 1px solid #2A3654; border-radius: 4px; padding: 4px 0; margin-bottom: 16px; overflow-x: auto; }
+    .rev-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 760px; }
+    .rev-table th {
+      text-align: left; padding: 10px 14px; font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #9CA3AF; border-bottom: 1px solid #2A3654; white-space: nowrap;
+    }
+    .rev-table td { padding: 10px 14px; border-bottom: 1px solid #14213D; white-space: nowrap; }
+    .rev-table tr:last-child td { border-bottom: none; }
+    .rev-money { font-weight: 700; }
+    .rev-cac { font-weight: 700; color: #C9A961; }
+    .rev-muted { color: #4B5563; }
+    .spend-cell { display: flex; align-items: center; gap: 6px; }
+    .spend-cell input {
+      width: 96px; padding: 6px 8px; background: #0E1729; color: #fff;
+      border: 1px solid #2A3654; border-radius: 4px; font-size: 14px;
+    }
+    .spend-cell button {
+      padding: 6px 10px; background: transparent; color: #C9A961;
+      border: 1px solid #C9A961; border-radius: 4px; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .spend-cell button:hover:not(:disabled) { background: #C9A961; color: #0E1729; }
+    .spend-cell button:disabled { opacity: 0.5; cursor: wait; }
+    .rev-hint { color: #9CA3AF; font-size: 13px; margin: 4px 0 12px; }
   </style>
 </head>
 <body>
@@ -80,6 +106,33 @@
 
     <div class="alert error" data-region="alert" hidden></div>
 
+    <h2>Revenue &amp; CAC</h2>
+    <p class="rev-hint">
+      Enter what you spent on Google Ads each month — CAC (cost to acquire a customer)
+      and AOV (average order value) compute from recorded sales &amp; walk-ins.
+    </p>
+    <div class="rev-card">
+      <table class="rev-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Ad spend</th>
+            <th>Bookings</th>
+            <th>From ads</th>
+            <th>Completed</th>
+            <th>Customers</th>
+            <th>Revenue</th>
+            <th>AOV</th>
+            <th>CAC</th>
+          </tr>
+        </thead>
+        <tbody data-region="rev-rows">
+          <tr><td colspan="9" style="color:#9CA3AF;">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Free-Tie Funnel</h2>
     <div data-region="weeks"></div>
 
     <div class="footer">
@@ -90,5 +143,6 @@
 
   <script src="/assets/js/staff.js" defer></script>
   <script src="/assets/js/staff-stats.js" defer></script>
+  <script src="/assets/js/staff-revenue.js" defer></script>
 </body>
 </html>

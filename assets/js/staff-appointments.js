@@ -48,6 +48,7 @@
   const BASE_TITLE = document.title;
 
   let currentStatus = 'new';   // matches the pill marked is-active in the HTML
+  let currentPurchase = 'all'; // purchase-amount pill (Any / Bought / $200+ / …)
   let currentSearch = '';
   let searchDebounce = null;
   let currentBookings = [];
@@ -221,6 +222,21 @@
     return `<select class="status-select s-${esc(status)}" data-action="appt-status-change" data-id="${esc(b.id)}">${opts.join('')}</select>`;
   }
 
+  // Sale cell: — (not recorded) / $0 badge / dollar amount. Always clickable
+  // so staff can record or correct the amount at any time.
+  function renderSaleCell(b) {
+    const cents = b.saleAmountCents;
+    let cls = '';
+    let label = 'Add $';
+    if (cents === 0) { cls = 'no-sale'; label = '$0'; }
+    else if (typeof cents === 'number' && cents > 0) {
+      cls = 'has-sale';
+      const dollars = cents / 100;
+      label = `$${Number.isInteger(dollars) ? dollars : dollars.toFixed(2)}`;
+    }
+    return `<button type="button" class="sale-chip ${cls}" data-action="appt-sale" data-id="${esc(b.id)}" title="Record how much this customer bought">${esc(label)}</button>`;
+  }
+
   function renderRow(b) {
     const status = b.staffStatus || 'new';
     const rowCls = status === 'new' ? 'is-new' : '';
@@ -232,6 +248,7 @@
         <td>${renderDateTimeCell(b)}</td>
         <td>${renderDetailsCell(b)}</td>
         <td>${renderStatusSelect(b)}</td>
+        <td>${renderSaleCell(b)}</td>
         <td><span style="color:#9CA3AF;font-size:13px;">${fmtIso(b.createdAt)}</span></td>
       </tr>
     `;
@@ -257,6 +274,7 @@
     if (!quiet) hideAlert();
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
+    if (currentPurchase && currentPurchase !== 'all') params.set('purchase', currentPurchase);
     if (currentSearch) params.set('q', currentSearch);
     try {
       const res = await window.GASWStaff.adminFetch(`/api/admin/bookings?${params.toString()}`);
@@ -298,6 +316,12 @@
       }
       showAlert('success', `Status updated to "${STATUS_LABELS[status] || status}"`);
       setTimeout(hideAlert, 2500);
+      // Completing an appointment is the moment to capture the sale amount.
+      // Dismissible — the sale stays "Not recorded" and the cell stays clickable.
+      const completedBooking = idx >= 0 ? currentBookings[idx] : { id };
+      if (status === 'completed' && completedBooking.saleAmountCents == null) {
+        openSaleModal(id);
+      }
     } catch (_) {
       showAlert('error', 'Network error. Try again.');
     } finally {
@@ -310,6 +334,7 @@
     // a plain navigation can't carry the Authorization header.
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
+    if (currentPurchase && currentPurchase !== 'all') params.set('purchase', currentPurchase);
     if (currentSearch) params.set('q', currentSearch);
     params.set('format', 'csv');
     try {
@@ -500,6 +525,90 @@
     }
   }
 
+  // --- sale modal ---------------------------------------------------------
+
+  function setSaleModalError(msg) {
+    const box = $r('sale-modal-error');
+    if (!box) return;
+    if (!msg) { box.hidden = true; box.textContent = ''; return; }
+    box.textContent = msg;
+    box.hidden = false;
+  }
+
+  function openSaleModal(id) {
+    const modal = $r('sale-modal');
+    const form = $r('sale-modal-form');
+    if (!modal || !form) return;
+    const b = currentBookings.find((x) => x.id === id);
+    form.elements.id.value = id;
+    form.elements.amount.value = b && typeof b.saleAmountCents === 'number'
+      ? (b.saleAmountCents / 100).toFixed(2).replace(/\.00$/, '')
+      : '';
+    form.elements.notes.value = (b && b.saleNotes) || '';
+    const title = $r('sale-modal-title');
+    if (title) {
+      const who = b ? `${b.customer?.firstName || ''} ${b.customer?.lastName || ''}`.trim() : '';
+      title.textContent = who ? `Record sale · ${who}` : `Record sale · ${id}`;
+    }
+    setSaleModalError('');
+    modal.hidden = false;
+    requestAnimationFrame(() => {
+      modal.classList.add('is-open');
+      form.elements.amount.focus();
+    });
+  }
+
+  function closeSaleModal() {
+    const modal = $r('sale-modal');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    setSaleModalError('');
+    setTimeout(() => { modal.hidden = true; }, 220);
+  }
+
+  async function saveSaleModal() {
+    const form = $r('sale-modal-form');
+    if (!form) return;
+    const id = form.elements.id.value;
+    const raw = form.elements.amount.value.trim();
+    const dollars = Number(raw);
+    if (raw === '' || !Number.isFinite(dollars) || dollars < 0 || dollars > 50000) {
+      return setSaleModalError('Enter a dollar amount between 0 and 50,000.');
+    }
+    const amountCents = Math.round(dollars * 100);
+    const saveBtn = $r('sale-save-btn');
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
+    try {
+      const res = await window.GASWStaff.adminFetch('/api/admin/booking-sale', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id, amountCents, notes: form.elements.notes.value.trim() }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        return setSaleModalError(j.error || 'Could not save. Try again.');
+      }
+      const idx = currentBookings.findIndex((x) => x.id === id);
+      if (idx >= 0) {
+        currentBookings[idx] = {
+          ...currentBookings[idx],
+          saleAmountCents: amountCents,
+          saleNotes: form.elements.notes.value.trim(),
+        };
+      }
+      renderTable(currentBookings);
+      closeSaleModal();
+      showAlert('success', amountCents === 0
+        ? 'Recorded: no purchase.'
+        : `Sale recorded: $${(amountCents / 100).toFixed(2)}`);
+      setTimeout(hideAlert, 2500);
+    } catch (_) {
+      setSaleModalError('Network error. Try again.');
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save sale'; }
+    }
+  }
+
   // --- tab activation + per-tab auto-refresh ----------------------------
 
   function startRefreshTimer() {
@@ -543,8 +652,39 @@
         return;
       }
 
+      const purchasePill = e.target.closest('.pill-btn[data-appt-purchase]');
+      if (purchasePill) {
+        currentPurchase = purchasePill.dataset.apptPurchase;
+        document.querySelectorAll('[data-region="appt-purchase-pills"] .pill-btn').forEach((b) => {
+          b.classList.toggle('is-active', b === purchasePill);
+        });
+        loadBookings();
+        return;
+      }
+
+      // $-preset buttons inside the sale modal fill the amount input.
+      const quick = e.target.closest('[data-sale-quick]');
+      if (quick) {
+        e.preventDefault();
+        const form = $r('sale-modal-form');
+        if (form) { form.elements.amount.value = quick.dataset.saleQuick; form.elements.amount.focus(); }
+        return;
+      }
+
       const actionEl = e.target.closest('[data-action]');
       const action = actionEl?.dataset.action;
+      if (action === 'appt-sale') {
+        openSaleModal(actionEl.dataset.id);
+        return;
+      }
+      if (action === 'sale-close-modal') {
+        closeSaleModal();
+        return;
+      }
+      if (action === 'sale-save') {
+        saveSaleModal();
+        return;
+      }
       if (action === 'appt-refresh') {
         loadBookings();
         return;
@@ -579,11 +719,23 @@
       changeStatus(sel.dataset.id, sel.value, sel);
     });
 
-    // Escape closes the edit modal.
+    // Escape closes whichever appointment modal is open.
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
+      const saleModal = $r('sale-modal');
+      if (saleModal && !saleModal.hidden) return closeSaleModal();
       const modal = $r('appt-modal');
       if (modal && !modal.hidden) closeModal();
+    });
+
+    // Enter inside the sale modal's amount field saves.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const form = $r('sale-modal-form');
+      if (form && document.activeElement === form.elements.amount) {
+        e.preventDefault();
+        saveSaleModal();
+      }
     });
 
     // Activate when the user switches to this tab; track active/inactive so

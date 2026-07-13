@@ -16,7 +16,9 @@ import {
   validateName,
   validateBookingPayload,
   validateLeadPayload,
+  validateAttribution,
 } from '../lib/validate.mjs';
+import { formatConversionTime, buildAdsCsv } from '../lib/ads-feed.mjs';
 import {
   generateSlotsForDate,
   filterAvailableSlots,
@@ -707,6 +709,180 @@ for (const [name, builder] of [
     }
   });
 }
+
+// =========================================================================
+console.log('\nvalidateAttribution (ads tracking)');
+// =========================================================================
+
+test('validateAttribution accepts a full valid record', () => {
+  const r = validateAttribution({
+    gclid: 'Cj0KCQjw_TEST-123.abc',
+    utm: { source: 'google', medium: 'cpc', campaign: 'suits' },
+    landingPage: '/suits?gclid=x',
+    referrer: 'https://www.google.com/',
+  });
+  assert.equal(r.gclid, 'Cj0KCQjw_TEST-123.abc');
+  assert.equal(JSON.parse(r.utmJson).source, 'google');
+  assert.equal(r.landingPage, '/suits?gclid=x');
+});
+
+test('validateAttribution drops malformed click ids, keeps the rest', () => {
+  const r = validateAttribution({ gclid: 'has spaces!', utm: { source: 'google' } });
+  assert.equal(r.gclid, null);
+  assert.equal(JSON.parse(r.utmJson).source, 'google');
+});
+
+test('validateAttribution trims oversized fields and strips control chars', () => {
+  const r = validateAttribution({ referrer: 'x'.repeat(1000), utm: { source: 'goo gle' } });
+  assert.equal(r.referrer.length, 500);
+  assert.equal(JSON.parse(r.utmJson).source, 'google');
+});
+
+test('validateAttribution returns null for garbage / empty input', () => {
+  assert.equal(validateAttribution('nope'), null);
+  assert.equal(validateAttribution(null), null);
+  assert.equal(validateAttribution([1, 2]), null);
+  assert.equal(validateAttribution({ gclid: '!!!', utm: { bogus: 'x' } }), null);
+});
+
+// =========================================================================
+console.log('\nads-feed.mjs');
+// =========================================================================
+
+test('formatConversionTime is DST-safe (EDT vs EST wall clock)', () => {
+  // 18:00 UTC in May = 14:00 EDT; 18:00 UTC in Feb = 13:00 EST.
+  assert.equal(formatConversionTime('2026-05-08T18:00:00.000Z'), '2026-05-08 14:00:00');
+  assert.equal(formatConversionTime('2026-02-08T18:00:00.000Z'), '2026-02-08 13:00:00');
+  assert.equal(formatConversionTime('not-a-date'), null);
+});
+
+test('buildAdsCsv emits Parameters row, header, and formatted values with CRLF', () => {
+  const csv = buildAdsCsv([
+    { gclid: 'TESTCLICK1', amountCents: 41200, recordedAt: '2026-05-08T18:00:00.000Z' },
+    { gclid: 'TESTCLICK2', amountCents: 0, recordedAt: '2026-05-08T18:00:00.000Z' },   // dropped
+    { gclid: null, amountCents: 5000, recordedAt: '2026-05-08T18:00:00.000Z' },        // dropped
+  ]);
+  const lines = csv.split('\r\n');
+  assert.equal(lines[0], 'Parameters:TimeZone=America/New_York,,,,');
+  assert.equal(lines[1], 'Google Click ID,Conversion Name,Conversion Time,Conversion Value,Conversion Currency');
+  assert.equal(lines[2], 'TESTCLICK1,store_sale,2026-05-08 14:00:00,412.00,USD');
+  assert.equal(lines.length, 4, 'zero-amount and gclid-less rows must be excluded');
+});
+
+test('buildAdsCsv with no rows still returns both header rows', () => {
+  const lines = buildAdsCsv([]).split('\r\n');
+  assert.equal(lines.length, 3);
+  assert.ok(lines[0].startsWith('Parameters:TimeZone='));
+});
+
+// =========================================================================
+console.log('\nsales-store.mjs (booking sales, walk-ins, ad spend, revenue stats)');
+// =========================================================================
+
+await testAsync('sales pipeline: record sale (write-once time), purchase filters, conversion rows, walk-ins, spend, revenue stats', async () => {
+  // Deleting the DB file here would kill the shared libsql client
+  // (CLIENT_CLOSED) — truncate via SQL instead so counts start from zero.
+  await migrate();
+  const db = getDb();
+  for (const table of ['bookings', 'walkin_sales', 'ad_spend']) {
+    await db.execute(`DELETE FROM ${table}`);
+  }
+
+  const { createBooking, listBookings, updateBookingStaffStatus, findBookingById } = await import('../lib/store.mjs');
+  const {
+    recordBookingSale, createWalkinSale, listWalkinSales, updateWalkinSale,
+    deleteWalkinSale, upsertAdSpend, listAdSpend, listConversionRows, getRevenueStats,
+  } = await import('../lib/sales-store.mjs');
+  const { newBookingId, newWalkinId } = await import('../lib/id.mjs');
+
+  const mkBooking = (slotTime, extra = {}) => createBooking({
+    audience: 'general',
+    customer: { firstName: 'T', lastName: 'S', phone: '(470) 595-7775', email: 't@s.co', consent: true },
+    answers: {},
+    slot: { date: '2026-06-10', time: slotTime, durationMinutes: 30, tz: 'America/New_York' },
+    consent: true,
+    ...extra,
+  }, newBookingId);
+
+  // Attributed booking with a $412 sale.
+  const b1 = (await mkBooking('10:00', { gclid: 'TESTCLICK_A' })).booking;
+  await updateBookingStaffStatus(b1.id, 'completed');
+  const r1 = await recordBookingSale(b1.id, { amountCents: 41200, notes: 'navy suit' });
+  assert.equal(r1.ok, true);
+
+  // sale_recorded_at is write-once: editing the amount must not move it.
+  const firstStamp = (await findBookingById(b1.id)).saleRecordedAt;
+  await new Promise((r) => setTimeout(r, 5));
+  await recordBookingSale(b1.id, { amountCents: 45000 });
+  const after = await findBookingById(b1.id);
+  assert.equal(after.saleAmountCents, 45000);
+  assert.equal(after.saleRecordedAt, firstStamp, 'sale_recorded_at must never shift on edit');
+
+  // Organic $150 sale + completed-but-unrecorded + $0 no-buy.
+  const b2 = (await mkBooking('11:00')).booking;
+  await recordBookingSale(b2.id, { amountCents: 15000 });
+  const b3 = (await mkBooking('12:00')).booking;
+  await updateBookingStaffStatus(b3.id, 'completed');
+  const b4 = (await mkBooking('13:00')).booking;
+  await recordBookingSale(b4.id, { amountCents: 0 });
+
+  // Amount validation.
+  assert.equal((await recordBookingSale(b2.id, { amountCents: -5 })).error, 'INVALID_AMOUNT');
+  assert.equal((await recordBookingSale(b2.id, { amountCents: 1.5 })).error, 'INVALID_AMOUNT');
+  assert.equal((await recordBookingSale('BK-DEADBEEF', { amountCents: 100 })).error, 'NOT_FOUND');
+
+  // Purchase filters.
+  const ids = (list) => list.map((b) => b.id).sort();
+  assert.deepEqual(ids(await listBookings({ purchase: 'bought' })), ids([b1, b2].map((x) => ({ id: x.id }))));
+  assert.deepEqual(ids(await listBookings({ purchase: '400plus' })), [b1.id]);
+  assert.deepEqual(ids(await listBookings({ purchase: 'none' })), [b4.id]);
+  assert.deepEqual(ids(await listBookings({ purchase: 'unrecorded' })), [b3.id]);
+
+  // Conversion feed rows: only gclid + amount>0.
+  const conv = await listConversionRows();
+  assert.equal(conv.length, 1);
+  assert.equal(conv[0].gclid, 'TESTCLICK_A');
+  assert.equal(conv[0].amountCents, 45000);
+
+  // Walk-in CRUD.
+  const w = await createWalkinSale({ amountCents: 19900, note: 'tux shirt', saleDate: '2026-06-11' }, newWalkinId);
+  assert.equal(w.ok, true);
+  assert.equal((await createWalkinSale({ amountCents: 'nope' }, newWalkinId)).error, 'INVALID_AMOUNT');
+  assert.equal((await createWalkinSale({ amountCents: 100, saleDate: 'June 11' }, newWalkinId)).error, 'INVALID_DATE');
+  await updateWalkinSale(w.sale.id, { amountCents: 20900 });
+  const walkins = await listWalkinSales({ month: '2026-06' });
+  assert.equal(walkins.length, 1);
+  assert.equal(walkins[0].amountCents, 20900);
+  assert.deepEqual(await listWalkinSales({ month: '2026-05' }), []);
+  assert.equal((await deleteWalkinSale(w.sale.id)).ok, true);
+  assert.equal((await deleteWalkinSale(w.sale.id)).error, 'NOT_FOUND');
+
+  // Ad spend upsert is idempotent per month.
+  await upsertAdSpend('2026-06', 100000);
+  await upsertAdSpend('2026-06', 120000);
+  assert.equal((await upsertAdSpend('2026-13', 1)).error, 'INVALID_MONTH');
+  const spend = await listAdSpend();
+  assert.equal(spend.length, 1);
+  assert.equal(spend[0].amountCents, 120000);
+
+  // Revenue stats: recreate a walk-in so June has 3 customers.
+  await createWalkinSale({ amountCents: 10000, saleDate: '2026-06-20' }, newWalkinId);
+  const thisMonth = new Date().toISOString().slice(0, 7);
+  const stats = await getRevenueStats(24);
+  const cur = stats.find((m) => m.month === thisMonth);
+  const june = stats.find((m) => m.month === '2026-06');
+  // Bookings + sale timestamps land in the current month; walk-ins/spend in June.
+  assert.equal(cur.bookingsCreated, 4);
+  assert.equal(cur.gclidBookings, 1);
+  assert.equal(cur.revenueCents >= 60000, true, 'appt revenue counted by sale_recorded_at month');
+  assert.equal(june.customers, 1);
+  assert.equal(june.revenueCents, 10000);
+  assert.equal(june.spendCents, 120000);
+  assert.equal(june.aovCents, 10000);
+  assert.equal(june.cacCents, 120000, 'CAC = spend / customers');
+  // completed bookings are grouped by slot_date month (June).
+  assert.equal(june.completed, 2);
+});
 
 // =========================================================================
 console.log('\n— results —');

@@ -54,6 +54,17 @@ import {
   handleAdminEditBooking,
   handleAdminDeleteBooking,
 } from './lib/handlers.mjs';
+import {
+  handleAdminRecordBookingSale,
+  handleAdminListWalkins,
+  handleAdminCreateWalkin,
+  handleAdminEditWalkin,
+  handleAdminDeleteWalkin,
+  handleAdminListAdSpend,
+  handleAdminSetAdSpend,
+  handleAdminRevenueStats,
+  handleAdsConversionsFeed,
+} from './lib/handlers-sales.mjs';
 import * as log from './lib/log.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
@@ -188,6 +199,15 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && path === '/api/admin/booking-status')  return handleAdminUpdateBookingStatus(req, res);
       if (req.method === 'POST' && path === '/api/admin/booking-edit')    return handleAdminEditBooking(req, res);
       if (req.method === 'POST' && path === '/api/admin/booking-delete')  return handleAdminDeleteBooking(req, res);
+      if (req.method === 'POST' && path === '/api/admin/booking-sale')    return handleAdminRecordBookingSale(req, res);
+      if (req.method === 'GET'  && path === '/api/admin/walkins')         return handleAdminListWalkins(req, res);
+      if (req.method === 'POST' && path === '/api/admin/walkin-create')   return handleAdminCreateWalkin(req, res);
+      if (req.method === 'POST' && path === '/api/admin/walkin-edit')     return handleAdminEditWalkin(req, res);
+      if (req.method === 'POST' && path === '/api/admin/walkin-delete')   return handleAdminDeleteWalkin(req, res);
+      if (req.method === 'GET'  && path === '/api/admin/ad-spend')        return handleAdminListAdSpend(req, res);
+      if (req.method === 'POST' && path === '/api/admin/ad-spend-set')    return handleAdminSetAdSpend(req, res);
+      if (req.method === 'GET'  && path === '/api/admin/revenue-stats')   return handleAdminRevenueStats(req, res);
+      if (req.method === 'GET'  && path === '/api/admin/ads-conversions') return handleAdsConversionsFeed(req, res);
 
       const icsMatch = path.match(/^\/api\/bookings\/([A-Za-z0-9-]+)\/ics$/);
       if (req.method === 'GET' && icsMatch) return handleGetBookingIcs(req, res, icsMatch[1]);
@@ -197,6 +217,11 @@ const server = http.createServer(async (req, res) => {
 
       res.writeHead(404, { 'content-type': 'application/json' });
       return res.end(JSON.stringify({ ok: false, error: 'Not found.' }));
+    }
+
+    // Mirror the vercel.json rewrite for Google Ads' scheduled uploader.
+    if (req.method === 'GET' && path === '/feeds/ads-conversions.csv') {
+      return handleAdsConversionsFeed(req, res);
     }
 
     return serveStatic(req, res, decodeURIComponent(path));
