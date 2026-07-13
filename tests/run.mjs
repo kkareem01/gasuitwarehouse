@@ -4,7 +4,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { rm } from 'node:fs/promises';
+import { rm, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 
 import { migrate } from '../lib/migrate.mjs';
@@ -28,6 +28,9 @@ import {
 import { buildICS } from '../lib/ics.mjs';
 import { newBookingId, newLeadId } from '../lib/id.mjs';
 import { fieldNames } from '../lib/audiences.mjs';
+import { ownerBookingSmsBody, notifyOwnerOfBooking } from '../lib/notify-owner-booking.mjs';
+import { nurtureT1Sms, nurtureDayOfSms, nurtureT3Sms } from '../lib/reminder-sms.mjs';
+import { runNurtureT1 } from '../lib/cron.mjs';
 
 const results = [];
 let passed = 0;
@@ -354,6 +357,92 @@ await testAsync('findUnredeemedCodeForOffer: recovers reserved/issued, ignores r
 });
 
 // =========================================================================
+console.log('\ncron.mjs runNurture email + SMS reminders');
+// =========================================================================
+
+// Runs before the concurrent-createBooking test below, which closes the
+// shared db client as its final cleanup (getDb() has no reset).
+await testAsync('runNurtureT1: sends email + SMS once each, idempotent per channel', async () => {
+  await migrate();
+  const { createBooking } = await import('../lib/store.mjs');
+  const db = getDb();
+
+  const savedDrySms = process.env.DRY_RUN_SMS;
+  process.env.DRY_RUN_SMS = 'true';
+  try {
+    // t1 targets bookings whose slot_date is tomorrow (UTC).
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
+    const offerId = 'OF-NURTURE-SMS';
+    await db.execute({
+      sql: `INSERT INTO lead_magnet_offers
+            (id, name, item_description, retail_value_cents, week_start, week_end,
+             redemption_cap, redemptions_used, active, image_url, created_at)
+            VALUES (?, 'Free Silk Tie', 'A tie', 4500, '2000-01-01', '2099-12-31', 50, 0, 0, NULL, ?)`,
+      args: [offerId, new Date().toISOString()],
+    });
+
+    const mkBooking = async (i, time) => {
+      const created = await createBooking(
+        {
+          audience: 'general',
+          customer: { firstName: `Nur${i}`, lastName: 'Ture', phone: '(470) 555-9876', email: `nurture${i}@test.co`, consent: true },
+          answers: {},
+          slot: { date: tomorrow, time, durationMinutes: 30, tz: 'America/New_York' },
+          consent: true,
+        },
+        newBookingId
+      );
+      assert.ok(created.ok, `test booking ${i} insert failed`);
+      await db.execute({
+        sql: `INSERT INTO redemption_codes
+              (code, lead_id, booking_id, offer_id, status, issued_at, expires_at, redeemed_at, redeemed_by_staff, created_at)
+              VALUES (?, 'LD-NURTURE', ?, ?, 'issued', ?, '2099-12-31T00:00:00.000Z', NULL, NULL, ?)`,
+        args: [`GIFT-NUR${i}00`, created.booking.id, offerId, new Date().toISOString(), new Date().toISOString()],
+      });
+      return created.booking.id;
+    };
+
+    const b1 = await mkBooking(1, '09:00');
+
+    // First run: both channels fire for the one candidate.
+    const run1 = await runNurtureT1();
+    assert.equal(run1.candidates, 1, `expected 1 candidate, got ${run1.candidates}`);
+    assert.equal(run1.sent, 1, `email sent=${run1.sent} failed=${run1.failed}`);
+    assert.equal(run1.smsSent, 1, `sms sent=${run1.smsSent} failed=${run1.smsFailed}`);
+
+    const sentRows = await db.execute({
+      sql: 'SELECT kind FROM nurture_sent WHERE booking_id = ? ORDER BY kind',
+      args: [b1],
+    });
+    assert.deepEqual(sentRows.rows.map((r) => r.kind), ['t1', 't1-sms']);
+
+    const rendered = await readFile('tmp/last-sms.txt', 'utf8');
+    assert.match(rendered, /To: \+14705559876/);
+    assert.match(rendered, /GIFT-NUR100/);
+    assert.match(rendered, /Reply STOP to opt out\./);
+
+    // Second run: fully sent → no candidates, nothing re-sent.
+    const run2 = await runNurtureT1();
+    assert.equal(run2.candidates, 0, 'already-sent booking must not be a candidate');
+
+    // Channel independence: email already recorded → only the SMS goes out.
+    const b2 = await mkBooking(2, '09:30');
+    await db.execute({
+      sql: `INSERT INTO nurture_sent (booking_id, kind, sent_at) VALUES (?, 't1', ?)`,
+      args: [b2, new Date().toISOString()],
+    });
+    const run3 = await runNurtureT1();
+    assert.equal(run3.candidates, 1);
+    assert.equal(run3.sent, 0, 'email must not re-send');
+    assert.equal(run3.smsSent, 1, 'sms must still send');
+  } finally {
+    if (savedDrySms === undefined) delete process.env.DRY_RUN_SMS;
+    else process.env.DRY_RUN_SMS = savedDrySms;
+  }
+});
+
+// =========================================================================
 console.log('\nstore.mjs concurrent createBooking');
 // =========================================================================
 
@@ -416,6 +505,116 @@ test('all audiences expose at least 3 fields', () => {
     const names = fieldNames(a);
     assert.ok(names.length >= 3, `${a} has ${names.length}`);
   }
+});
+
+// =========================================================================
+console.log('\nnotify-owner-booking.mjs');
+// =========================================================================
+
+const ownerBooking = {
+  id: 'BK-TEST-123',
+  audience: 'weddings',
+  slot: { date: '2026-08-15', time: '14:30', tz: 'America/New_York', durationMinutes: 30 },
+  customer: { firstName: 'Marcus', lastName: 'Webb', phone: '+14045551234', email: 'm@example.com' },
+  answers: { 'Party size': '5', 'Event date': '2026-09-20' },
+};
+
+test('ownerBookingSmsBody leads with name, phone, and human-readable slot', () => {
+  const body = ownerBookingSmsBody({
+    booking: ownerBooking,
+    audienceLabel: 'Wedding party fitting',
+    businessName: 'GA Suit Warehouse',
+  });
+  assert.match(body, /NEW BOOKING/);
+  assert.match(body, /Wedding party fitting/);
+  assert.match(body, /Marcus Webb/);
+  assert.match(body, /\+14045551234/);
+  assert.match(body, /Saturday, August 15, 2026/);
+  assert.match(body, /2:30 PM/);
+  assert.match(body, /BK-TEST-123/);
+});
+
+test('ownerBookingSmsBody survives a booking with no answers and no phone', () => {
+  const bare = { ...ownerBooking, answers: {}, customer: { firstName: 'Ann', lastName: 'Lee' } };
+  const body = ownerBookingSmsBody({ booking: bare, audienceLabel: 'General fitting' });
+  assert.match(body, /Ann Lee/);
+  assert.match(body, /no phone/);
+  assert.ok(!body.includes('undefined'), 'body must not leak undefined');
+});
+
+test('ownerBookingSmsBody stays within two SMS segments', () => {
+  const noisy = {
+    ...ownerBooking,
+    answers: { Notes: 'x'.repeat(500), More: 'y'.repeat(500) },
+  };
+  const body = ownerBookingSmsBody({ booking: noisy, audienceLabel: 'Wedding party fitting' });
+  assert.ok(body.length <= 320, `body was ${body.length} chars`);
+});
+
+await testAsync('notifyOwnerOfBooking skips cleanly when OWNER_PHONE is unset', async () => {
+  const saved = process.env.OWNER_PHONE;
+  delete process.env.OWNER_PHONE;
+  const res = await notifyOwnerOfBooking(ownerBooking, 'Wedding party fitting');
+  if (saved !== undefined) process.env.OWNER_PHONE = saved;
+  assert.equal(res.ok, false);
+  assert.equal(res.skipped, true);
+});
+
+await testAsync('notifyOwnerOfBooking sends to OWNER_PHONE in dry-run mode', async () => {
+  const savedPhone = process.env.OWNER_PHONE;
+  const savedDry = process.env.DRY_RUN_SMS;
+  process.env.OWNER_PHONE = '7704468888';
+  process.env.DRY_RUN_SMS = 'true';
+  const res = await notifyOwnerOfBooking(ownerBooking, 'Wedding party fitting');
+  process.env.OWNER_PHONE = savedPhone;
+  process.env.DRY_RUN_SMS = savedDry;
+  assert.equal(res.ok, true, res.error);
+  assert.equal(res.dryRun, true);
+  const rendered = await readFile('tmp/last-sms.txt', 'utf8');
+  assert.match(rendered, /To: \+17704468888/);
+  assert.match(rendered, /Marcus Webb/);
+});
+
+// =========================================================================
+console.log('\nreminder-sms.mjs templates');
+// =========================================================================
+
+const reminderEnv = {
+  businessName: 'GA Suit Warehouse',
+  businessAddress: '150 Pearl Nix Pkwy, Gainesville GA 30501',
+  businessPhone: '+14705957775',
+};
+const reminderBooking = {
+  id: 'BK-SMS-TEST',
+  audience: 'general',
+  customer: { firstName: 'Jonathan', lastName: 'Testerson', phone: '(470) 555-1234', email: 'j@x.co' },
+  slot: { date: '2099-05-15', time: '14:30', durationMinutes: 30, tz: 'America/New_York' },
+};
+const reminderOffer = { id: 'OF-X', name: 'Free Silk Tie', itemDescription: 'A tie' };
+const reminderArgs = { booking: reminderBooking, offer: reminderOffer, code: 'GIFT-ABC123', ...reminderEnv };
+
+for (const [name, builder] of [
+  ['nurtureT1Sms', nurtureT1Sms],
+  ['nurtureDayOfSms', nurtureDayOfSms],
+  ['nurtureT3Sms', nurtureT3Sms],
+]) {
+  test(`${name} names the business, time, code, and opt-out`, () => {
+    const body = builder(reminderArgs);
+    assert.match(body, /GA Suit Warehouse/);
+    assert.match(body, /2:30 PM/);
+    assert.match(body, /GIFT-ABC123/);
+    assert.match(body, /Reply STOP to opt out\./);
+  });
+  test(`${name} stays within two SMS segments`, () => {
+    const body = builder(reminderArgs);
+    assert.ok(body.length <= 320, `body was ${body.length} chars`);
+  });
+}
+
+test('reminder SMS bodies survive a missing first name', () => {
+  const anon = { ...reminderBooking, customer: { ...reminderBooking.customer, firstName: '' } };
+  const body = nurtureT1Sms({ ...reminderArgs, booking: anon });
+  assert.match(body, /Hi there,/);
 });
 
 // =========================================================================
