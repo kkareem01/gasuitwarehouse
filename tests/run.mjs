@@ -30,6 +30,7 @@ import { newBookingId, newLeadId } from '../lib/id.mjs';
 import { fieldNames } from '../lib/audiences.mjs';
 import { ownerBookingSmsBody, notifyOwnerOfBooking } from '../lib/notify-owner-booking.mjs';
 import { nurtureT1Sms, nurtureDayOfSms, nurtureT3Sms } from '../lib/reminder-sms.mjs';
+import { reminderT3Email, reminderT1Email, reminderDayOfEmail } from '../lib/reminder-email.mjs';
 import { runNurtureT1 } from '../lib/cron.mjs';
 
 const results = [];
@@ -176,7 +177,7 @@ test('validateBookingPayload rejects unknown select option', () => {
       audience: 'weddings',
       customer: { firstName: 'A', lastName: 'B', phone: '4705957775', email: 'a@b.co', consent: true },
       slot: { date: '2026-05-08', time: '14:00' },
-      answers: { role: 'Wizard', eventDate: '2026-09-12', partySize: 'Just me' },
+      answers: { eventDate: '2026-09-12', partySize: 'Wizard' },
       formStartedAt: 0,
     },
     Date.now()
@@ -382,7 +383,7 @@ await testAsync('runNurtureT1: sends email + SMS once each, idempotent per chann
       args: [offerId, new Date().toISOString()],
     });
 
-    const mkBooking = async (i, time) => {
+    const mkBooking = async (i, time, { withCode = true } = {}) => {
       const created = await createBooking(
         {
           audience: 'general',
@@ -394,12 +395,14 @@ await testAsync('runNurtureT1: sends email + SMS once each, idempotent per chann
         newBookingId
       );
       assert.ok(created.ok, `test booking ${i} insert failed`);
-      await db.execute({
-        sql: `INSERT INTO redemption_codes
-              (code, lead_id, booking_id, offer_id, status, issued_at, expires_at, redeemed_at, redeemed_by_staff, created_at)
-              VALUES (?, 'LD-NURTURE', ?, ?, 'issued', ?, '2099-12-31T00:00:00.000Z', NULL, NULL, ?)`,
-        args: [`GIFT-NUR${i}00`, created.booking.id, offerId, new Date().toISOString(), new Date().toISOString()],
-      });
+      if (withCode) {
+        await db.execute({
+          sql: `INSERT INTO redemption_codes
+                (code, lead_id, booking_id, offer_id, status, issued_at, expires_at, redeemed_at, redeemed_by_staff, created_at)
+                VALUES (?, 'LD-NURTURE', ?, ?, 'issued', ?, '2099-12-31T00:00:00.000Z', NULL, NULL, ?)`,
+          args: [`GIFT-NUR${i}00`, created.booking.id, offerId, new Date().toISOString(), new Date().toISOString()],
+        });
+      }
       return created.booking.id;
     };
 
@@ -436,6 +439,30 @@ await testAsync('runNurtureT1: sends email + SMS once each, idempotent per chann
     assert.equal(run3.candidates, 1);
     assert.equal(run3.sent, 0, 'email must not re-send');
     assert.equal(run3.smsSent, 1, 'sms must still send');
+
+    // Direct booking (no gift code) → generic reminder on both channels.
+    const b3 = await mkBooking(3, '10:05', { withCode: false });
+    const run4 = await runNurtureT1();
+    assert.equal(run4.candidates, 1, 'codeless booking must be a candidate');
+    assert.equal(run4.sent, 1, `generic email sent=${run4.sent} failed=${run4.failed}`);
+    assert.equal(run4.smsSent, 1, `generic sms sent=${run4.smsSent} failed=${run4.smsFailed}`);
+
+    const genericRows = await db.execute({
+      sql: 'SELECT kind FROM nurture_sent WHERE booking_id = ? ORDER BY kind',
+      args: [b3],
+    });
+    assert.deepEqual(genericRows.rows.map((r) => r.kind), ['t1', 't1-sms']);
+
+    const genericSms = await readFile('tmp/last-sms.txt', 'utf8');
+    assert.match(genericSms, /Nur3/);
+    assert.match(genericSms, /Reply STOP to opt out\./);
+    assert.ok(!genericSms.includes('GIFT-'), 'codeless sms must not mention a gift code');
+    assert.ok(!genericSms.includes('undefined'), 'codeless sms must not leak undefined');
+
+    const genericEmail = await readFile('tmp/last-email.html', 'utf8');
+    assert.match(genericEmail, /Nur3/);
+    assert.ok(!genericEmail.includes('GIFT-'), 'codeless email must not mention a gift code');
+    assert.ok(!genericEmail.includes('undefined'), 'codeless email must not leak undefined');
   } finally {
     if (savedDrySms === undefined) delete process.env.DRY_RUN_SMS;
     else process.env.DRY_RUN_SMS = savedDrySms;
@@ -542,13 +569,38 @@ test('ownerBookingSmsBody survives a booking with no answers and no phone', () =
   assert.ok(!body.includes('undefined'), 'body must not leak undefined');
 });
 
-test('ownerBookingSmsBody stays within two SMS segments', () => {
+// A single non-GSM-7 char (em dash, curly quote, ellipsis) forces UCS-2, which
+// cuts the segment size from 153 to 67 and adds a segment's cost to every alert.
+// Asserting on length alone cannot catch that — assert on the encoding itself.
+const GSM7 =
+  '@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !"#¤%&\'()*+,-./0123456789:;<=>?¡' +
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà^{}\\[~]|€';
+
+function smsSegments(body) {
+  const nonGsm = [...body].filter((c) => !GSM7.includes(c));
+  const perSegment = nonGsm.length > 0 ? 67 : 153;
+  return { segments: Math.ceil(body.length / perSegment), nonGsm };
+}
+
+test('ownerBookingSmsBody is GSM-7 clean (no UCS-2 downgrade)', () => {
+  const body = ownerBookingSmsBody({
+    booking: ownerBooking,
+    audienceLabel: 'Wedding party fitting',
+    businessName: 'GA Suit Warehouse',
+  });
+  const { nonGsm } = smsSegments(body);
+  assert.deepEqual(nonGsm, [], `non-GSM-7 chars force UCS-2: ${JSON.stringify(nonGsm)}`);
+});
+
+test('ownerBookingSmsBody stays within two SMS segments, even with noisy answers', () => {
   const noisy = {
     ...ownerBooking,
     answers: { Notes: 'x'.repeat(500), More: 'y'.repeat(500) },
   };
   const body = ownerBookingSmsBody({ booking: noisy, audienceLabel: 'Wedding party fitting' });
-  assert.ok(body.length <= 320, `body was ${body.length} chars`);
+  const { segments, nonGsm } = smsSegments(body);
+  assert.deepEqual(nonGsm, [], 'must stay GSM-7 even when answers are truncated');
+  assert.ok(segments <= 2, `body was ${body.length} chars = ${segments} segments`);
 });
 
 await testAsync('notifyOwnerOfBooking skips cleanly when OWNER_PHONE is unset', async () => {
@@ -598,17 +650,29 @@ for (const [name, builder] of [
   ['nurtureDayOfSms', nurtureDayOfSms],
   ['nurtureT3Sms', nurtureT3Sms],
 ]) {
-  test(`${name} names the business, time, code, and opt-out`, () => {
+  test(`${name} (gift) names the business, time, code, and opt-out`, () => {
     const body = builder(reminderArgs);
     assert.match(body, /GA Suit Warehouse/);
     assert.match(body, /2:30 PM/);
     assert.match(body, /GIFT-ABC123/);
     assert.match(body, /Reply STOP to opt out\./);
   });
-  test(`${name} stays within two SMS segments`, () => {
-    const body = builder(reminderArgs);
-    assert.ok(body.length <= 320, `body was ${body.length} chars`);
+  test(`${name} (no code) drops the gift clause cleanly`, () => {
+    const body = builder({ ...reminderArgs, offer: null, code: null });
+    assert.match(body, /GA Suit Warehouse/);
+    assert.match(body, /2:30 PM/);
+    assert.match(body, /Reply STOP to opt out\./);
+    assert.ok(!body.includes('GIFT-'), 'must not mention a gift code');
+    assert.ok(!body.includes('undefined'), 'must not leak undefined');
   });
+  for (const [variant, args] of [['gift', reminderArgs], ['no code', { ...reminderArgs, offer: null, code: null }]]) {
+    test(`${name} (${variant}) is GSM-7 clean and within two segments`, () => {
+      const body = builder(args);
+      const { segments, nonGsm } = smsSegments(body);
+      assert.deepEqual(nonGsm, [], `non-GSM-7 chars force UCS-2: ${JSON.stringify(nonGsm)}`);
+      assert.ok(segments <= 2, `body was ${body.length} chars = ${segments} segments`);
+    });
+  }
 }
 
 test('reminder SMS bodies survive a missing first name', () => {
@@ -616,6 +680,33 @@ test('reminder SMS bodies survive a missing first name', () => {
   const body = nurtureT1Sms({ ...reminderArgs, booking: anon });
   assert.match(body, /Hi there,/);
 });
+
+// =========================================================================
+console.log('\nreminder-email.mjs generic templates');
+// =========================================================================
+
+for (const [name, builder] of [
+  ['reminderT3Email', reminderT3Email],
+  ['reminderT1Email', reminderT1Email],
+  ['reminderDayOfEmail', reminderDayOfEmail],
+]) {
+  test(`${name} renders subject, name, time, and address without a gift code`, () => {
+    const { subject, html, text } = builder({
+      booking: reminderBooking,
+      ...reminderEnv,
+      confirmUrl: 'https://example.com/booking-confirmed.html?id=BK-SMS-TEST',
+    });
+    assert.match(subject, /2:30 PM|visit/);
+    assert.match(html, /Jonathan/);
+    assert.match(html, /2:30 PM/);
+    assert.match(html, /150 Pearl Nix Pkwy/);
+    assert.match(text, /2:30 PM/);
+    for (const part of [subject, html, text]) {
+      assert.ok(!part.includes('undefined'), `${name} must not leak undefined`);
+      assert.ok(!part.includes('GIFT-'), `${name} must not mention a gift code`);
+    }
+  });
+}
 
 // =========================================================================
 console.log('\n— results —');
