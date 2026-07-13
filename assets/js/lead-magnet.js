@@ -241,6 +241,7 @@
         consent:   data.get('consent') === 'on',
         hp:        String(data.get('hp') || ''),
         startedAt: STARTED_AT,
+        attribution: window.GASWAnalytics?.getAttribution() || null,
       };
 
       function finish(msg) {

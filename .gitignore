@@ -57,3 +57,6 @@ assets/reviews/*.original.png
 # Secrets / recovery codes — never commit.
 twilio_2FA_recovery_code.txt
 *_recovery_code.txt
+
+# Local audit notes — not part of the site.
+/SCHEMA-AUDIT.md

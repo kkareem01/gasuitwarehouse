@@ -332,6 +332,7 @@
       timezone: state.timezone,
       formStartedAt: state.formStartedAt,
       honeypot: '',
+      attribution: window.GASWAnalytics?.getAttribution() || null,
     };
 
     try {
@@ -403,9 +404,13 @@
           lastName: state.customer.lastName,
           phone: state.customer.phone,
           consent: state.customer.consent,
+          attribution: window.GASWAnalytics?.getAttribution() || null,
         }),
       });
       const j = await res.json().catch(() => ({}));
+      if (j.ok && j.data?.leadId) {
+        window.dispatchEvent(new CustomEvent('lead:submitted', { detail: { leadId: j.data.leadId } }));
+      }
       return j.ok ? j.data.leadId : null;
     } catch (_) { return null; }
   }

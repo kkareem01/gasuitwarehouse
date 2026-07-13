@@ -38,6 +38,26 @@
     return fetch(path, { ...opts, headers });
   }
 
+  /* Called by dashboard modules when an admin request comes back 401.
+     Prompts for a fresh token; returns true if one was saved (caller should
+     retry the request once), false if the prompt was dismissed. */
+  function handle401() {
+    clearToken();
+    const v = (window.prompt('Staff token required. Paste the staff token:') || '').trim();
+    if (v.length < 16) return false;
+    setToken(v);
+    return true;
+  }
+
+  /* authedFetch + one automatic retry after a successful re-prompt. All staff
+     dashboard modules should use this instead of plain fetch. */
+  async function adminFetch(path, opts = {}) {
+    const res = await authedFetch(path, opts);
+    if (res.status !== 401) return res;
+    if (!handle401()) return res;
+    return authedFetch(path, opts);
+  }
+
   function fmtDate(ymd) {
     if (!ymd) return '—';
     const [y, m, d] = ymd.split('-').map(Number);
@@ -213,8 +233,8 @@
     }
   }
 
-  // Expose minimal helpers for stats.js
-  window.GASWStaff = { authedFetch, getToken, setToken, clearToken };
+  // Expose minimal helpers for the other staff dashboard modules
+  window.GASWStaff = { authedFetch, adminFetch, handle401, getToken, setToken, clearToken };
 
   document.addEventListener('DOMContentLoaded', init);
 })();

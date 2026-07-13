@@ -206,7 +206,7 @@
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
     if (currentSearch) params.set('q', currentSearch);
     try {
-      const res = await fetch(`/api/admin/special-orders?${params.toString()}`);
+      const res = await window.GASWStaff.adminFetch(`/api/admin/special-orders?${params.toString()}`);
       const j = await res.json().catch(() => ({}));
       if (!res.ok || !j.ok) return showAlert('error', j.error || 'Could not load special orders.');
       currentOrders = j.orders || [];
@@ -224,7 +224,7 @@
     const originalText = btnEl.textContent;
     btnEl.textContent = 'Sending…';
     try {
-      const res = await fetch('/api/admin/special-order-notify-arrived', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/special-order-notify-arrived', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id }),
@@ -258,7 +258,7 @@
     hideAlert();
     selectEl.disabled = true;
     try {
-      const res = await fetch('/api/admin/special-order-status', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/special-order-status', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id, orderStatus: status }),
@@ -287,12 +287,28 @@
     }
   }
 
-  function downloadCsv() {
+  async function downloadCsv() {
+    // Fetch with the auth header and hand the bytes to a temp <a download> —
+    // a plain navigation can't carry the Authorization header.
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
     if (currentSearch) params.set('q', currentSearch);
     params.set('format', 'csv');
-    window.location.href = `/api/admin/special-orders?${params.toString()}`;
+    try {
+      const res = await window.GASWStaff.adminFetch(`/api/admin/special-orders?${params.toString()}`);
+      if (!res.ok) return showAlert('error', 'Could not download CSV.');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `special-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (_) {
+      showAlert('error', 'Network error. Try again.');
+    }
   }
 
   // --- modal -----------------------------------------------------------
@@ -409,7 +425,7 @@
         ? '/api/admin/special-order-edit'
         : '/api/admin/special-order-create';
       const body = isEdit ? { ...payload, id: currentEditId } : payload;
-      const res = await fetch(url, {
+      const res = await window.GASWStaff.adminFetch(url, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(body),
@@ -441,7 +457,7 @@
     if (!confirm(`Delete special order for ${who}? This cannot be undone.`)) return;
     setModalError('');
     try {
-      const res = await fetch('/api/admin/special-order-delete', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/special-order-delete', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: currentEditId }),

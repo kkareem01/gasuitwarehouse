@@ -179,7 +179,7 @@
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
     if (currentSearch) params.set('q', currentSearch);
     try {
-      const res = await fetch(`/api/admin/intakes?${params.toString()}`);
+      const res = await window.GASWStaff.adminFetch(`/api/admin/intakes?${params.toString()}`);
       const j = await res.json().catch(() => ({}));
       if (!res.ok || !j.ok) return showAlert('error', j.error || 'Could not load intakes.');
       currentIntakes = j.intakes || [];
@@ -197,7 +197,7 @@
     const originalText = btnEl.textContent;
     btnEl.textContent = 'Sending…';
     try {
-      const res = await fetch('/api/admin/intake-notify-ready', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/intake-notify-ready', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id }),
@@ -231,7 +231,7 @@
     hideAlert();
     selectEl.disabled = true;
     try {
-      const res = await fetch('/api/admin/intake-status', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/intake-status', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id, tailorStatus: status }),
@@ -255,13 +255,28 @@
     }
   }
 
-  function downloadCsv() {
+  async function downloadCsv() {
+    // Fetch with the auth header and hand the bytes to a temp <a download> —
+    // a plain navigation can't carry the Authorization header.
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
     if (currentSearch) params.set('q', currentSearch);
     params.set('format', 'csv');
-    // Plain GET to a same-origin URL with content-disposition — let the browser handle the download.
-    window.location.href = `/api/admin/intakes?${params.toString()}`;
+    try {
+      const res = await window.GASWStaff.adminFetch(`/api/admin/intakes?${params.toString()}`);
+      if (!res.ok) return showAlert('error', 'Could not download CSV.');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `intakes-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (_) {
+      showAlert('error', 'Network error. Try again.');
+    }
   }
 
   // --- edit modal ------------------------------------------------------
@@ -358,7 +373,7 @@
 
     if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
     try {
-      const res = await fetch('/api/admin/intake-edit', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/intake-edit', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
@@ -389,7 +404,7 @@
     if (!confirm(`Delete ${who}? This cannot be undone.`)) return;
     setEditError('');
     try {
-      const res = await fetch('/api/admin/intake-delete', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/intake-delete', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: currentEditId }),

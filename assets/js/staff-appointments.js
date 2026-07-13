@@ -129,7 +129,9 @@
 
   async function pollBadge() {
     try {
-      const res = await fetch('/api/admin/bookings-count');
+      // Silent authedFetch — a 401 here must never spawn a prompt loop from
+      // the background poller; the next interactive action re-prompts instead.
+      const res = await window.GASWStaff.authedFetch('/api/admin/bookings-count');
       const j = await res.json().catch(() => ({}));
       if (res.ok && j.ok && typeof j.newCount === 'number') setBadge(j.newCount);
     } catch (_) {
@@ -257,7 +259,7 @@
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
     if (currentSearch) params.set('q', currentSearch);
     try {
-      const res = await fetch(`/api/admin/bookings?${params.toString()}`);
+      const res = await window.GASWStaff.adminFetch(`/api/admin/bookings?${params.toString()}`);
       const j = await res.json().catch(() => ({}));
       if (!res.ok || !j.ok) {
         if (!quiet) showAlert('error', j.error || 'Could not load appointments.');
@@ -275,7 +277,7 @@
     hideAlert();
     selectEl.disabled = true;
     try {
-      const res = await fetch('/api/admin/booking-status', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/booking-status', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id, staffStatus: status }),
@@ -303,12 +305,28 @@
     }
   }
 
-  function downloadCsv() {
+  async function downloadCsv() {
+    // Fetch with the auth header and hand the bytes to a temp <a download> —
+    // a plain navigation can't carry the Authorization header.
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
     if (currentSearch) params.set('q', currentSearch);
     params.set('format', 'csv');
-    window.location.href = `/api/admin/bookings?${params.toString()}`;
+    try {
+      const res = await window.GASWStaff.adminFetch(`/api/admin/bookings?${params.toString()}`);
+      if (!res.ok) return showAlert('error', 'Could not download CSV.');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `appointments-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (_) {
+      showAlert('error', 'Network error. Try again.');
+    }
   }
 
   // --- edit / delete modal ----------------------------------------------
@@ -424,7 +442,7 @@
       saveBtn.textContent = 'Saving…';
     }
     try {
-      const res = await fetch('/api/admin/booking-edit', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/booking-edit', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
@@ -461,7 +479,7 @@
     if (!confirm(`Delete the appointment for ${who}? This frees the slot and cannot be undone.`)) return;
     setModalError('');
     try {
-      const res = await fetch('/api/admin/booking-delete', {
+      const res = await window.GASWStaff.adminFetch('/api/admin/booking-delete', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id }),

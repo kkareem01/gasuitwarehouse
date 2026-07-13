@@ -68,7 +68,7 @@
   async function loadStats() {
     hideAlert();
     try {
-      const res = await fetch('/api/admin/funnel-stats?weeks=12');
+      const res = await window.GASWStaff.adminFetch('/api/admin/funnel-stats?weeks=12');
       const j = await res.json().catch(() => ({}));
       if (!res.ok || !j.ok) return showAlert(j.error || 'Could not load stats.');
       renderWeeks(j.weeks);

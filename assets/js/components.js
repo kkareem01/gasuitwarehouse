@@ -292,6 +292,19 @@ function injectLeadMagnetPopup() {
   document.head.appendChild(s);
 }
 
+function injectAnalytics() {
+  if (document.querySelector('script[data-gasw-analytics]')) return;
+  const s = document.createElement('script');
+  s.src = '/assets/js/analytics.js';
+  s.defer = true;
+  s.dataset.gaswAnalytics = 'true';
+  document.head.appendChild(s);
+}
+
+// Analytics is injected at script-execution time (not DOMContentLoaded) so
+// ad-click attribution is captured as early as possible on landing pages.
+injectAnalytics();
+
 document.addEventListener('DOMContentLoaded', () => {
   injectComponents();
   setupNavAutoHide();
