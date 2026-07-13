@@ -111,10 +111,10 @@ conversions found" (normal until the first recorded sale from an ad click).
   "came in, didn't buy"). You can click any row's Sale chip later to add or
   fix an amount.
 - **Once a month**: `/staff/stats.html` → Revenue & CAC → type that month's
-  Google Ads spend → Save. CAC = spend ÷ customers, AOV = revenue ÷ customers.
-- **Filters**: the Appointments tab now has purchase pills — Bought, $200+,
-  $400+, $0, Not recorded (completed appointments missing a sale amount —
-  work through that list weekly so the Google feed stays complete).
+  Google Ads spend → Save. CAC = spend ÷ customers, AOV = revenue ÷ customers,
+  and **LTV:CAC** = AOV ÷ CAC (above 3:1 healthy, below 1:1 losing money).
+  The ratio is only as accurate as the sale amounts — record one for every
+  completed appointment, including $0.
 
 ## Things to know (limits)
 

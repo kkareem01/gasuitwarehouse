@@ -779,7 +779,7 @@ test('buildAdsCsv with no rows still returns both header rows', () => {
 console.log('\nsales-store.mjs (booking sales, walk-ins, ad spend, revenue stats)');
 // =========================================================================
 
-await testAsync('sales pipeline: record sale (write-once time), purchase filters, conversion rows, spend, revenue stats', async () => {
+await testAsync('sales pipeline: record sale (write-once time), conversion rows, spend, revenue stats', async () => {
   // Deleting the DB file here would kill the shared libsql client
   // (CLIENT_CLOSED) — truncate via SQL instead so counts start from zero.
   await migrate();
@@ -788,7 +788,7 @@ await testAsync('sales pipeline: record sale (write-once time), purchase filters
     await db.execute(`DELETE FROM ${table}`);
   }
 
-  const { createBooking, listBookings, updateBookingStaffStatus, findBookingById } = await import('../lib/store.mjs');
+  const { createBooking, updateBookingStaffStatus, findBookingById } = await import('../lib/store.mjs');
   const {
     recordBookingSale, upsertAdSpend, listAdSpend, listConversionRows, getRevenueStats,
   } = await import('../lib/sales-store.mjs');
@@ -829,13 +829,6 @@ await testAsync('sales pipeline: record sale (write-once time), purchase filters
   assert.equal((await recordBookingSale(b2.id, { amountCents: -5 })).error, 'INVALID_AMOUNT');
   assert.equal((await recordBookingSale(b2.id, { amountCents: 1.5 })).error, 'INVALID_AMOUNT');
   assert.equal((await recordBookingSale('BK-DEADBEEF', { amountCents: 100 })).error, 'NOT_FOUND');
-
-  // Purchase filters.
-  const ids = (list) => list.map((b) => b.id).sort();
-  assert.deepEqual(ids(await listBookings({ purchase: 'bought' })), ids([b1, b2].map((x) => ({ id: x.id }))));
-  assert.deepEqual(ids(await listBookings({ purchase: '400plus' })), [b1.id]);
-  assert.deepEqual(ids(await listBookings({ purchase: 'none' })), [b4.id]);
-  assert.deepEqual(ids(await listBookings({ purchase: 'unrecorded' })), [b3.id]);
 
   // Conversion feed rows: only gclid + amount>0.
   const conv = await listConversionRows();

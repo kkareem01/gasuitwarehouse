@@ -48,7 +48,6 @@
   const BASE_TITLE = document.title;
 
   let currentStatus = 'new';   // matches the pill marked is-active in the HTML
-  let currentPurchase = 'all'; // purchase-amount pill (Any / Bought / $200+ / …)
   let currentSearch = '';
   let searchDebounce = null;
   let currentBookings = [];
@@ -274,7 +273,6 @@
     if (!quiet) hideAlert();
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
-    if (currentPurchase && currentPurchase !== 'all') params.set('purchase', currentPurchase);
     if (currentSearch) params.set('q', currentSearch);
     try {
       const res = await window.GASWStaff.adminFetch(`/api/admin/bookings?${params.toString()}`);
@@ -334,7 +332,6 @@
     // a plain navigation can't carry the Authorization header.
     const params = new URLSearchParams();
     if (currentStatus && currentStatus !== 'all') params.set('status', currentStatus);
-    if (currentPurchase && currentPurchase !== 'all') params.set('purchase', currentPurchase);
     if (currentSearch) params.set('q', currentSearch);
     params.set('format', 'csv');
     try {
@@ -647,16 +644,6 @@
         currentStatus = pill.dataset.apptStatus;
         document.querySelectorAll('[data-region="appt-status-pills"] .pill-btn').forEach((b) => {
           b.classList.toggle('is-active', b === pill);
-        });
-        loadBookings();
-        return;
-      }
-
-      const purchasePill = e.target.closest('.pill-btn[data-appt-purchase]');
-      if (purchasePill) {
-        currentPurchase = purchasePill.dataset.apptPurchase;
-        document.querySelectorAll('[data-region="appt-purchase-pills"] .pill-btn').forEach((b) => {
-          b.classList.toggle('is-active', b === purchasePill);
         });
         loadBookings();
         return;

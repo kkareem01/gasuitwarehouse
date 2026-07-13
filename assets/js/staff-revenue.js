@@ -26,6 +26,13 @@
     return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   }
 
+  // LTV here = average revenue per acquired customer (AOV, single-visit
+  // basis), so the ratio reduces to revenue ÷ spend for the month.
+  function ltvToCac(m) {
+    if (m.aovCents == null || m.cacCents == null || m.cacCents === 0) return null;
+    return `${(m.aovCents / m.cacCents).toFixed(1)}:1`;
+  }
+
   function showAlert(msg) {
     const el = $r('alert');
     if (el) { el.hidden = false; el.textContent = msg; }
@@ -35,7 +42,7 @@
     const body = $r('rev-rows');
     if (!body) return;
     if (!months.length) {
-      body.innerHTML = '<tr><td colspan="9" style="color:#9CA3AF;">No data yet — bookings and recorded sales will appear here by month.</td></tr>';
+      body.innerHTML = '<tr><td colspan="10" style="color:#9CA3AF;">No data yet — bookings and recorded sales will appear here by month.</td></tr>';
       return;
     }
     const dash = '<span class="rev-muted">—</span>';
@@ -57,6 +64,7 @@
         <td class="rev-money">${money(m.revenueCents) ?? dash}</td>
         <td>${money(m.aovCents) ?? dash}</td>
         <td class="rev-cac">${money(m.cacCents) ?? dash}</td>
+        <td class="rev-cac">${ltvToCac(m) ?? dash}</td>
       </tr>
     `).join('');
   }
