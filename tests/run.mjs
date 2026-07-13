@@ -779,21 +779,20 @@ test('buildAdsCsv with no rows still returns both header rows', () => {
 console.log('\nsales-store.mjs (booking sales, walk-ins, ad spend, revenue stats)');
 // =========================================================================
 
-await testAsync('sales pipeline: record sale (write-once time), purchase filters, conversion rows, walk-ins, spend, revenue stats', async () => {
+await testAsync('sales pipeline: record sale (write-once time), purchase filters, conversion rows, spend, revenue stats', async () => {
   // Deleting the DB file here would kill the shared libsql client
   // (CLIENT_CLOSED) — truncate via SQL instead so counts start from zero.
   await migrate();
   const db = getDb();
-  for (const table of ['bookings', 'walkin_sales', 'ad_spend']) {
+  for (const table of ['bookings', 'ad_spend']) {
     await db.execute(`DELETE FROM ${table}`);
   }
 
   const { createBooking, listBookings, updateBookingStaffStatus, findBookingById } = await import('../lib/store.mjs');
   const {
-    recordBookingSale, createWalkinSale, listWalkinSales, updateWalkinSale,
-    deleteWalkinSale, upsertAdSpend, listAdSpend, listConversionRows, getRevenueStats,
+    recordBookingSale, upsertAdSpend, listAdSpend, listConversionRows, getRevenueStats,
   } = await import('../lib/sales-store.mjs');
-  const { newBookingId, newWalkinId } = await import('../lib/id.mjs');
+  const { newBookingId } = await import('../lib/id.mjs');
 
   const mkBooking = (slotTime, extra = {}) => createBooking({
     audience: 'general',
@@ -844,42 +843,26 @@ await testAsync('sales pipeline: record sale (write-once time), purchase filters
   assert.equal(conv[0].gclid, 'TESTCLICK_A');
   assert.equal(conv[0].amountCents, 45000);
 
-  // Walk-in CRUD.
-  const w = await createWalkinSale({ amountCents: 19900, note: 'tux shirt', saleDate: '2026-06-11' }, newWalkinId);
-  assert.equal(w.ok, true);
-  assert.equal((await createWalkinSale({ amountCents: 'nope' }, newWalkinId)).error, 'INVALID_AMOUNT');
-  assert.equal((await createWalkinSale({ amountCents: 100, saleDate: 'June 11' }, newWalkinId)).error, 'INVALID_DATE');
-  await updateWalkinSale(w.sale.id, { amountCents: 20900 });
-  const walkins = await listWalkinSales({ month: '2026-06' });
-  assert.equal(walkins.length, 1);
-  assert.equal(walkins[0].amountCents, 20900);
-  assert.deepEqual(await listWalkinSales({ month: '2026-05' }), []);
-  assert.equal((await deleteWalkinSale(w.sale.id)).ok, true);
-  assert.equal((await deleteWalkinSale(w.sale.id)).error, 'NOT_FOUND');
-
   // Ad spend upsert is idempotent per month.
-  await upsertAdSpend('2026-06', 100000);
-  await upsertAdSpend('2026-06', 120000);
+  const thisMonth = new Date().toISOString().slice(0, 7);
+  await upsertAdSpend(thisMonth, 100000);
+  await upsertAdSpend(thisMonth, 120000);
   assert.equal((await upsertAdSpend('2026-13', 1)).error, 'INVALID_MONTH');
   const spend = await listAdSpend();
   assert.equal(spend.length, 1);
   assert.equal(spend[0].amountCents, 120000);
 
-  // Revenue stats: recreate a walk-in so June has 3 customers.
-  await createWalkinSale({ amountCents: 10000, saleDate: '2026-06-20' }, newWalkinId);
-  const thisMonth = new Date().toISOString().slice(0, 7);
+  // Revenue stats — booked-appointment sales only.
   const stats = await getRevenueStats(24);
   const cur = stats.find((m) => m.month === thisMonth);
   const june = stats.find((m) => m.month === '2026-06');
-  // Bookings + sale timestamps land in the current month; walk-ins/spend in June.
+  // Bookings created + sale timestamps land in the current month.
   assert.equal(cur.bookingsCreated, 4);
   assert.equal(cur.gclidBookings, 1);
-  assert.equal(cur.revenueCents >= 60000, true, 'appt revenue counted by sale_recorded_at month');
-  assert.equal(june.customers, 1);
-  assert.equal(june.revenueCents, 10000);
-  assert.equal(june.spendCents, 120000);
-  assert.equal(june.aovCents, 10000);
-  assert.equal(june.cacCents, 120000, 'CAC = spend / customers');
+  assert.equal(cur.customers, 2, 'b1 ($450) and b2 ($150); the $0 no-buy is not a customer');
+  assert.equal(cur.revenueCents, 60000);
+  assert.equal(cur.aovCents, 30000);
+  assert.equal(cur.cacCents, 60000, 'CAC = spend / customers = 120000 / 2');
   // completed bookings are grouped by slot_date month (June).
   assert.equal(june.completed, 2);
 });

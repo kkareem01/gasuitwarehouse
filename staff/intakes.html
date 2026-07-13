@@ -263,7 +263,7 @@
     .status-select.s-no_show   { color: #FBBF24; border-color: #6B5A18; }
     .status-select.s-cancelled { color: #9CA3AF; border-color: #2A3654; }
 
-    /* --- Sale column + walk-in sales ------------------------------------ */
+    /* --- Sale column ----------------------------------------------------- */
     .pill-row-label { color: #9CA3AF; font-size: 12px; align-self: center; margin-right: 4px; }
     .sale-chip {
       display: inline-block; padding: 3px 10px; border-radius: 999px;
@@ -275,7 +275,6 @@
     .sale-chip.no-sale { color: #FBBF24; border-color: #6B5A18; }
     .sale-quick-picks { display: flex; gap: 8px; flex-wrap: wrap; }
     .sale-quick-picks .btn { padding: 6px 14px; }
-    .walkin-amount { font-weight: 700; color: #6EE7B7; }
     tbody tr.is-new td:first-child { border-left: 3px solid #FF6B6B; padding-left: 11px; }
     .appt-type {
       display: inline-block;
@@ -442,7 +441,6 @@
         Appointments
         <span class="tab-badge" data-region="appt-badge" hidden aria-label="new appointments"></span>
       </button>
-      <button class="view-tab" data-view="walkins" role="tab" aria-selected="false">Walk-in Sales</button>
     </nav>
 
     <section data-view-panel="intakes" data-region="dashboard">
@@ -530,7 +528,6 @@
       <div class="panel-header">
         <h2>Styling-session &amp; fitting appointments booked online</h2>
         <div class="panel-actions">
-          <button class="btn btn-primary" data-action="walkin-new">+ Log walk-in sale</button>
           <button class="btn" data-action="appt-refresh">↻ Refresh</button>
           <button class="btn" data-action="appt-download-csv">Download CSV</button>
         </div>
@@ -579,39 +576,6 @@
       <div class="empty" data-region="appt-empty" hidden>
         <div class="big">No appointments match these filters</div>
         <div>Try switching to "All" or clearing the search box.</div>
-      </div>
-    </section>
-
-    <section data-view-panel="walkins" hidden>
-      <div class="panel-header">
-        <h2>Walk-in sales (no appointment)</h2>
-        <div class="panel-actions">
-          <button class="btn btn-primary" data-action="walkin-new">+ Log walk-in sale</button>
-          <button class="btn" data-action="walkin-refresh">↻ Refresh</button>
-        </div>
-      </div>
-
-      <div class="filterbar">
-        <div class="pills" data-region="walkin-month-pills"></div>
-        <span class="count" data-region="walkin-count">—</span>
-      </div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Amount</th>
-              <th>Note</th>
-              <th>Sale date</th>
-              <th>Logged</th>
-            </tr>
-          </thead>
-          <tbody data-region="walkin-rows"></tbody>
-        </table>
-      </div>
-      <div class="empty" data-region="walkin-empty" hidden>
-        <div class="big">No walk-in sales logged yet</div>
-        <div>Click "+ Log walk-in sale" when an ad-driven walk-in buys something.</div>
       </div>
     </section>
 
@@ -727,36 +691,6 @@
       </div>
     </div>
 
-    <div class="edit-modal" data-region="walkin-modal" hidden>
-      <div class="edit-modal__overlay" data-action="walkin-close-modal"></div>
-      <div class="edit-modal__card" role="dialog" aria-modal="true" aria-labelledby="walkin-modal-title">
-        <header class="edit-modal__header">
-          <h2 id="walkin-modal-title" data-region="walkin-modal-title">Log walk-in sale</h2>
-          <button type="button" class="edit-modal__close" data-action="walkin-close-modal" aria-label="Close">×</button>
-        </header>
-        <form class="edit-modal__form" data-region="walkin-modal-form" novalidate>
-          <input type="hidden" name="id" />
-          <div class="edit-modal__hint">A purchase by someone who walked in without booking — keeps ad-driven foot traffic in the revenue numbers.</div>
-          <div class="sale-quick-picks">
-            <button type="button" class="btn" data-walkin-quick="200">$200</button>
-            <button type="button" class="btn" data-walkin-quick="400">$400</button>
-            <button type="button" class="btn" data-walkin-quick="600">$600</button>
-          </div>
-          <label>Amount ($)<input type="number" name="amount" min="0.01" max="50000" step="0.01" inputmode="decimal" placeholder="e.g. 249.99" /></label>
-          <label>Note (optional)<input type="text" name="note" maxlength="200" placeholder="e.g. charcoal suit, paid cash" /></label>
-          <label>Sale date<input type="date" name="saleDate" /></label>
-          <div class="edit-modal__error" data-region="walkin-modal-error" hidden></div>
-        </form>
-        <footer class="edit-modal__footer">
-          <button type="button" class="btn-delete" data-action="walkin-delete" data-region="walkin-delete-btn" hidden>Delete</button>
-          <div class="edit-modal__actions">
-            <button type="button" class="btn-cancel" data-action="walkin-close-modal">Cancel</button>
-            <button type="button" class="btn-save" data-action="walkin-save" data-region="walkin-save-btn">Save</button>
-          </div>
-        </footer>
-      </div>
-    </div>
-
     <div class="edit-modal" data-region="appt-modal" hidden>
       <div class="edit-modal__overlay" data-action="appt-close-modal"></div>
       <div class="edit-modal__card" role="dialog" aria-modal="true" aria-labelledby="appt-modal-title">
@@ -795,6 +729,5 @@
   <script src="/assets/js/staff-intakes.js" defer></script>
   <script src="/assets/js/staff-special-orders.js" defer></script>
   <script src="/assets/js/staff-appointments.js" defer></script>
-  <script src="/assets/js/staff-walkins.js" defer></script>
 </body>
 </html>

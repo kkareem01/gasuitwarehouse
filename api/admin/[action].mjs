@@ -26,10 +26,6 @@ import {
 } from '../../lib/handlers.mjs';
 import {
   handleAdminRecordBookingSale,
-  handleAdminListWalkins,
-  handleAdminCreateWalkin,
-  handleAdminEditWalkin,
-  handleAdminDeleteWalkin,
   handleAdminListAdSpend,
   handleAdminSetAdSpend,
   handleAdminRevenueStats,
@@ -42,8 +38,7 @@ const KNOWN_ACTIONS = [
   'special-orders', 'special-order-create', 'special-order-edit',
   'special-order-status', 'special-order-delete', 'special-order-notify-arrived',
   'bookings', 'bookings-count', 'booking-status', 'booking-edit', 'booking-delete',
-  'booking-sale', 'walkins', 'walkin-create', 'walkin-edit', 'walkin-delete',
-  'ad-spend', 'ad-spend-set', 'revenue-stats', 'ads-conversions',
+  'booking-sale', 'ad-spend', 'ad-spend-set', 'revenue-stats', 'ads-conversions',
 ];
 
 export default async function (req, res) {
@@ -108,18 +103,6 @@ export default async function (req, res) {
   }
   if (action === 'booking-sale' && req.method === 'POST') {
     return handleAdminRecordBookingSale(req, res);
-  }
-  if (action === 'walkins' && req.method === 'GET') {
-    return handleAdminListWalkins(req, res);
-  }
-  if (action === 'walkin-create' && req.method === 'POST') {
-    return handleAdminCreateWalkin(req, res);
-  }
-  if (action === 'walkin-edit' && req.method === 'POST') {
-    return handleAdminEditWalkin(req, res);
-  }
-  if (action === 'walkin-delete' && req.method === 'POST') {
-    return handleAdminDeleteWalkin(req, res);
   }
   if (action === 'ad-spend' && req.method === 'GET') {
     return handleAdminListAdSpend(req, res);

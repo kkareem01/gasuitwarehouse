@@ -56,10 +56,6 @@ import {
 } from './lib/handlers.mjs';
 import {
   handleAdminRecordBookingSale,
-  handleAdminListWalkins,
-  handleAdminCreateWalkin,
-  handleAdminEditWalkin,
-  handleAdminDeleteWalkin,
   handleAdminListAdSpend,
   handleAdminSetAdSpend,
   handleAdminRevenueStats,
@@ -200,10 +196,6 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && path === '/api/admin/booking-edit')    return handleAdminEditBooking(req, res);
       if (req.method === 'POST' && path === '/api/admin/booking-delete')  return handleAdminDeleteBooking(req, res);
       if (req.method === 'POST' && path === '/api/admin/booking-sale')    return handleAdminRecordBookingSale(req, res);
-      if (req.method === 'GET'  && path === '/api/admin/walkins')         return handleAdminListWalkins(req, res);
-      if (req.method === 'POST' && path === '/api/admin/walkin-create')   return handleAdminCreateWalkin(req, res);
-      if (req.method === 'POST' && path === '/api/admin/walkin-edit')     return handleAdminEditWalkin(req, res);
-      if (req.method === 'POST' && path === '/api/admin/walkin-delete')   return handleAdminDeleteWalkin(req, res);
       if (req.method === 'GET'  && path === '/api/admin/ad-spend')        return handleAdminListAdSpend(req, res);
       if (req.method === 'POST' && path === '/api/admin/ad-spend-set')    return handleAdminSetAdSpend(req, res);
       if (req.method === 'GET'  && path === '/api/admin/revenue-stats')   return handleAdminRevenueStats(req, res);

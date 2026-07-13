@@ -110,8 +110,6 @@ conversions found" (normal until the first recorded sale from an ad click).
   Completed, the sale box opens — type what they bought ($0 is meaningful:
   "came in, didn't buy"). You can click any row's Sale chip later to add or
   fix an amount.
-- **Walk-in buys something** (ad-driven foot traffic): Appointments tab →
-  **+ Log walk-in sale** (also its own tab).
 - **Once a month**: `/staff/stats.html` → Revenue & CAC → type that month's
   Google Ads spend → Save. CAC = spend ÷ customers, AOV = revenue ÷ customers.
 - **Filters**: the Appointments tab now has purchase pills — Bought, $200+,
@@ -129,8 +127,8 @@ conversions found" (normal until the first recorded sale from an ad click).
   the CSV upload format can't carry them, so those sales won't get ad credit.
 - **Cross-device gap:** someone who clicks the ad on their phone but books on
   a laptop loses attribution — inherent to this (API-free) setup.
-- **Walk-in sales** count toward revenue/CAC/AOV but are not uploaded to
-  Google (no ad click to tie them to).
+- **Walk-in purchases are not tracked** (by design — no ad click means no
+  accurate attribution). Revenue, CAC, and AOV cover booked appointments only.
 - The **phone number clicks** on the site are tracked as a GA4 `phone_call`
   event. For call conversions from ads themselves, enable call reporting on
   your Google Ads call assets (Google forwarding numbers) — that's ad-side,
