@@ -19,12 +19,6 @@
     main { max-width: 1100px; margin: 0 auto; }
     h1 { margin: 0 0 8px; font-size: 22px; }
     .subtitle { color: #9CA3AF; margin: 0 0 24px; font-size: 14px; }
-    .auth-gate { background: #1F2D4F; border: 1px solid #2A3654; border-radius: 4px; padding: 24px; max-width: 480px; }
-    .auth-gate input {
-      width: 100%; padding: 14px; font-family: 'Courier New', monospace; font-size: 16px;
-      background: #0E1729; color: #fff; border: 1px solid #2A3654; border-radius: 4px; margin: 12px 0;
-    }
-    .auth-gate button { padding: 12px 20px; background: #C9A961; color: #0E1729; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; }
     .alert { padding: 12px 16px; border-radius: 4px; margin: 16px 0; }
     .alert.error { background: #4A1E1B; color: #FBE9E7; }
     .week-card {
@@ -97,12 +91,6 @@
   <main>
     <h1>Funnel Stats</h1>
     <p class="subtitle" data-region="subtitle">Per-week opt-in to redeemed conversion.</p>
-
-    <section class="auth-gate" data-region="auth-gate" hidden>
-      <label for="staff-token">Staff token</label>
-      <input id="staff-token" type="password" placeholder="Paste token" autocomplete="off" />
-      <button data-action="save-token">Load Stats</button>
-    </section>
 
     <div class="alert error" data-region="alert" hidden></div>
 
