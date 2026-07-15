@@ -13,19 +13,22 @@
   function esc(s)   { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
   const STATUS_LABELS = {
-    new: 'New Booking',
+    new: 'Booked',
     confirmed: 'Confirmed',
-    completed: 'Completed',
+    showed: 'Showed',
+    closed: 'Closed',
+    completed: 'Closed', // legacy value; migration renames it to 'closed'
     no_show: 'No-show',
     cancelled: 'Cancelled',
   };
 
-  // Statuses a staff member can assign from the row dropdown. A booking is a
-  // "New Booking" (status 'new') until staff close it out as Completed or
-  // No-show — that 'new' state drives the red badge and is never directly
-  // staff-assignable. Legacy 'confirmed'/'cancelled' bookings likewise show a
-  // read-only placeholder until moved forward.
-  const SELECTABLE_STATUSES = ['completed', 'no_show'];
+  // Statuses a staff member can assign from the row dropdown. A booking is
+  // "Booked" (status 'new') until staff record the outcome — No-show, Showed
+  // (came in, didn't buy), or Closed (came in and bought). The 'new' state
+  // drives the red badge and is never directly staff-assignable. Legacy
+  // 'confirmed'/'cancelled' bookings likewise show a read-only placeholder
+  // until moved forward.
+  const SELECTABLE_STATUSES = ['showed', 'closed', 'no_show'];
 
   const AUDIENCE_LABELS = {
     weddings: 'Wedding fitting',
@@ -314,10 +317,11 @@
       }
       showAlert('success', `Status updated to "${STATUS_LABELS[status] || status}"`);
       setTimeout(hideAlert, 2500);
-      // Completing an appointment is the moment to capture the sale amount.
-      // Dismissible — the sale stays "Not recorded" and the cell stays clickable.
-      const completedBooking = idx >= 0 ? currentBookings[idx] : { id };
-      if (status === 'completed' && completedBooking.saleAmountCents == null) {
+      // Closing an appointment (they bought) is the moment to capture the
+      // sale amount. Dismissible — the sale stays unrecorded and the cell
+      // stays clickable.
+      const updatedBooking = idx >= 0 ? currentBookings[idx] : { id };
+      if (status === 'closed' && updatedBooking.saleAmountCents == null) {
         openSaleModal(id);
       }
     } catch (_) {
@@ -646,15 +650,6 @@
           b.classList.toggle('is-active', b === pill);
         });
         loadBookings();
-        return;
-      }
-
-      // $-preset buttons inside the sale modal fill the amount input.
-      const quick = e.target.closest('[data-sale-quick]');
-      if (quick) {
-        e.preventDefault();
-        const form = $r('sale-modal-form');
-        if (form) { form.elements.amount.value = quick.dataset.saleQuick; form.elements.amount.focus(); }
         return;
       }
 

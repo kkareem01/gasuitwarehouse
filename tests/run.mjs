@@ -803,9 +803,9 @@ await testAsync('sales pipeline: record sale (write-once time), conversion rows,
     ...extra,
   }, newBookingId);
 
-  // Attributed booking with a $412 sale.
+  // Attributed booking, closed with a $412 sale.
   const b1 = (await mkBooking('10:00', { gclid: 'TESTCLICK_A' })).booking;
-  await updateBookingStaffStatus(b1.id, 'completed');
+  await updateBookingStaffStatus(b1.id, 'closed');
   const r1 = await recordBookingSale(b1.id, { amountCents: 41200, notes: 'navy suit' });
   assert.equal(r1.ok, true);
 
@@ -817,13 +817,15 @@ await testAsync('sales pipeline: record sale (write-once time), conversion rows,
   assert.equal(after.saleAmountCents, 45000);
   assert.equal(after.saleRecordedAt, firstStamp, 'sale_recorded_at must never shift on edit');
 
-  // Organic $150 sale + completed-but-unrecorded + $0 no-buy.
+  // Organic $150 sale + showed-but-didn't-buy + $0 no-buy.
   const b2 = (await mkBooking('11:00')).booking;
   await recordBookingSale(b2.id, { amountCents: 15000 });
   const b3 = (await mkBooking('12:00')).booking;
-  await updateBookingStaffStatus(b3.id, 'completed');
+  await updateBookingStaffStatus(b3.id, 'showed');
   const b4 = (await mkBooking('13:00')).booking;
   await recordBookingSale(b4.id, { amountCents: 0 });
+  // The retired 'completed' value is no longer assignable.
+  assert.equal((await updateBookingStaffStatus(b4.id, 'completed')).error, 'INVALID_STATUS');
 
   // Amount validation.
   assert.equal((await recordBookingSale(b2.id, { amountCents: -5 })).error, 'INVALID_AMOUNT');
@@ -856,8 +858,8 @@ await testAsync('sales pipeline: record sale (write-once time), conversion rows,
   assert.equal(cur.revenueCents, 60000);
   assert.equal(cur.aovCents, 30000);
   assert.equal(cur.cacCents, 60000, 'CAC = spend / customers = 120000 / 2');
-  // completed bookings are grouped by slot_date month (June).
-  assert.equal(june.completed, 2);
+  // showed-up counts (showed + closed) are grouped by slot_date month (June).
+  assert.equal(june.showed, 2);
 });
 
 // =========================================================================

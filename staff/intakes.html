@@ -259,7 +259,9 @@
     /* --- Appointments view --------------------------------------------- */
     .status-select.s-new       { color: #FF6B6B; border-color: #4A1E1B; }
     .status-select.s-confirmed { color: #93C5FD; border-color: #1E40AF; }
-    .status-select.s-completed { color: #6EE7B7; border-color: #064E3B; }
+    .status-select.s-showed    { color: #93C5FD; border-color: #1E40AF; }
+    .status-select.s-closed    { color: #6EE7B7; border-color: #064E3B; }
+    .status-select.s-completed { color: #6EE7B7; border-color: #064E3B; } /* legacy */
     .status-select.s-no_show   { color: #FBBF24; border-color: #6B5A18; }
     .status-select.s-cancelled { color: #9CA3AF; border-color: #2A3654; }
 
@@ -272,8 +274,6 @@
     .sale-chip:hover { border-color: #C9A961; color: #C9A961; }
     .sale-chip.has-sale { color: #6EE7B7; border-color: #064E3B; }
     .sale-chip.no-sale { color: #FBBF24; border-color: #6B5A18; }
-    .sale-quick-picks { display: flex; gap: 8px; flex-wrap: wrap; }
-    .sale-quick-picks .btn { padding: 6px 14px; }
     tbody tr.is-new td:first-child { border-left: 3px solid #FF6B6B; padding-left: 11px; }
     .appt-type {
       display: inline-block;
@@ -534,9 +534,10 @@
 
       <div class="filterbar">
         <div class="pills" data-region="appt-status-pills">
-          <button class="pill-btn is-active" data-appt-status="new">New Booking</button>
-          <button class="pill-btn" data-appt-status="completed">Completed</button>
+          <button class="pill-btn is-active" data-appt-status="new">Booked</button>
           <button class="pill-btn" data-appt-status="no_show">No-show</button>
+          <button class="pill-btn" data-appt-status="showed">Showed</button>
+          <button class="pill-btn" data-appt-status="closed">Closed</button>
           <button class="pill-btn" data-appt-status="all">All</button>
         </div>
         <input class="search" data-region="appt-search" placeholder="Search name, phone, or email…" />
@@ -657,13 +658,6 @@
         </header>
         <form class="edit-modal__form" data-region="sale-modal-form" novalidate>
           <input type="hidden" name="id" />
-          <div class="edit-modal__hint">How much did this customer buy? Enter 0 if they came in but bought nothing.</div>
-          <div class="sale-quick-picks">
-            <button type="button" class="btn" data-sale-quick="0">$0</button>
-            <button type="button" class="btn" data-sale-quick="200">$200</button>
-            <button type="button" class="btn" data-sale-quick="400">$400</button>
-            <button type="button" class="btn" data-sale-quick="600">$600</button>
-          </div>
           <label>Amount ($)<input type="number" name="amount" min="0" max="50000" step="0.01" inputmode="decimal" placeholder="e.g. 412.50" /></label>
           <label>Notes (optional)<textarea name="notes" rows="3" maxlength="500" placeholder="e.g. navy suit + alterations" style="min-height:70px;"></textarea></label>
           <div class="edit-modal__error" data-region="sale-modal-error" hidden></div>

@@ -59,7 +59,7 @@
         </td>
         <td>${m.bookingsCreated}</td>
         <td>${m.gclidBookings}</td>
-        <td>${m.completed}</td>
+        <td>${m.showed}</td>
         <td>${m.customers}</td>
         <td class="rev-money">${money(m.revenueCents) ?? dash}</td>
         <td>${money(m.aovCents) ?? dash}</td>
@@ -89,7 +89,7 @@
     if (months.some((m) => m.month === thisMonth)) return months;
     return [{
       month: thisMonth, spendCents: null, bookingsCreated: 0, gclidBookings: 0,
-      completed: 0, customers: 0, revenueCents: 0, aovCents: null, cacCents: null,
+      showed: 0, customers: 0, revenueCents: 0, aovCents: null, cacCents: null,
     }, ...months];
   }
 

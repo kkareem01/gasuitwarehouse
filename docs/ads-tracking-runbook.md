@@ -93,7 +93,7 @@ conversions found" (normal until the first recorded sale from an ad click).
 1. On your phone (or private window) visit:
    `https://www.gasuitwarehouse.com/?gclid=TEST_RUNBOOK_1&utm_source=google&utm_medium=cpc`
 2. Book a test appointment.
-3. In `/staff/intakes.html` → Appointments: mark it **Completed** → the sale
+3. In `/staff/intakes.html` → Appointments: mark it **Closed** → the sale
    box pops up → enter e.g. `$412`.
 4. Fetch the feed yourself:
    `curl -u "$ADS_FEED_USER:$ADS_FEED_PASS" https://www.gasuitwarehouse.com/feeds/ads-conversions.csv`
@@ -106,15 +106,15 @@ conversions found" (normal until the first recorded sale from an ad click).
 
 ## How to use it day-to-day
 
-- **When an appointment happens**: mark it Completed / No-show as usual. On
-  Completed, the sale box opens — type what they bought ($0 is meaningful:
-  "came in, didn't buy"). You can click any row's Sale chip later to add or
-  fix an amount.
+- **When an appointment happens**: record the outcome — **No-show** (didn't
+  come), **Showed** (came in but didn't buy), or **Closed** (came in and
+  bought). On Closed, the sale box opens — type the exact amount. You can
+  click any row's Sale chip later to add or fix an amount.
 - **Once a month**: `/staff/stats.html` → Revenue & CAC → type that month's
   Google Ads spend → Save. CAC = spend ÷ customers, AOV = revenue ÷ customers,
   and **LTV:CAC** = AOV ÷ CAC (above 3:1 healthy, below 1:1 losing money).
-  The ratio is only as accurate as the sale amounts — record one for every
-  completed appointment, including $0.
+  The ratio is only as accurate as the sale amounts — enter one for every
+  Closed appointment.
 
 ## Things to know (limits)
 
