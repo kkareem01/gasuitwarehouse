@@ -838,28 +838,29 @@ await testAsync('sales pipeline: record sale (write-once time), conversion rows,
   assert.equal(conv[0].gclid, 'TESTCLICK_A');
   assert.equal(conv[0].amountCents, 45000);
 
-  // Ad spend upsert is idempotent per month.
+  // Ad spend upsert is idempotent per month. Spend goes on the appointment
+  // month (June) so CAC can compute against June's customers.
   const thisMonth = new Date().toISOString().slice(0, 7);
-  await upsertAdSpend(thisMonth, 100000);
-  await upsertAdSpend(thisMonth, 120000);
+  await upsertAdSpend('2026-06', 100000);
+  await upsertAdSpend('2026-06', 120000);
   assert.equal((await upsertAdSpend('2026-13', 1)).error, 'INVALID_MONTH');
   const spend = await listAdSpend();
   assert.equal(spend.length, 1);
   assert.equal(spend[0].amountCents, 120000);
 
-  // Revenue stats — booked-appointment sales only.
+  // Revenue stats — everything customer-facing groups by APPOINTMENT month
+  // (slot_date = June), even though the sales were recorded "today". Only
+  // bookingsCreated follows created_at (this month).
   const stats = await getRevenueStats(24);
   const cur = stats.find((m) => m.month === thisMonth);
   const june = stats.find((m) => m.month === '2026-06');
-  // Bookings created + sale timestamps land in the current month.
   assert.equal(cur.bookingsCreated, 4);
   assert.equal(cur.gclidBookings, 1);
-  assert.equal(cur.customers, 2, 'b1 ($450) and b2 ($150); the $0 no-buy is not a customer');
-  assert.equal(cur.revenueCents, 60000);
-  assert.equal(cur.aovCents, 30000);
-  assert.equal(cur.cacCents, 60000, 'CAC = spend / customers = 120000 / 2');
-  // showed-up counts (showed + closed) are grouped by slot_date month (June).
-  assert.equal(june.showed, 2);
+  assert.equal(june.showed, 2, 'showed + closed, by appointment month');
+  assert.equal(june.customers, 2, 'b1 ($450) and b2 ($150); the $0 no-buy is not a customer');
+  assert.equal(june.revenueCents, 60000);
+  assert.equal(june.aovCents, 30000);
+  assert.equal(june.cacCents, 60000, 'CAC = spend / customers = 120000 / 2');
 });
 
 // =========================================================================
