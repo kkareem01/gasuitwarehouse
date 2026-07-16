@@ -9,7 +9,7 @@
 
 (function () {
   // --- config: paste real IDs during Google setup (runbook step 5) ---------
-  const GA4_ID = 'G-XXXXXXXXXX';                        // GA4 Measurement ID
+  const GA4_ID = 'G-98DVQREVNK';                        // GA4 Measurement ID
   const ADS_ID = 'AW-XXXXXXXXXX';                       // Google Ads account tag
   const BOOKING_CONV_LABEL = 'AW-XXXXXXXXXX/XxXxXxXx';  // "Booked appointment" conversion send_to
 
