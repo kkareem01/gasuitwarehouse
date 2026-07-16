@@ -864,6 +864,110 @@ await testAsync('sales pipeline: record sale (write-once time), conversion rows,
 });
 
 // =========================================================================
+console.log('\nhandlers.mjs handleAdminCreateBooking (staff manual entry)');
+// =========================================================================
+
+// Minimal req/res doubles matching the (req, res) handler convention.
+function fakeReq(body, { auth = true } = {}) {
+  return {
+    method: 'POST',
+    url: '/api/admin/booking-create',
+    headers: auth ? { authorization: `Bearer ${process.env.STAFF_TOKEN}` } : {},
+    socket: { remoteAddress: '127.0.0.1' },
+    body,
+  };
+}
+
+function fakeRes() {
+  const out = { status: 0, body: null };
+  return {
+    out,
+    writeHead(status) { out.status = status; },
+    end(payload) { out.body = payload ? JSON.parse(payload) : null; },
+  };
+}
+
+await testAsync('booking-create: rejects missing/bad staff token', async () => {
+  const { handleAdminCreateBooking } = await import('../lib/handlers.mjs');
+  const res = fakeRes();
+  await handleAdminCreateBooking(fakeReq({}, { auth: false }), res);
+  assert.equal(res.out.status, 401);
+});
+
+await testAsync('booking-create: 400 on missing phone / unknown audience', async () => {
+  const { handleAdminCreateBooking } = await import('../lib/handlers.mjs');
+  const res = fakeRes();
+  await handleAdminCreateBooking(
+    fakeReq({ audience: 'gala', firstName: 'A', lastName: 'B', slotDate: '2026-08-01', slotTime: '12:00' }),
+    res
+  );
+  assert.equal(res.out.status, 400);
+  assert.match(res.out.body.error, /audience/i);
+  assert.match(res.out.body.error, /phone/i);
+});
+
+await testAsync('booking-create: saves a phone booking with no email, status new, off-grid slot', async () => {
+  const { handleAdminCreateBooking } = await import('../lib/handlers.mjs');
+  const { findBookingById } = await import('../lib/store.mjs');
+  const res = fakeRes();
+  await handleAdminCreateBooking(
+    fakeReq({
+      audience: 'weddings',
+      firstName: 'Adrian',
+      lastName: 'Allison',
+      phone: '706-308-6143',
+      slotDate: '2026-07-25',
+      slotTime: '12:00', // not on the public 30+5min grid — staff entries skip the grid check
+      answers: { priorities: 'Booked over the phone.' },
+    }),
+    res
+  );
+  assert.equal(res.out.status, 200, JSON.stringify(res.out.body));
+  const saved = await findBookingById(res.out.body.data.id);
+  assert.equal(saved.customer.firstName, 'Adrian');
+  assert.equal(saved.customer.lastName, 'Allison');
+  assert.equal(saved.customer.phone, '(706) 308-6143');
+  assert.equal(saved.customer.email, '');
+  assert.equal(saved.staffStatus, 'new');
+  assert.equal(saved.emailStatus, 'skipped');
+  assert.equal(saved.answers.priorities, 'Booked over the phone.');
+});
+
+await testAsync('booking-create: 409 SLOT_TAKEN on double-book, 400 on bad email', async () => {
+  const { handleAdminCreateBooking } = await import('../lib/handlers.mjs');
+  const dupe = fakeRes();
+  await handleAdminCreateBooking(
+    fakeReq({
+      audience: 'general',
+      firstName: 'Someone',
+      lastName: 'Else',
+      phone: '4045550123',
+      slotDate: '2026-07-25',
+      slotTime: '12:00',
+    }),
+    dupe
+  );
+  assert.equal(dupe.out.status, 409);
+  assert.equal(dupe.out.body.error, 'SLOT_TAKEN');
+
+  const badEmail = fakeRes();
+  await handleAdminCreateBooking(
+    fakeReq({
+      audience: 'general',
+      firstName: 'Someone',
+      lastName: 'Else',
+      phone: '4045550123',
+      email: 'not-an-email',
+      slotDate: '2026-07-25',
+      slotTime: '13:00',
+    }),
+    badEmail
+  );
+  assert.equal(badEmail.out.status, 400);
+  assert.match(badEmail.out.body.error, /email/i);
+});
+
+// =========================================================================
 console.log('\n— results —');
 console.log(results.join('\n'));
 console.log(`\n${passed} passed, ${failed} failed\n`);

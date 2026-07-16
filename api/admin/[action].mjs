@@ -20,6 +20,7 @@ import {
   handleAdminNotifySpecialOrderArrived,
   handleAdminListBookings,
   handleAdminBookingsCount,
+  handleAdminCreateBooking,
   handleAdminUpdateBookingStatus,
   handleAdminEditBooking,
   handleAdminDeleteBooking,
@@ -37,7 +38,7 @@ const KNOWN_ACTIONS = [
   'intakes', 'intake-status', 'intake-edit', 'intake-delete', 'intake-notify-ready',
   'special-orders', 'special-order-create', 'special-order-edit',
   'special-order-status', 'special-order-delete', 'special-order-notify-arrived',
-  'bookings', 'bookings-count', 'booking-status', 'booking-edit', 'booking-delete',
+  'bookings', 'bookings-count', 'booking-create', 'booking-status', 'booking-edit', 'booking-delete',
   'booking-sale', 'ad-spend', 'ad-spend-set', 'revenue-stats', 'ads-conversions',
 ];
 
@@ -91,6 +92,9 @@ export default async function (req, res) {
   }
   if (action === 'bookings-count' && req.method === 'GET') {
     return handleAdminBookingsCount(req, res);
+  }
+  if (action === 'booking-create' && req.method === 'POST') {
+    return handleAdminCreateBooking(req, res);
   }
   if (action === 'booking-status' && req.method === 'POST') {
     return handleAdminUpdateBookingStatus(req, res);

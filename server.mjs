@@ -51,6 +51,7 @@ import {
   handleAdminListBookings,
   handleAdminBookingsCount,
   handleAdminUpdateBookingStatus,
+  handleAdminCreateBooking,
   handleAdminEditBooking,
   handleAdminDeleteBooking,
 } from './lib/handlers.mjs';
@@ -192,6 +193,7 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && path === '/api/admin/special-order-notify-arrived') return handleAdminNotifySpecialOrderArrived(req, res);
       if (req.method === 'GET'  && path === '/api/admin/bookings')        return handleAdminListBookings(req, res);
       if (req.method === 'GET'  && path === '/api/admin/bookings-count')  return handleAdminBookingsCount(req, res);
+      if (req.method === 'POST' && path === '/api/admin/booking-create')  return handleAdminCreateBooking(req, res);
       if (req.method === 'POST' && path === '/api/admin/booking-status')  return handleAdminUpdateBookingStatus(req, res);
       if (req.method === 'POST' && path === '/api/admin/booking-edit')    return handleAdminEditBooking(req, res);
       if (req.method === 'POST' && path === '/api/admin/booking-delete')  return handleAdminDeleteBooking(req, res);
