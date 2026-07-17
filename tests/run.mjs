@@ -887,11 +887,12 @@ function fakeRes() {
   };
 }
 
-await testAsync('booking-create: rejects missing/bad staff token', async () => {
+await testAsync('booking-create: no staff token required (owner request) — token-less request reaches validation', async () => {
   const { handleAdminCreateBooking } = await import('../lib/handlers.mjs');
   const res = fakeRes();
   await handleAdminCreateBooking(fakeReq({}, { auth: false }), res);
-  assert.equal(res.out.status, 401);
+  assert.equal(res.out.status, 400, 'validation error, not 401');
+  assert.notEqual(res.out.body.error, 'UNAUTHORIZED');
 });
 
 await testAsync('booking-create: 400 on missing phone / unknown audience', async () => {
