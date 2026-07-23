@@ -132,9 +132,9 @@
 
   async function pollBadge() {
     try {
-      // Silent authedFetch — a 401 here must never spawn a prompt loop from
-      // the background poller; the next interactive action re-prompts instead.
-      const res = await window.GASWStaff.authedFetch('/api/admin/bookings-count');
+      // Silent — a 401 here must never pop the sign-in overlay from the
+      // background poller; the next interactive action surfaces it instead.
+      const res = await window.GASWStaff.adminFetch('/api/admin/bookings-count', { silent: true });
       const j = await res.json().catch(() => ({}));
       if (res.ok && j.ok && typeof j.newCount === 'number') setBadge(j.newCount);
     } catch (_) {

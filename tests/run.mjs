@@ -879,20 +879,21 @@ function fakeReq(body, { auth = true } = {}) {
 }
 
 function fakeRes() {
-  const out = { status: 0, body: null };
+  const out = { status: 0, body: null, headers: {} };
   return {
     out,
+    setHeader(name, value) { out.headers[String(name).toLowerCase()] = value; },
     writeHead(status) { out.status = status; },
     end(payload) { out.body = payload ? JSON.parse(payload) : null; },
   };
 }
 
-await testAsync('booking-create: no staff token required (owner request) — token-less request reaches validation', async () => {
+await testAsync('booking-create: rejects a request with no staff auth', async () => {
   const { handleAdminCreateBooking } = await import('../lib/handlers.mjs');
   const res = fakeRes();
   await handleAdminCreateBooking(fakeReq({}, { auth: false }), res);
-  assert.equal(res.out.status, 400, 'validation error, not 401');
-  assert.notEqual(res.out.body.error, 'UNAUTHORIZED');
+  assert.equal(res.out.status, 401);
+  assert.equal(res.out.body.error, 'UNAUTHORIZED');
 });
 
 await testAsync('booking-create: 400 on missing phone / unknown audience', async () => {
@@ -966,6 +967,186 @@ await testAsync('booking-create: 409 SLOT_TAKEN on double-book, 400 on bad email
   );
   assert.equal(badEmail.out.status, 400);
   assert.match(badEmail.out.body.error, /email/i);
+});
+
+// =========================================================================
+console.log('\nstaff-auth.mjs (password login + session cookie)');
+// =========================================================================
+
+const staffAuth = await import('../lib/staff-auth.mjs');
+const staffAuthHandlers = await import('../lib/handlers-staff-auth.mjs');
+
+function authReq({ cookie, authorization, body } = {}) {
+  const headers = {};
+  if (cookie) headers.cookie = cookie;
+  if (authorization) headers.authorization = authorization;
+  return {
+    method: 'POST',
+    url: '/api/admin/login',
+    headers,
+    socket: { remoteAddress: '10.0.0.1' },
+    body,
+  };
+}
+
+test('verifyStaffPassword: exact match only', () => {
+  assert.equal(staffAuth.verifyStaffPassword(process.env.STAFF_PASSWORD), true);
+  assert.equal(staffAuth.verifyStaffPassword('wrong-password'), false);
+  assert.equal(staffAuth.verifyStaffPassword(''), false);
+  assert.equal(staffAuth.verifyStaffPassword(undefined), false);
+  assert.equal(staffAuth.verifyStaffPassword(process.env.STAFF_PASSWORD + 'x'), false);
+});
+
+test('verifyStaffPassword: refuses when STAFF_PASSWORD is unset or too short', () => {
+  const real = process.env.STAFF_PASSWORD;
+  try {
+    delete process.env.STAFF_PASSWORD;
+    assert.equal(staffAuth.isPasswordConfigured(), false);
+    assert.equal(staffAuth.verifyStaffPassword(''), false);
+    process.env.STAFF_PASSWORD = 'abc';
+    assert.equal(staffAuth.isPasswordConfigured(), false, '3 chars is below the minimum');
+    assert.equal(staffAuth.verifyStaffPassword('abc'), false);
+  } finally {
+    process.env.STAFF_PASSWORD = real;
+  }
+});
+
+test('session value: round-trips, expires, and rejects tampering', () => {
+  const now = Date.UTC(2026, 6, 20);
+  const value = staffAuth.createSessionValue(now);
+  assert.match(value, /^\d+\.[0-9a-f]{64}$/);
+  assert.equal(staffAuth.verifySessionValue(value, now + 1000), true);
+
+  const dayMs = 24 * 60 * 60 * 1000;
+  assert.equal(staffAuth.verifySessionValue(value, now + (staffAuth.SESSION_DAYS - 1) * dayMs), true);
+  assert.equal(staffAuth.verifySessionValue(value, now + (staffAuth.SESSION_DAYS + 1) * dayMs), false, 'expired');
+
+  const [exp, sig] = value.split('.');
+  assert.equal(staffAuth.verifySessionValue(`${exp}.${sig.slice(0, -1)}0`, now), false, 'bad signature');
+  assert.equal(staffAuth.verifySessionValue(`${Number(exp) + dayMs}.${sig}`, now), false, 'extended expiry');
+  assert.equal(staffAuth.verifySessionValue(exp, now), false, 'no signature');
+  assert.equal(staffAuth.verifySessionValue('', now), false);
+});
+
+test('session value: a different signing key invalidates existing cookies', () => {
+  const now = Date.UTC(2026, 6, 20);
+  const value = staffAuth.createSessionValue(now);
+  const realToken = process.env.STAFF_TOKEN;
+  try {
+    process.env.STAFF_TOKEN = 'a-completely-different-key-32-chars-long';
+    assert.equal(staffAuth.verifySessionValue(value, now), false);
+  } finally {
+    process.env.STAFF_TOKEN = realToken;
+  }
+  assert.equal(staffAuth.verifySessionValue(value, now), true, 'valid again once the key is restored');
+});
+
+test('readCookie: picks the right cookie out of a header', () => {
+  const req = { headers: { cookie: 'other=1; gasw_staff=abc.def; another=2' } };
+  assert.equal(staffAuth.readCookie(req), 'abc.def');
+  assert.equal(staffAuth.readCookie({ headers: {} }), '');
+  assert.equal(staffAuth.readCookie({ headers: { cookie: 'nope=1' } }), '');
+});
+
+test('isStaffAuthed: cookie OR bearer token, nothing else', () => {
+  const value = staffAuth.createSessionValue();
+  assert.equal(staffAuth.isStaffAuthed(authReq({ cookie: `gasw_staff=${value}` })), true);
+  assert.equal(
+    staffAuth.isStaffAuthed(authReq({ authorization: `Bearer ${process.env.STAFF_TOKEN}` })),
+    true
+  );
+  assert.equal(staffAuth.isStaffAuthed(authReq({})), false);
+  assert.equal(staffAuth.isStaffAuthed(authReq({ authorization: 'Bearer nope' })), false);
+  assert.equal(staffAuth.isStaffAuthed(authReq({ cookie: 'gasw_staff=forged.value' })), false);
+});
+
+await testAsync('login: wrong password 401s, right password sets an HttpOnly cookie', async () => {
+  staffAuth.resetLoginRateLimit();
+
+  const bad = fakeRes();
+  await staffAuthHandlers.handleStaffLogin(authReq({ body: { password: 'not-it' } }), bad);
+  assert.equal(bad.out.status, 401);
+  assert.equal(bad.out.body.error, 'BAD_PASSWORD');
+  assert.equal(bad.out.headers['set-cookie'], undefined, 'no cookie on a failed login');
+
+  const good = fakeRes();
+  await staffAuthHandlers.handleStaffLogin(
+    authReq({ body: { password: process.env.STAFF_PASSWORD } }),
+    good
+  );
+  assert.equal(good.out.status, 200);
+  assert.equal(good.out.body.authed, true);
+  const cookie = good.out.headers['set-cookie'];
+  assert.match(cookie, /^gasw_staff=\d+\.[0-9a-f]{64};/);
+  assert.match(cookie, /HttpOnly/);
+  assert.match(cookie, /SameSite=Strict/);
+  assert.match(cookie, /Path=\//);
+
+  const value = cookie.slice('gasw_staff='.length, cookie.indexOf(';'));
+  assert.equal(staffAuth.verifySessionValue(value), true, 'the issued cookie verifies');
+});
+
+await testAsync('login: 429 after too many wrong guesses from one IP', async () => {
+  staffAuth.resetLoginRateLimit();
+  for (let i = 0; i < 10; i++) {
+    await staffAuthHandlers.handleStaffLogin(authReq({ body: { password: `guess-${i}` } }), fakeRes());
+  }
+  const blocked = fakeRes();
+  await staffAuthHandlers.handleStaffLogin(authReq({ body: { password: 'guess-11' } }), blocked);
+  assert.equal(blocked.out.status, 429);
+  assert.equal(blocked.out.body.error, 'TOO_MANY_ATTEMPTS');
+  assert.ok(blocked.out.body.retryAfterSec > 0);
+
+  // Even the correct password is refused while the window is open.
+  const correct = fakeRes();
+  await staffAuthHandlers.handleStaffLogin(
+    authReq({ body: { password: process.env.STAFF_PASSWORD } }),
+    correct
+  );
+  assert.equal(correct.out.status, 429);
+  staffAuth.resetLoginRateLimit();
+});
+
+await testAsync('login: 503 when STAFF_PASSWORD is not configured', async () => {
+  staffAuth.resetLoginRateLimit();
+  const real = process.env.STAFF_PASSWORD;
+  try {
+    delete process.env.STAFF_PASSWORD;
+    const res = fakeRes();
+    await staffAuthHandlers.handleStaffLogin(authReq({ body: { password: 'anything' } }), res);
+    assert.equal(res.out.status, 503);
+    assert.equal(res.out.body.error, 'PASSWORD_NOT_CONFIGURED');
+  } finally {
+    process.env.STAFF_PASSWORD = real;
+  }
+});
+
+await testAsync('logout clears the cookie; session reports auth state', async () => {
+  const out = fakeRes();
+  await staffAuthHandlers.handleStaffLogout(authReq({}), out);
+  assert.equal(out.out.status, 200);
+  assert.match(out.out.headers['set-cookie'], /^gasw_staff=; .*Max-Age=0/);
+
+  const anon = fakeRes();
+  await staffAuthHandlers.handleStaffSession(authReq({}), anon);
+  assert.deepEqual(anon.out.body, { ok: true, authed: false, configured: true });
+
+  const authed = fakeRes();
+  await staffAuthHandlers.handleStaffSession(
+    authReq({ cookie: `gasw_staff=${staffAuth.createSessionValue()}` }),
+    authed
+  );
+  assert.equal(authed.out.body.authed, true);
+});
+
+await testAsync('a guarded admin handler accepts the session cookie', async () => {
+  const { handleAdminCreateBooking } = await import('../lib/handlers.mjs');
+  const req = fakeReq({}, { auth: false });
+  req.headers.cookie = `gasw_staff=${staffAuth.createSessionValue()}`;
+  const res = fakeRes();
+  await handleAdminCreateBooking(req, res);
+  assert.equal(res.out.status, 400, 'reaches validation, so auth passed');
+  assert.notEqual(res.out.body.error, 'UNAUTHORIZED');
 });
 
 // =========================================================================

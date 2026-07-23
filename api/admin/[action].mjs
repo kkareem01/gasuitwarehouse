@@ -26,6 +26,11 @@ import {
   handleAdminDeleteBooking,
 } from '../../lib/handlers.mjs';
 import {
+  handleStaffLogin,
+  handleStaffLogout,
+  handleStaffSession,
+} from '../../lib/handlers-staff-auth.mjs';
+import {
   handleAdminRecordBookingSale,
   handleAdminListAdSpend,
   handleAdminSetAdSpend,
@@ -34,6 +39,7 @@ import {
 } from '../../lib/handlers-sales.mjs';
 
 const KNOWN_ACTIONS = [
+  'login', 'logout', 'session',
   'lookup-code', 'redeem', 'funnel-stats',
   'intakes', 'intake-status', 'intake-edit', 'intake-delete', 'intake-notify-ready',
   'special-orders', 'special-order-create', 'special-order-edit',
@@ -44,6 +50,17 @@ const KNOWN_ACTIONS = [
 
 export default async function (req, res) {
   const action = req.query?.action || req.url.split('?')[0].split('/').pop();
+
+  // Password gate — the only three actions reachable without staff auth.
+  if (action === 'login' && req.method === 'POST') {
+    return handleStaffLogin(req, res);
+  }
+  if (action === 'logout' && req.method === 'POST') {
+    return handleStaffLogout(req, res);
+  }
+  if (action === 'session' && req.method === 'GET') {
+    return handleStaffSession(req, res);
+  }
 
   if (action === 'lookup-code' && req.method === 'GET') {
     return handleAdminLookupCode(req, res);

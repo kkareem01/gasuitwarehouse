@@ -56,6 +56,11 @@ import {
   handleAdminDeleteBooking,
 } from './lib/handlers.mjs';
 import {
+  handleStaffLogin,
+  handleStaffLogout,
+  handleStaffSession,
+} from './lib/handlers-staff-auth.mjs';
+import {
   handleAdminRecordBookingSale,
   handleAdminListAdSpend,
   handleAdminSetAdSpend,
@@ -176,6 +181,10 @@ const server = http.createServer(async (req, res) => {
       if (cronMethods && path === '/api/cron/nurture-dayof') return handleCronNurtureDayOf(req, res);
       if (cronMethods && path === '/api/cron/expire-codes')  return handleCronExpireCodes(req, res);
       if (cronMethods && path === '/api/cron/rotate-offer')  return handleCronRotateOffer(req, res);
+
+      if (req.method === 'POST' && path === '/api/admin/login')        return handleStaffLogin(req, res);
+      if (req.method === 'POST' && path === '/api/admin/logout')       return handleStaffLogout(req, res);
+      if (req.method === 'GET'  && path === '/api/admin/session')      return handleStaffSession(req, res);
 
       if (req.method === 'GET'  && path === '/api/admin/lookup-code')  return handleAdminLookupCode(req, res);
       if (req.method === 'POST' && path === '/api/admin/redeem')       return handleAdminRedeem(req, res);
