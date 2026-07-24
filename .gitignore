@@ -60,3 +60,7 @@ twilio_2FA_recovery_code.txt
 
 # Local audit notes — not part of the site.
 /SCHEMA-AUDIT.md
+
+# Google Ads API tool (credentials + venv never committed)
+tools/ads/.venv/
+tools/ads/google-ads.yaml
